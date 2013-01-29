@@ -1,4 +1,4 @@
-jcli-framework
-==============
+JCLIF
+=====
 
-jcli-framework
+Java Command Line Interface Framework
