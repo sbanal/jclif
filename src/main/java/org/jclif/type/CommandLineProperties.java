@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.type;
 
 public class CommandLineProperties {
 	

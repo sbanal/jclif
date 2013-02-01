@@ -17,11 +17,8 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.type;
 
-import org.jclif.type.OptionMetadata;
-import org.jclif.type.ParameterMetadata;
-import org.jclif.type.ParameterType;
 
 
 /**
@@ -30,7 +27,7 @@ import org.jclif.type.ParameterType;
  * @author Stephen Lou Banal <stephen.banal@gmail.com>
  *
  */
-class OptionMetadataImpl extends InputMetadataImpl implements OptionMetadata {
+public class OptionMetadataImpl extends InputMetadataImpl implements OptionMetadata {
 
 	private String longIdentifier;
 	private ParameterMetadata parameterMetadata;

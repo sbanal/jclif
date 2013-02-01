@@ -17,23 +17,18 @@
  * under the License.
  */
 
-package org.jclif.parser;
+package org.jclif.type;
 
-import org.jclif.type.ParameterMetadata;
 
-/**
- * ParameterValidator interface provides the methods used by the parser to 
- * support custom parameter value parsing and value validation.
- * <p>
- * Implement this interface and pass to OptionConfiguration's addOption()
- * method to specify custom parameter parsing implementation instead of using
- * the default code provided by the API.
- * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
- *
- */
-public interface ParameterParser {
-	
-	public Object parseValue(ParameterMetadata option, String value);
+public class CommandConfiguration extends Configuration<CommandMetadata> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7791557861511435195L;
+
+	public CommandConfiguration() {
+		super("command", "Command configuration");		
+	}
 	
 }

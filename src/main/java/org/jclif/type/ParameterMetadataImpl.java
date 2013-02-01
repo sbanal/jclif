@@ -17,11 +17,8 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.type;
 
-import org.jclif.parser.ParameterParser;
-import org.jclif.type.ParameterMetadata;
-import org.jclif.type.ParameterType;
 
 public class ParameterMetadataImpl extends InputMetadataImpl implements ParameterMetadata {
 

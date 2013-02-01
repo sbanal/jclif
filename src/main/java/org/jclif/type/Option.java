@@ -21,7 +21,9 @@ package org.jclif.type;
 
 
 /**
- * Option class represents the option value and its corresponding parameter.
+ * Option class represents the option parsed from a command line input.
+ * An Option class may or may not have a corresponding parameter depending on 
+ * if its metadata specifies that it accepts a parameter.
  * 
  * @author Stephen Lou Banal <stephen.banal@gmail.com>
  *

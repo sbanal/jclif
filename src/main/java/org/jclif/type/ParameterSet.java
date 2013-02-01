@@ -22,7 +22,6 @@ package org.jclif.type;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jclif.ParameterConfiguration;
 
 
 public class ParameterSet extends InputSet<Parameter, ParameterMetadata> {

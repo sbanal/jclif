@@ -24,6 +24,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Handler annotation is used to mark a method in a class as the method 
+ * to execute if a command or set of options matches. This annotation is used 
+ * on any "public void no-argument" method of a @Command annotated class.
+ * 
+ * @author stephen
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Handler {

@@ -17,20 +17,16 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.parser;
 
-import org.jclif.type.Configuration;
-import org.jclif.type.ParameterMetadata;
-
-public class ParameterConfiguration extends Configuration<ParameterMetadata> {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4680033761366612505L;
-
-	public ParameterConfiguration() {
-		super("parameter", "Parameter configuration");
-	}
-	
+/**
+ * CommandLineFormatType enum defines the different command line help text formatting 
+ * types.
+ * 
+ * @author stephen
+ *
+ */
+public enum CommandLineFormatType {
+	SHORT,
+	FULL
 }

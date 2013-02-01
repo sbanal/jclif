@@ -19,12 +19,11 @@
 
 package org.jclif.type;
 
-import org.jclif.OptionConfiguration;
 
 
 /**
  * OptionSet class is a HashSet of Option type. This class
- * serves as container of all the options parsed by OptionFormat class.
+ * serves as container of all the options parsed from command line input.
  * 
  * @author Stephen Lou Banal <stephen.banal@gmail.com>
  *

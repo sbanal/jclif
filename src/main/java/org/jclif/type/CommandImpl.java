@@ -17,18 +17,15 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.type;
 
-import org.jclif.type.Command;
-import org.jclif.type.CommandMetadata;
-import org.jclif.type.InputMetadata;
 
 public class CommandImpl implements Command {
 
 	private String command;
 	private CommandMetadata metadata;
 	
-	CommandImpl(String command, CommandMetadata metadata) {
+	public CommandImpl(String command, CommandMetadata metadata) {
 		this.command = command;
 		this.metadata = metadata;
 	}

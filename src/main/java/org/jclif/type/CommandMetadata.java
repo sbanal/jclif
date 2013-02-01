@@ -19,10 +19,12 @@
 
 package org.jclif.type;
 
-import org.jclif.OptionConfiguration;
-import org.jclif.ParameterConfiguration;
 
-
+/**
+ * 
+ * @author stephen
+ *
+ */
 public interface CommandMetadata extends InputMetadata {
 
 	public String getKeyword();

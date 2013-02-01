@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.parser;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -28,21 +28,31 @@ import java.util.logging.Logger;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import org.jclif.parser.ParameterParser;
-import org.jclif.parser.ParameterParserFactory;
+import org.jclif.type.CommandImpl;
 import org.jclif.type.CommandMetadata;
+import org.jclif.type.InvalidInputException;
 import org.jclif.type.Option;
+import org.jclif.type.OptionConfiguration;
+import org.jclif.type.OptionImpl;
 import org.jclif.type.OptionMetadata;
 import org.jclif.type.OptionSet;
 import org.jclif.type.Parameter;
+import org.jclif.type.ParameterConfiguration;
+import org.jclif.type.ParameterImpl;
 import org.jclif.type.ParameterMetadata;
+import org.jclif.type.ParameterParser;
 import org.jclif.type.ParameterSet;
 import org.jclif.type.ParameterType;
 import org.jclif.type.OptionMetadata.IdentifierFormat;
 import org.jclif.util.StringUtil;
 
 
-
+/**
+ * Default implementation of CommandLineFormat.
+ * 
+ * @author stephen
+ *
+ */
 class DefaultCommandLineFormat extends CommandLineFormat {
 
 	private final static Logger LOGGER = Logger.getLogger(DefaultCommandLineFormat.class.getName());

@@ -17,16 +17,30 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.parser;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
+import org.jclif.type.CommandConfiguration;
+import org.jclif.type.CommandLineProperties;
 import org.jclif.type.CommandMetadata;
+import org.jclif.type.CommandMetadataImpl;
+import org.jclif.type.OptionConfiguration;
 import org.jclif.type.OptionMetadata;
+import org.jclif.type.OptionMetadataImpl;
+import org.jclif.type.ParameterConfiguration;
 import org.jclif.type.ParameterMetadata;
+import org.jclif.type.ParameterMetadataImpl;
 import org.jclif.type.ParameterType;
 
+/**
+ * CommandLineConfiguration class is used to define the command line inputs accepted by an application.
+ * This is the class from which we specify the accepted options, parameters and commands of an application.
+ * 
+ * @author stephen
+ *
+ */
 public class CommandLineConfiguration {
  
 	private final Pattern IDENTIFIER_REGEX = Pattern.compile("^([\\w]+)$");
@@ -77,7 +91,10 @@ public class CommandLineConfiguration {
 	}
 
 	public void setCommandLineProperties(CommandLineProperties commandLineProperties) {
-		this.commandLineProperties = commandLineProperties;
+		this.commandLineProperties =  new CommandLineProperties(
+				commandLineProperties.getOptionPrefix(),
+				commandLineProperties.getOptionLongPrefix(),
+				commandLineProperties.getOptionParameterDelim());
 	}
 
 	public ParameterConfiguration getParameterConfiguration() {
@@ -115,7 +132,7 @@ public class CommandLineConfiguration {
 			String description, String longDescription) {
 		
 		if(parameterType==ParameterType.CUSTOM) {
-			throw new IllegalArgumentException("ParameterType.CUSTOM is not supported in this method. Use adOptions(id,longId, metadta, required, ..) method.");
+			throw new IllegalArgumentException("ParameterType.CUSTOM is not supported in this method. Use adOptions(id,longId, metadata, required, ..) method.");
 		}
 		
 		ParameterMetadata parameter = new ParameterMetadataImpl( identifier, false, false, parameterType, null);

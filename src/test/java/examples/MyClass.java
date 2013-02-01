@@ -22,11 +22,11 @@ package examples;
 import java.io.File;
 import java.util.List;
 
-import org.jclif.CommandLineConfiguration;
-import org.jclif.CommandLineFormat;
-import org.jclif.CommandLineParseResult;
-import org.jclif.InvalidInputException;
 import org.jclif.annotation.Command;
+import org.jclif.parser.CommandLineConfiguration;
+import org.jclif.parser.CommandLineFormat;
+import org.jclif.parser.CommandLineParseResult;
+import org.jclif.type.InvalidInputException;
 import org.jclif.type.ParameterType;
 
 @Command(identifier="",description="List files")

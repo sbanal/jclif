@@ -17,21 +17,39 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.type;
 
-public class InvalidIdentifierException extends RuntimeException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7986364215865977263L;
+
+/**
+ * Option class represents an instance of an option parsed from the 
+ * command line option list parsed by CommandLineFormat parse method.
+ * 
+ * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ *
+ */
+public class OptionImpl implements Option {
+
+	private OptionMetadata option;
+	private Parameter parameter;
 	
-	public InvalidIdentifierException(String msg) {
-		super(msg);
+	public OptionImpl(OptionMetadata option, Parameter parameter) {
+		this.option = option;
+		this.parameter = parameter;
 	}
 	
-	public InvalidIdentifierException(String msg, Throwable t) {
-		super(msg, t);
+	@Override
+	public OptionMetadata getMetadata() {
+		return option;
 	}
 	
+	@Override
+	public Parameter getParameter() {
+		return parameter;
+	}
+	
+	public String toString() {
+		return String.format("OptionImpl[option=%s,parameter=%s]", option, parameter);
+	}
+
 }

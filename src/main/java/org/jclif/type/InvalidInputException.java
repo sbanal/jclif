@@ -17,9 +17,8 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.type;
 
-import org.jclif.type.CommandMetadata;
 
 /**
  * InvalidInputException class is an exception thrown if a command line input is invalid.

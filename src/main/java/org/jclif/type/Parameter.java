@@ -21,6 +21,14 @@ package org.jclif.type;
 
 import java.io.File;
 
+/**
+ * Parameter interface defines the common methods of a parameter.
+ * A parameter represents the parameter value parsed from a command line input.
+ * A parameter can be either as an argument to an option or as an input to a command.
+ * 
+ * @author stephen
+ *
+ */
 public interface Parameter extends Input {
 	
 	/**

@@ -26,8 +26,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jclif.parser.ParameterParser;
+import org.jclif.parser.CommandLineConfiguration;
+import org.jclif.parser.CommandLineFormat;
+import org.jclif.parser.CommandLineParseResult;
+import org.jclif.type.InvalidInputException;
+import org.jclif.type.OptionConfiguration;
 import org.jclif.type.ParameterMetadata;
+import org.jclif.type.ParameterMetadataImpl;
+import org.jclif.type.ParameterParser;
 import org.jclif.type.ParameterType;
 import org.junit.Assert;
 import org.junit.Test;

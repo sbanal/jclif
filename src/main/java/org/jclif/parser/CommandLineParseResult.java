@@ -17,14 +17,17 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.parser;
 
 import org.jclif.type.Command;
 import org.jclif.type.CommandMetadata;
+import org.jclif.type.InvalidInputException;
 import org.jclif.type.Option;
+import org.jclif.type.OptionConfiguration;
 import org.jclif.type.OptionMetadata;
 import org.jclif.type.OptionSet;
 import org.jclif.type.Parameter;
+import org.jclif.type.ParameterConfiguration;
 import org.jclif.type.ParameterMetadata;
 import org.jclif.type.ParameterSet;
 

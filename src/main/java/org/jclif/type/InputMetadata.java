@@ -21,6 +21,12 @@ package org.jclif.type;
 
 import java.lang.reflect.Method;
 
+/**
+ * InputMetadata interface defines the common properties of all command line input type.
+ * 
+ * @author stephen
+ *
+ */
 public interface InputMetadata {
 	
 	/**

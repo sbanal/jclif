@@ -19,7 +19,6 @@
 
 package org.jclif.type;
 
-import org.jclif.parser.ParameterParser;
 
 
 public interface ParameterMetadata extends InputMetadata {

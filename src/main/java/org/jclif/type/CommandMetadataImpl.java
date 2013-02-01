@@ -17,13 +17,11 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.type;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jclif.type.CommandMetadata;
-import org.jclif.type.ParameterMetadata;
 
 
 public class CommandMetadataImpl extends InputMetadataImpl implements CommandMetadata {

@@ -17,11 +17,10 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.type;
 
 import java.lang.reflect.Method;
 
-import org.jclif.type.InputMetadata;
 
 
 public abstract class InputMetadataImpl implements InputMetadata {

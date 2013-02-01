@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,10 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.jclif.type.Configuration;
-import org.jclif.type.OptionMetadata;
-import org.jclif.type.ParameterMetadata;
-import org.jclif.type.ParameterType;
 import org.jclif.type.OptionMetadata.IdentifierFormat;
 
 
@@ -146,7 +142,7 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 		}
 		return option;
 	}
-	
+
 	public OptionMetadata getOption(String identifier, IdentifierFormat type) {
 		if(type==IdentifierFormat.LONG) {
 			return optionLongMap.get(identifier);

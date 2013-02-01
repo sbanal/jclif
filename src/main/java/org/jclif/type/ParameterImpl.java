@@ -17,20 +17,17 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.type;
 
 import java.io.File;
 
-import org.jclif.type.Parameter;
-import org.jclif.type.ParameterMetadata;
-import org.jclif.type.ParameterType;
 
 public class ParameterImpl implements Parameter {
 
 	private ParameterMetadata parameterMetadata;
 	private Object value;
 	
-	ParameterImpl(ParameterMetadata parameterMetadata, Object value) {
+	public ParameterImpl(ParameterMetadata parameterMetadata, Object value) {
 		this.parameterMetadata = parameterMetadata;
 		this.value = value;
 	}

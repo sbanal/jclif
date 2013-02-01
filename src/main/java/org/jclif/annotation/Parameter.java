@@ -26,6 +26,13 @@ import java.lang.annotation.Target;
 
 import org.jclif.type.ParameterType;
 
+/**
+ * Parameter annotation is used to mark a field as a storage
+ * field of a command line input's parameter value.
+ * 
+ * @author stephen
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Parameter {

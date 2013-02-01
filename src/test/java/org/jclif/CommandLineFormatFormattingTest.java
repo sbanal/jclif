@@ -19,13 +19,13 @@
 
 package org.jclif;
 
-import org.jclif.CommandLineConfiguration;
-import org.jclif.CommandLineFormat;
-import org.jclif.CommandLineFormatType;
-import org.jclif.InvalidInputException;
-import org.jclif.OptionConfiguration;
-import org.jclif.ParameterMetadataImpl;
+import org.jclif.parser.CommandLineConfiguration;
+import org.jclif.parser.CommandLineFormat;
+import org.jclif.parser.CommandLineFormatType;
+import org.jclif.type.InvalidInputException;
+import org.jclif.type.OptionConfiguration;
 import org.jclif.type.ParameterMetadata;
+import org.jclif.type.ParameterMetadataImpl;
 import org.jclif.type.ParameterType;
 import org.junit.Test;
 

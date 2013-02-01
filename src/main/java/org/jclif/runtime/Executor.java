@@ -40,25 +40,31 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import org.jclif.CommandLineConfiguration;
-import org.jclif.CommandLineFormat;
-import org.jclif.CommandLineParseResult;
-import org.jclif.CommandMetadataImpl;
-import org.jclif.InvalidInputException;
-import org.jclif.OptionConfiguration;
-import org.jclif.ParameterConfiguration;
-import org.jclif.ParameterMetadataImpl;
 import org.jclif.annotation.Command;
 import org.jclif.annotation.Handler;
 import org.jclif.annotation.Option;
 import org.jclif.annotation.Parameter;
+import org.jclif.parser.CommandLineConfiguration;
+import org.jclif.parser.CommandLineFormat;
+import org.jclif.parser.CommandLineParseResult;
 import org.jclif.runtime.ExecutorHandlerRegistry.ExecutorHandler;
 import org.jclif.type.CommandMetadata;
+import org.jclif.type.CommandMetadataImpl;
+import org.jclif.type.InvalidInputException;
+import org.jclif.type.OptionConfiguration;
 import org.jclif.type.OptionMetadata;
+import org.jclif.type.ParameterConfiguration;
 import org.jclif.type.ParameterMetadata;
+import org.jclif.type.ParameterMetadataImpl;
 import org.jclif.type.ParameterType;
 import org.jclif.util.StringUtil;
 
+/**
+ * 
+ * 
+ * @author stephen
+ *
+ */
 public final class Executor {
 
 	private static final Logger LOGGER = Logger.getLogger(Executor.class.getCanonicalName());

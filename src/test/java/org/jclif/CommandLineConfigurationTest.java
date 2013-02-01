@@ -19,6 +19,8 @@
 
 package org.jclif;
 
+import org.jclif.parser.CommandLineConfiguration;
+import org.jclif.parser.InvalidIdentifierException;
 import org.jclif.type.ParameterType;
 import org.junit.Assert;
 import org.junit.Test;

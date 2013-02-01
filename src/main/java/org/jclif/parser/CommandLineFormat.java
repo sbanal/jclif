@@ -17,11 +17,19 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.parser;
 
+import org.jclif.type.InvalidInputException;
+
+/**
+ * CommandLineFormat class provides the parsing and formatting functions of command line inputs.
+ * This is the main entry point for using JCLIF API. 
+ * 
+ * @author stephen
+ *
+ */
 public abstract class CommandLineFormat {
 	
-	//private static final CommandLineFormat INSTANCE = new OptionFormat();
 	private static final CommandLineFormat INSTANCE = new DefaultCommandLineFormat();
 	
 	protected CommandLineFormat() {

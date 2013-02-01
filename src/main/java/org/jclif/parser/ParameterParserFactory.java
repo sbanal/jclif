@@ -24,8 +24,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jclif.type.ParameterMetadata;
+import org.jclif.type.ParameterParser;
 import org.jclif.type.ParameterType;
 
+/**
+ * ParameterParserFactory class is a factory of all supported parameter value parsers.
+ *   
+ * @author stephen
+ *
+ */
 public final class ParameterParserFactory {
 	
 	private static final ParameterParserFactory INSTANCE = new ParameterParserFactory();

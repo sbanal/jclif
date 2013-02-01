@@ -17,20 +17,24 @@
  * under the License.
  */
 
-package org.jclif;
+package org.jclif.type;
 
-import org.jclif.type.CommandMetadata;
-import org.jclif.type.Configuration;
-
-public class CommandConfiguration extends Configuration<CommandMetadata> {
+/**
+ * ParameterConfiguration class serves as a container of all parameters accepted by a 
+ * command line input configuration.
+ * 
+ * @author stephen
+ *
+ */
+public class ParameterConfiguration extends Configuration<ParameterMetadata> {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7791557861511435195L;
+	private static final long serialVersionUID = 4680033761366612505L;
 
-	public CommandConfiguration() {
-		super("command", "Command configuration");		
+	public ParameterConfiguration() {
+		super("parameter", "Parameter configuration");
 	}
 	
 }

@@ -25,15 +25,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.jclif.CommandLineParseResult;
-import org.jclif.OptionConfiguration;
 import org.jclif.annotation.Option;
 import org.jclif.annotation.Parameter;
+import org.jclif.parser.CommandLineParseResult;
 import org.jclif.type.CommandMetadata;
 import org.jclif.type.InputMetadata;
+import org.jclif.type.OptionConfiguration;
 import org.jclif.type.OptionMetadata;
 import org.jclif.util.ReflectionUtil;
 
+/**
+ * 
+ * 
+ * @author stephen
+ *
+ */
 public class ExecutorHandlerRegistry {
 	
 	private static final Logger LOGGER = Logger.getLogger(ExecutorHandlerRegistry.class.getCanonicalName());
