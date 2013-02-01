@@ -25,7 +25,7 @@ package org.jclif.type;
  * Option class represents an instance of an option parsed from the 
  * command line option list parsed by CommandLineFormat parse method.
  * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class OptionImpl implements Option {

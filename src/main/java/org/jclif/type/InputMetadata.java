@@ -23,7 +23,7 @@ package org.jclif.type;
 /**
  * InputMetadata interface defines the common properties of all command line input type.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public interface InputMetadata {

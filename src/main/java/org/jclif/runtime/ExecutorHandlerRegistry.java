@@ -38,7 +38,7 @@ import org.jclif.util.ReflectionUtil;
  * This class is used by Executor class as container of all command handlers detected at runtime.
  * 
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class ExecutorHandlerRegistry {
@@ -51,7 +51,7 @@ public class ExecutorHandlerRegistry {
 	/**
 	 * This class links the handler class and its handler method.
 	 * 
-	 * @author stephen
+	 * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
 	 *
 	 */
 	static class ExecutorHandler {

@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  * if a command or set of options matches. This annotation is used 
  * on any "public void no-argument" method of a @Command annotated class.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -24,7 +24,7 @@ package org.jclif.type;
  * a command line application. This class is backed by a LinkedHashMap<String,CommandMetadata>
  * and requires that only one instance of the same CommandMetadata exist in a collection.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class CommandConfiguration extends Configuration<CommandMetadata> {

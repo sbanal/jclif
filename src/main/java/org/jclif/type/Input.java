@@ -23,7 +23,7 @@ package org.jclif.type;
  * Input interface is the common interface of all command line inputs.
  * Command line parameters, options and command keywords are all possible inputs. 
  * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public interface Input {

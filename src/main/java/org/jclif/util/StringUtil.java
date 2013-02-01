@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * This class provides all the utility methods used to manipulate or check string values.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public final class StringUtil {

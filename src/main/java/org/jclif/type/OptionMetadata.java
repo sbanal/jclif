@@ -24,7 +24,7 @@ package org.jclif.type;
  * OptionMetadata interface defines the common properties that 
  * describes a command line option.
  * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public interface OptionMetadata extends InputMetadata {
@@ -32,7 +32,7 @@ public interface OptionMetadata extends InputMetadata {
 	/**
 	 * Identifier type.
 	 * 
-	 * @author Stephen Lou Banal <stephen.banal@gmail.com>
+	 * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
 	 */
 	public enum IdentifierType {
 		

@@ -26,7 +26,7 @@ import org.jclif.type.CommandLineConfiguration;
  * CommandLineFormat class provides the parsing and formatting functions of command line inputs.
  * This is the main entry point for using JCLIF API. 
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public abstract class CommandLineParser {

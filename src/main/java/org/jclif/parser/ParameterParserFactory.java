@@ -30,7 +30,7 @@ import org.jclif.type.ParameterType;
 /**
  * ParameterParserFactory class is a factory of all supported parameter value parsers.
  *   
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public final class ParameterParserFactory {

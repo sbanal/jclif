@@ -24,7 +24,7 @@ package org.jclif.type;
 /**
  * This class provides concrete implementation of InputMetadata interface.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public abstract class InputMetadataImpl implements InputMetadata {

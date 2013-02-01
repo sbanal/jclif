@@ -22,7 +22,7 @@ package org.jclif.type;
 /**
  * InvalidIdentifierException exception is thrown if an input identifier is invalid.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class InvalidIdentifierException extends RuntimeException {

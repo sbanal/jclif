@@ -30,7 +30,7 @@ import org.jclif.type.ParameterType;
  * Parameter annotation is used to mark a field as a storage
  * of command line input parameter or option parameter value.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

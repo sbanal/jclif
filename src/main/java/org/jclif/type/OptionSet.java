@@ -25,7 +25,7 @@ package org.jclif.type;
  * OptionSet class is a HashSet of Option type. This class
  * serves as container of all the options parsed from command line input.
  * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class OptionSet extends InputSet<Option, OptionMetadata> {

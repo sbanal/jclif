@@ -28,7 +28,7 @@ import java.util.Set;
  * parsed from a command line input. This collection basically contains
  * the parameters parsed and their corresponding metadata.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class ParameterSet extends InputSet<Parameter, ParameterMetadata> {

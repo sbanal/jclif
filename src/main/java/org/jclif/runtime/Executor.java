@@ -64,7 +64,7 @@ import org.jclif.util.StringUtil;
  * as the main class in its manifest files of applications to support JCLIF annotations
  * in their code.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public final class Executor {

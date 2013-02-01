@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * CommandLineConfiguration class is used to define the command line inputs accepted by an application.
  * This is the class from which we specify the accepted options, parameters and commands of an application.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class CommandLineConfiguration {

@@ -36,7 +36,7 @@ import java.io.File;
  * are "file.txt" and ";" respectively. Types could be defined as 
  * ParameterType.FILE for "file.txt" while ParameterType.STRING for ";".
  * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public enum ParameterType {

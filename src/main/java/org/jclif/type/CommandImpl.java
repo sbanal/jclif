@@ -22,7 +22,7 @@ package org.jclif.type;
 /**
  * This class is a concrete implementation of Command interface. 
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class CommandImpl implements Command {

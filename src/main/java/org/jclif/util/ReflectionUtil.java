@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  * This class provides all the utility methods used by the framework to discover class methods and fields
  * using reflection API of java.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public final class ReflectionUtil {

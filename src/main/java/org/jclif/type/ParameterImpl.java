@@ -24,7 +24,7 @@ import java.io.File;
 /**
  * This class is a concrete implementation of Parameter interface. 
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class ParameterImpl implements Parameter {

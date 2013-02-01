@@ -23,7 +23,7 @@ package org.jclif.type;
  * This interface defines the properties which describes a command in a
  * command line input.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public interface Command extends Input {

@@ -28,7 +28,7 @@ import java.util.Map;
  * configuration metadata information. Class is a LinkedHashMap<String, InputMetadata>
  * type and ensures that only one metadata exist for a given identifier in a collection.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public abstract class Configuration<T extends InputMetadata> extends LinkedHashMap<String, T> {

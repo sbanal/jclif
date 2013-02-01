@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * This class provides concrete implementation of CommandMetadata interface.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class CommandMetadataImpl extends InputMetadataImpl implements CommandMetadata {

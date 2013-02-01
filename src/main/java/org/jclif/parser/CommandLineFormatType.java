@@ -23,7 +23,7 @@ package org.jclif.parser;
  * CommandLineFormatType enum defines the different command line help text formatting 
  * types.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public enum CommandLineFormatType {

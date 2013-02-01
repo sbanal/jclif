@@ -25,7 +25,7 @@ package org.jclif.type;
  * This interfaces defines the properties which describes a command
  * line parameter.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public interface ParameterMetadata extends InputMetadata {

@@ -24,7 +24,7 @@ package org.jclif.type;
 /**
  * OptionMetadataImpl class provides the core implementation of OptionMetadata.
  * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class OptionMetadataImpl extends InputMetadataImpl implements OptionMetadata {

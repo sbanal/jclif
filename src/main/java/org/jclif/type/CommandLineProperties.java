@@ -23,7 +23,7 @@ package org.jclif.type;
  * This class serves as container of command line related properties used for parsing
  * like option prefix and option-parameter character delimiter.
  *  
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class CommandLineProperties {

@@ -34,7 +34,7 @@ import org.jclif.type.ParameterSet;
 /**
  * CommandLineParseResult class represents the result of command line parsing.
  * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class CommandLineParseResult {

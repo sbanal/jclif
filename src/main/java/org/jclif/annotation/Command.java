@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  * A command annotated class is a POJO class whose fields are either annotated with Parameter, 
  * Option and Handler to specify its options, parameters and the handler method.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

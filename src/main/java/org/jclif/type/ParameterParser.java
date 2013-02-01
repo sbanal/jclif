@@ -28,7 +28,7 @@ package org.jclif.type;
  * method to specify custom parameter parsing implementation instead of using
  * the default code provided by the API.
  * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public interface ParameterParser {

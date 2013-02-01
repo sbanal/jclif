@@ -23,7 +23,7 @@ package org.jclif.type;
  * ParameterConfiguration class serves as a container of all parameters accepted by a 
  * command line input configuration.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class ParameterConfiguration extends Configuration<ParameterMetadata> {

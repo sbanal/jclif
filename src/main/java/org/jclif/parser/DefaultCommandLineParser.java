@@ -50,7 +50,7 @@ import org.jclif.util.StringUtil;
 /**
  * Default implementation of CommandLineFormat.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 class DefaultCommandLineParser extends CommandLineParser {

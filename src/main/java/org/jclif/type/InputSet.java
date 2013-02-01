@@ -29,7 +29,7 @@ import java.util.Map;
  * parsed from a command line input. Collection enforces that each input
  * collected is unique based on the identifier of the input.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class InputSet<E extends Input, M extends InputMetadata> extends HashSet<E> {

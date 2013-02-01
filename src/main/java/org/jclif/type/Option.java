@@ -25,7 +25,7 @@ package org.jclif.type;
  * An Option class may or may not have a corresponding parameter depending on 
  * if an options accepts a parameter or not.
  * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public interface Option extends Input {

@@ -33,7 +33,7 @@ import org.jclif.type.OptionMetadata.IdentifierType;
  * of an applications expected command line options.
  * 
  * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class OptionConfiguration extends Configuration<OptionMetadata>{

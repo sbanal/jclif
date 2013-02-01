@@ -30,7 +30,7 @@ import org.jclif.type.ParameterType;
  * Annotation used to mark a field as command line option variable.
  * The identifier is the option flag used in command line.
  *  
-* @author Stephen Lou Banal <stephen.banal@gmail.com>
+* @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

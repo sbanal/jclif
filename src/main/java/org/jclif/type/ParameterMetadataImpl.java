@@ -23,7 +23,7 @@ package org.jclif.type;
 /**
  * This class provides concrete implementation of ParameterMetadata interface.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class ParameterMetadataImpl extends InputMetadataImpl implements ParameterMetadata {

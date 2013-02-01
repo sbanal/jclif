@@ -26,7 +26,7 @@ import java.io.File;
  * A parameter represents the parameter value parsed from a command line input.
  * A parameter can be either as an argument to an option or as an input to a command.
  * 
- * @author stephen
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public interface Parameter extends Input {

@@ -25,7 +25,7 @@ import org.jclif.type.CommandMetadata;
 /**
  * InvalidInputException class is an exception thrown if a command line input is invalid.
  * 
- * @author Stephen Lou Banal <stephen.banal@gmail.com>
+ * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public class InvalidInputException extends Exception {
