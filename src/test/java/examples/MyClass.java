@@ -23,10 +23,10 @@ import java.io.File;
 import java.util.List;
 
 import org.jclif.annotation.Command;
-import org.jclif.parser.CommandLineConfiguration;
-import org.jclif.parser.CommandLineFormat;
+import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.CommandLineParseResult;
-import org.jclif.type.InvalidInputException;
+import org.jclif.parser.InvalidInputException;
+import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.ParameterType;
 
 @Command(identifier="",description="List files")
@@ -38,14 +38,14 @@ public class MyClass {
 		config.addOption("i", "input", ParameterType.FILE, true, true, "Sample desc", "A very long sample desc of the option");
 		config.addOption("x", "Testing single valued");
 		try {
-			CommandLineParseResult resultSet = CommandLineFormat.getInstance().parse(config, args);
+			CommandLineParseResult resultSet = CommandLineParser.getInstance().parse(config, args);
 			List<File> fileList = (List<File>) resultSet.getOptionSet().get("i").getParameter().getValue();
 			// do your logic
 			for(File file: fileList) {
 				System.out.println("File:" + file.getName());
 			}
 		} catch (InvalidInputException e) {
-			String usage = CommandLineFormat.getInstance().format(config, e);
+			String usage = CommandLineParser.getInstance().format(config, e);
 			System.out.println(usage);
 		}
 	}

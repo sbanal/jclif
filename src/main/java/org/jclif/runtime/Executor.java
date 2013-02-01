@@ -44,13 +44,13 @@ import org.jclif.annotation.Command;
 import org.jclif.annotation.Handler;
 import org.jclif.annotation.Option;
 import org.jclif.annotation.Parameter;
-import org.jclif.parser.CommandLineConfiguration;
-import org.jclif.parser.CommandLineFormat;
+import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.CommandLineParseResult;
+import org.jclif.parser.InvalidInputException;
 import org.jclif.runtime.ExecutorHandlerRegistry.ExecutorHandler;
+import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandMetadata;
 import org.jclif.type.CommandMetadataImpl;
-import org.jclif.type.InvalidInputException;
 import org.jclif.type.OptionConfiguration;
 import org.jclif.type.OptionMetadata;
 import org.jclif.type.ParameterConfiguration;
@@ -60,7 +60,9 @@ import org.jclif.type.ParameterType;
 import org.jclif.util.StringUtil;
 
 /**
- * 
+ * This class is the main class used by applications which uses annotations. This class is registered
+ * as the main class in its manifest files of applications to support JCLIF annotations
+ * in their code.
  * 
  * @author stephen
  *
@@ -320,7 +322,7 @@ public final class Executor {
 	public void execute(String... args) throws Exception {
 		List<String> handlerList = loadHandlerResources();
 		processConfigAnnotations(handlerList);
-		CommandLineParseResult result = CommandLineFormat.getInstance().parse(config, args);
+		CommandLineParseResult result = CommandLineParser.getInstance().parse(config, args);
 		LOGGER.info("Command match: " + result.isCommandMatch() + ",command=" + result.getMatchingCommand());
 		ExecutorHandler handler = null;
 		if(result.isCommandMatch()) {
@@ -335,21 +337,21 @@ public final class Executor {
 	}
 	
 	public void printUsage(InvalidInputException e) {
-		String usage = CommandLineFormat.getInstance().format(config, e);
+		String usage = CommandLineParser.getInstance().format(config, e);
 		System.out.println(usage);
 	}
 	
 	public void printUsage(Exception e) {
-		String usage = CommandLineFormat.getInstance().format(config, e.getMessage());
+		String usage = CommandLineParser.getInstance().format(config, e.getMessage());
 		System.out.println(usage);
 	}
 	
 	public void printUsage(String error) {
-		String usage = CommandLineFormat.getInstance().format(config, error);
+		String usage = CommandLineParser.getInstance().format(config, error);
 		System.out.println(usage);
 	}
 	
-	public static void configureLoggingProperties() {
+	static void configureLoggingProperties() {
 		try {
 			if(System.getProperty("java.util.logging.config.file")!=null) {
 				System.out.println("Using logging property file " + System.getProperty("java.util.logging.config.file"));
@@ -369,6 +371,12 @@ public final class Executor {
 		}
 	}
 	
+	/**
+	 * Main method which calls the runtime annotation detection tool and runs the parser and help text formatter
+	 * automatically.
+	 * 
+	 * @param args	argument passed in command line input
+	 */
 	public static void main(String[] args) {
 		
 		configureLoggingProperties();

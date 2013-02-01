@@ -24,6 +24,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+/**
+ * This class is a collection which serves as container of all input types
+ * parsed from a command line input. Collection enforces that each input
+ * collected is unique based on the identifier of the input.
+ * 
+ * @author stephen
+ *
+ */
 public class InputSet<E extends Input, M extends InputMetadata> extends HashSet<E> {
 
 	/**

@@ -26,6 +26,8 @@ import java.lang.annotation.Target;
 
 /**
  * Command annotation is used to mark a class that defines a command in a command line input.
+ * A command annotated class is a POJO class whose fields are either annotated with Parameter, 
+ * Option and Handler to specify its options, parameters and the handler method.
  * 
  * @author stephen
  *

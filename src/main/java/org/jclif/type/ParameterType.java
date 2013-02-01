@@ -41,23 +41,23 @@ import java.io.File;
  */
 public enum ParameterType {
 	
-	/*
+	/**
 	 * Parameter value is a string.
 	 */
 	STRING,
 	
-	/*
-	 * Parameter value is a number.
+	/**
+	 * Parameter value is an integer.
 	 */
-	NUMBER,
+	INTEGER,
 	
-	/*
+	/**
 	 * Parameter value is a File.
 	 */
 	FILE,
 	
-	/*
-	 * Parameter value is a directory.
+	/**
+	 * Parameter value is an existing directory.
 	 */
 	DIRECTORY,
 	
@@ -66,16 +66,22 @@ public enum ParameterType {
 	 */
 	BOOLEAN,
 	
-	/*
+	/**
 	 * Parameter value is a custom value.
 	 */
 	CUSTOM,
 
-	/*
-	 * Option has no parameter value.
+	/**
+	 * Parameter value is not used.
 	 */
 	NONE;
 	
+	/**
+	 * Converts a class type to ParameterType value.
+	 * 
+	 * @param classType			class type of an object 
+	 * @return ParameterType	parameter type equivalent of class type
+	 */
 	public static ParameterType toParamType(Class<?> classType) {
 		if(classType == Boolean.class) {
 			return ParameterType.BOOLEAN;
@@ -86,9 +92,9 @@ public enum ParameterType {
 		} else if(classType == File.class) {
 			return ParameterType.FILE;
 		} else if(classType == Integer.class) {
-			return ParameterType.NUMBER;
+			return ParameterType.INTEGER;
 		} else {
-			return ParameterType.NONE;
+			return ParameterType.CUSTOM;
 		}
 	}
 	

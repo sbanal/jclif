@@ -40,7 +40,7 @@ public final class ParameterParserFactory {
 	private Map<ParameterType, ParameterParser> parserMap = new HashMap<ParameterType, ParameterParser>();
 	
 	private ParameterParserFactory() {
-		parserMap.put(ParameterType.NUMBER,
+		parserMap.put(ParameterType.INTEGER,
 				new ParameterParser(){
 					@Override
 					public Object parseValue(ParameterMetadata metadata, String value) {

@@ -17,7 +17,9 @@
  * under the License.
  */
 
-package org.jclif.type;
+package org.jclif.parser;
+
+import org.jclif.type.CommandMetadata;
 
 
 /**

@@ -35,6 +35,7 @@ import org.jclif.type.OptionMetadata;
 import org.jclif.util.ReflectionUtil;
 
 /**
+ * This class is used by Executor class as container of all command handlers detected at runtime.
  * 
  * 
  * @author stephen
@@ -47,12 +48,18 @@ public class ExecutorHandlerRegistry {
 	private InputMetadata defaultMetadata;
 	private Map<InputMetadata, ExecutorHandler> handlerRegistry = new HashMap<InputMetadata,ExecutorHandler>();
 	
+	/**
+	 * This class links the handler class and its handler method.
+	 * 
+	 * @author stephen
+	 *
+	 */
 	static class ExecutorHandler {
 		
 		private Class<?> handlerClass;
 		private Method handlerMethod;
 		
-		public ExecutorHandler(Class<?> handlerClass, Method handlerMethod) throws Exception {
+		public ExecutorHandler(Class<?> handlerClass, Method handlerMethod) {
 			this.handlerClass = handlerClass;
 			this.handlerMethod = handlerMethod;
 		}
@@ -130,17 +137,35 @@ public class ExecutorHandlerRegistry {
 			
 	}
 	
-	public void add(InputMetadata metadata, Class<?> handlerClass, Method handlerMethod) throws Exception {
+	/**
+	 * Registers a handler to the registry identified by its metadata information.
+	 * 
+	 * @param metadata		metadata of input
+	 * @param handlerClass	handler class
+	 * @param handlerMethod	handler method annotated by Handler annotatin
+	 */
+	public void add(InputMetadata metadata, Class<?> handlerClass, Method handlerMethod) {
 		handlerRegistry.put(metadata, new ExecutorHandler(handlerClass, handlerMethod));
 		if(metadata.getIdentifier().equals("-default-")) {
 			defaultMetadata = metadata;
 		}
 	}
 	
+	/**
+	 * Returns the handler of a metadata.
+	 * 
+	 * @param metadata	metadata of handler
+	 * @return ExecutorHandler 	handler			
+	 */
 	public ExecutorHandler getHandler(InputMetadata metadata) {
 		return handlerRegistry.get(metadata);
 	}
 	
+	/**
+	 * Returns the default handler.
+	 * 
+	 * @return ExecutorHandler 	handler
+	 */
 	public ExecutorHandler getDefaultHandler() {
 		return getHandler(defaultMetadata);
 	}

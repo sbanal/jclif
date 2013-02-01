@@ -45,8 +45,8 @@ public class OptionMetadataImpl extends InputMetadataImpl implements OptionMetad
 	}
 	
 	@Override
-	public String getIdentifier(IdentifierFormat type) {
-		if(type==OptionMetadata.IdentifierFormat.LONG) {
+	public String getIdentifier(IdentifierType type) {
+		if(type==OptionMetadata.IdentifierType.LONG) {
 			return longIdentifier;
 		}
 		return super.getIdentifier();
@@ -64,7 +64,7 @@ public class OptionMetadataImpl extends InputMetadataImpl implements OptionMetad
 	
 	public String toString() {
 		return String.format("OptionMetadataImpl[id=%s,lid=%s,desc=%s,ldesc=%s,required=%b,multi-valued=%b,parameter-accepted=%b,parameter=%s]", 
-				getIdentifier(), getIdentifier(IdentifierFormat.LONG), this.getDescription(), 
+				getIdentifier(), getIdentifier(IdentifierType.LONG), this.getDescription(), 
 				this.getLongDescription(), this.isRequired(), this.isMultiValued(), isParameterAccepted(), 
 				(getParameterMetadata()==null)?"":getParameterMetadata());
 	}

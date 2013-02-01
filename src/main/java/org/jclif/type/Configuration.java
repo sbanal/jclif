@@ -23,6 +23,14 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * This class is a collection class used to store command line input
+ * configuration metadata information. Class is a LinkedHashMap<String, InputMetadata>
+ * type and ensures that only one metadata exist for a given identifier in a collection.
+ * 
+ * @author stephen
+ *
+ */
 public abstract class Configuration<T extends InputMetadata> extends LinkedHashMap<String, T> {
 
 	/**

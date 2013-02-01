@@ -19,7 +19,14 @@
 
 package org.jclif.type;
 
-
+/**
+ * This class is collection class used to register all the commands supported by 
+ * a command line application. This class is backed by a LinkedHashMap<String,CommandMetadata>
+ * and requires that only one instance of the same CommandMetadata exist in a collection.
+ * 
+ * @author stephen
+ *
+ */
 public class CommandConfiguration extends Configuration<CommandMetadata> {
 
 	/**

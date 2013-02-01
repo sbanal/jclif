@@ -19,6 +19,13 @@
 
 package org.jclif.type;
 
+/**
+ * This interface defines the properties which describes a command in a
+ * command line input.
+ * 
+ * @author stephen
+ *
+ */
 public interface Command extends Input {
 	
 	public String getIdentifier();

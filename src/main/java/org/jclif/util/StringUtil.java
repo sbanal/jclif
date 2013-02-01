@@ -21,6 +21,12 @@ package org.jclif.util;
 
 import java.util.regex.Pattern;
 
+/**
+ * This class provides all the utility methods used to manipulate or check string values.
+ * 
+ * @author stephen
+ *
+ */
 public final class StringUtil {
 
 	private StringUtil(){}

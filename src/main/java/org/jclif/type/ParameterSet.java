@@ -23,7 +23,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-
+/**
+ * This class is a collection which serves as container of all parameters
+ * parsed from a command line input. This collection basically contains
+ * the parameters parsed and their corresponding metadata.
+ * 
+ * @author stephen
+ *
+ */
 public class ParameterSet extends InputSet<Parameter, ParameterMetadata> {
 
 	/**

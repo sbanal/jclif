@@ -30,22 +30,22 @@ package org.jclif.type;
 public interface OptionMetadata extends InputMetadata {
 
 	/**
-	 * Identifier format.
+	 * Identifier type.
 	 * 
-* @author Stephen Lou Banal <stephen.banal@gmail.com>
-	 *
+	 * @author Stephen Lou Banal <stephen.banal@gmail.com>
 	 */
-	public enum IdentifierFormat {
+	public enum IdentifierType {
 		
 		/**
-		 * Short identfier value. Example -f "file.txt"
+		 * Short identifier. Example the "-f" in command <code>copy -f "file.txt"</code>.
 		 */
 		SHORT,
 		
 		/**
-		 * Long identifier value, Example --f "file.txt"
+		 * Long identifier. Example the "--file" in command <code>copy --file "file.txt"</code>.
 		 */
 		LONG
+		
 	};
 	
 	/**
@@ -56,8 +56,13 @@ public interface OptionMetadata extends InputMetadata {
 	 * 
 	 * @return String option identifier
 	 */
-	public String getIdentifier(IdentifierFormat type);
+	public String getIdentifier(IdentifierType type);
 	
+	/**
+	 * Returns the parameter metedata of an option.
+	 * 
+	 * @return ParameterMetadata	parameter metadata
+	 */
 	public ParameterMetadata getParameterMetadata();
 	
 	/**

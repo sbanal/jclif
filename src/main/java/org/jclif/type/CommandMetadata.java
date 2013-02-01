@@ -21,6 +21,8 @@ package org.jclif.type;
 
 
 /**
+ * CommandMetadata interface defines the methods used describe the properties
+ * of a command.
  * 
  * @author stephen
  *

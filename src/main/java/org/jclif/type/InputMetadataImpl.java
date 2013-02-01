@@ -19,10 +19,14 @@
 
 package org.jclif.type;
 
-import java.lang.reflect.Method;
 
 
-
+/**
+ * This class provides concrete implementation of InputMetadata interface.
+ * 
+ * @author stephen
+ *
+ */
 public abstract class InputMetadataImpl implements InputMetadata {
 	
 	private String identifier;
@@ -30,7 +34,6 @@ public abstract class InputMetadataImpl implements InputMetadata {
 	private boolean required;
 	private String description;
 	private String longDescription;
-	private Method handlerMethod;
 	
 	protected InputMetadataImpl(String identifier, boolean required, boolean multiValued, 
 			String description, String longDescription) {
@@ -83,16 +86,4 @@ public abstract class InputMetadataImpl implements InputMetadata {
 				this.isRequired(), this.isMultiValued());
 	}
 	
-	public void setHandlerMethod(Method method) {
-		handlerMethod = method;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public Method getHandlerMethod() {
-		return handlerMethod;
-	}
-
 }

@@ -19,7 +19,12 @@
 
 package org.jclif.type;
 
-
+/**
+ * This class is a concrete implementation of Command interface. 
+ * 
+ * @author stephen
+ *
+ */
 public class CommandImpl implements Command {
 
 	private String command;

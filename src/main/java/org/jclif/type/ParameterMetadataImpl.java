@@ -20,6 +20,12 @@
 package org.jclif.type;
 
 
+/**
+ * This class provides concrete implementation of ParameterMetadata interface.
+ * 
+ * @author stephen
+ *
+ */
 public class ParameterMetadataImpl extends InputMetadataImpl implements ParameterMetadata {
 
 	private ParameterType parameterType;

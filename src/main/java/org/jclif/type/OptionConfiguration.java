@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.jclif.type.OptionMetadata.IdentifierFormat;
+import org.jclif.type.OptionMetadata.IdentifierType;
 
 
 /**
@@ -66,7 +66,7 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 
 	public OptionConfiguration addOption(OptionMetadata option) {
 		super.add(option);
-		optionLongMap.put(option.getIdentifier(IdentifierFormat.LONG), option);
+		optionLongMap.put(option.getIdentifier(IdentifierType.LONG), option);
 		LOGGER.info("Adding option " + option);
 		return this;
 	}
@@ -143,8 +143,8 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 		return option;
 	}
 
-	public OptionMetadata getOption(String identifier, IdentifierFormat type) {
-		if(type==IdentifierFormat.LONG) {
+	public OptionMetadata getOption(String identifier, IdentifierType type) {
+		if(type==IdentifierType.LONG) {
 			return optionLongMap.get(identifier);
 		}
 		return super.get(identifier);

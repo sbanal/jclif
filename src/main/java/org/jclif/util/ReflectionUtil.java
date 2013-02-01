@@ -21,6 +21,13 @@ package org.jclif.util;
 
 import java.lang.reflect.Method;
 
+/**
+ * This class provides all the utility methods used by the framework to discover class methods and fields
+ * using reflection API of java.
+ * 
+ * @author stephen
+ *
+ */
 public final class ReflectionUtil {
 
 	private ReflectionUtil() {

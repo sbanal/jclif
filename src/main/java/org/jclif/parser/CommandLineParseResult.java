@@ -20,8 +20,8 @@
 package org.jclif.parser;
 
 import org.jclif.type.Command;
+import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandMetadata;
-import org.jclif.type.InvalidInputException;
 import org.jclif.type.Option;
 import org.jclif.type.OptionConfiguration;
 import org.jclif.type.OptionMetadata;

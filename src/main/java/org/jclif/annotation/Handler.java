@@ -25,8 +25,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Handler annotation is used to mark a method in a class as the method 
- * to execute if a command or set of options matches. This annotation is used 
+ * Handler annotation is used to mark a method called by the runtime 
+ * if a command or set of options matches. This annotation is used 
  * on any "public void no-argument" method of a @Command annotated class.
  * 
  * @author stephen

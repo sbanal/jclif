@@ -19,7 +19,8 @@
 
 package org.jclif.parser;
 
-import org.jclif.type.InvalidInputException;
+import org.jclif.type.CommandLineConfiguration;
+
 
 /**
  * CommandLineFormat class provides the parsing and formatting functions of command line inputs.
@@ -28,15 +29,15 @@ import org.jclif.type.InvalidInputException;
  * @author stephen
  *
  */
-public abstract class CommandLineFormat {
+public abstract class CommandLineParser {
 	
-	private static final CommandLineFormat INSTANCE = new DefaultCommandLineFormat();
+	private static final CommandLineParser INSTANCE = new DefaultCommandLineParser();
 	
-	protected CommandLineFormat() {
+	protected CommandLineParser() {
 		
 	}
 	
-	public static CommandLineFormat getInstance() {
+	public static CommandLineParser getInstance() {
 		return INSTANCE;
 	}
 	

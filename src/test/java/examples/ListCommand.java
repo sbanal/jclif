@@ -40,7 +40,7 @@ public class ListCommand {
 	@Option(identifier="d",type=ParameterType.FILE)
 	private List<String> dir = new ArrayList<String>();
 	
-	@Parameter(identifier="count",type=ParameterType.NUMBER,multiValued=true, required=true)
+	@Parameter(identifier="count",type=ParameterType.INTEGER,multiValued=true, required=true)
 	private List<Integer> counts = new ArrayList<Integer>();
 	
 	@Handler

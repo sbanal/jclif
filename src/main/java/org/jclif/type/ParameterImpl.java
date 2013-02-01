@@ -21,7 +21,12 @@ package org.jclif.type;
 
 import java.io.File;
 
-
+/**
+ * This class is a concrete implementation of Parameter interface. 
+ * 
+ * @author stephen
+ *
+ */
 public class ParameterImpl implements Parameter {
 
 	private ParameterMetadata parameterMetadata;
@@ -68,7 +73,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public Number getNumberValue() {
-		if(parameterMetadata!=null && parameterMetadata.getParameterType() == ParameterType.NUMBER) {
+		if(parameterMetadata!=null && parameterMetadata.getParameterType() == ParameterType.INTEGER) {
 			return (Number) value;
 		}
 		return null;

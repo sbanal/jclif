@@ -19,7 +19,6 @@
 
 package org.jclif.type;
 
-import java.lang.reflect.Method;
 
 /**
  * InputMetadata interface defines the common properties of all command line input type.
@@ -63,17 +62,5 @@ public interface InputMetadata {
 	 * @return boolean	true if input is required, otherwise returns false
 	 */
 	public boolean isRequired();
-	
-	/**
-	 * 
-	 * @param method
-	 */
-	public void setHandlerMethod(Method method);
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public Method getHandlerMethod();
 	
 }

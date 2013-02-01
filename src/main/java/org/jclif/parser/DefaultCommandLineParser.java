@@ -29,8 +29,8 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import org.jclif.type.CommandImpl;
+import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandMetadata;
-import org.jclif.type.InvalidInputException;
 import org.jclif.type.Option;
 import org.jclif.type.OptionConfiguration;
 import org.jclif.type.OptionImpl;
@@ -43,7 +43,7 @@ import org.jclif.type.ParameterMetadata;
 import org.jclif.type.ParameterParser;
 import org.jclif.type.ParameterSet;
 import org.jclif.type.ParameterType;
-import org.jclif.type.OptionMetadata.IdentifierFormat;
+import org.jclif.type.OptionMetadata.IdentifierType;
 import org.jclif.util.StringUtil;
 
 
@@ -53,9 +53,9 @@ import org.jclif.util.StringUtil;
  * @author stephen
  *
  */
-class DefaultCommandLineFormat extends CommandLineFormat {
+class DefaultCommandLineParser extends CommandLineParser {
 
-	private final static Logger LOGGER = Logger.getLogger(DefaultCommandLineFormat.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(DefaultCommandLineParser.class.getName());
 	
 	@Override
 	public CommandLineParseResult parse(CommandLineConfiguration configuration,
@@ -140,7 +140,7 @@ class DefaultCommandLineFormat extends CommandLineFormat {
 		StringBuffer sbOptionFlags = new StringBuffer("(");
 		for(OptionMetadata optionMetadata : configuration.getOptions()) {
 			sbOptionFlags.append(String.format("%s%s", configuration.getOptionPrefix(), optionMetadata.getIdentifier()));
-			String longIdentifier = optionMetadata.getIdentifier(IdentifierFormat.LONG);
+			String longIdentifier = optionMetadata.getIdentifier(IdentifierType.LONG);
 			if(longIdentifier!=null && !longIdentifier.isEmpty()) {
 				sbOptionFlags.append(String.format("|%s%s", configuration.getOptionLongPrefix(), longIdentifier));
 			}
@@ -416,13 +416,13 @@ class DefaultCommandLineFormat extends CommandLineFormat {
 					paramUsageStr += "...";
 				}
 			}
-			String longIdentifier = metadata.getIdentifier(IdentifierFormat.LONG);
+			String longIdentifier = metadata.getIdentifier(IdentifierType.LONG);
 			if(longIdentifier!=null && !longIdentifier.isEmpty()) {
 				formattedOption = String.format("%s%s, %s%s%s", 
 						config.getOptionConfiguration().getOptionPrefix(), 
 						metadata.getIdentifier(), 
 						config.getOptionConfiguration().getOptionLongPrefix(), 
-						metadata.getIdentifier(IdentifierFormat.LONG),
+						metadata.getIdentifier(IdentifierType.LONG),
 						paramUsageStr);
 			} else {
 				formattedOption = String.format("%s%s%s", 

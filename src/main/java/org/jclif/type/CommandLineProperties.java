@@ -19,25 +19,32 @@
 
 package org.jclif.type;
 
+/**
+ * This class serves as container of command line related properties used for parsing
+ * like option prefix and option-parameter character delimiter.
+ *  
+ * @author stephen
+ *
+ */
 public class CommandLineProperties {
 	
-	public final static String DEFAULT_ARGUMENT_PARAMETER_DELIM = " ";
+	public final static String DEFAULT_OPTION_PARAMETER_DELIM = " ";
 	
-	public final static String DEFAULT_UNIX_ARGUMENT_PREFIX = "-";
-	public final static String DEFAULT_UNIX_ARGUMENT_LONG_PREFIX = "--";
+	public final static String DEFAULT_UNIX_OPTION_PREFIX = "-";
+	public final static String DEFAULT_UNIX_OPTION_LONG_PREFIX = "--";
 	
-	public final static String DEFAULT_WIN_ARGUMENT_PREFIX = "/";
-	public final static String DEFAULT_WIN_ARGUMENT_LONG_PREFIX = "/";
+	public final static String DEFAULT_WIN_OPTION_PREFIX = "/";
+	public final static String DEFAULT_WIN_OPTION_LONG_PREFIX = "/";
 	
 	
 	public static final CommandLineProperties WINDOWS_COMMAND_LINE_PROPERTIES  = new CommandLineProperties(
-			DEFAULT_WIN_ARGUMENT_PREFIX,
-			DEFAULT_WIN_ARGUMENT_LONG_PREFIX, 
-			DEFAULT_ARGUMENT_PARAMETER_DELIM);
+			DEFAULT_WIN_OPTION_PREFIX,
+			DEFAULT_WIN_OPTION_LONG_PREFIX, 
+			DEFAULT_OPTION_PARAMETER_DELIM);
 	public static final CommandLineProperties UNIX_COMMAND_LINE_PROPERTIES  = new CommandLineProperties(
-			DEFAULT_UNIX_ARGUMENT_PREFIX,
-			DEFAULT_UNIX_ARGUMENT_LONG_PREFIX, 
-			DEFAULT_ARGUMENT_PARAMETER_DELIM);	
+			DEFAULT_UNIX_OPTION_PREFIX,
+			DEFAULT_UNIX_OPTION_LONG_PREFIX, 
+			DEFAULT_OPTION_PARAMETER_DELIM);	
 	
 	private String optionPrefix;
 	private String optionLongPrefix;

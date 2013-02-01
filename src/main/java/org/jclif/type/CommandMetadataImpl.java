@@ -23,7 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
+/**
+ * This class provides concrete implementation of CommandMetadata interface.
+ * 
+ * @author stephen
+ *
+ */
 public class CommandMetadataImpl extends InputMetadataImpl implements CommandMetadata {
 
 	private OptionConfiguration optionConfiguration;

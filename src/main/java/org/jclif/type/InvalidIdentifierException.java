@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jclif.parser;
+package org.jclif.type;
 
 /**
  * InvalidIdentifierException exception is thrown if an input identifier is invalid.
