@@ -60,11 +60,6 @@ public class CommandMetadataImpl extends InputMetadataImpl implements CommandMet
 	}
 	
 	@Override
-	public String getKeyword() {
-		return this.getIdentifier();
-	}
-	
-	@Override
 	public OptionConfiguration getOptionConfigurations() {
 		return optionConfiguration;
 	}

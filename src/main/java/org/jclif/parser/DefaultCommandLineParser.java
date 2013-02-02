@@ -78,12 +78,13 @@ class DefaultCommandLineParser extends CommandLineParser {
 		Scanner scanner = new Scanner(sb.toString());
 		boolean cmdFound = parseCommand(scanner, configuration, resultSet);
 		if(!cmdFound){
-			parseOptions(scanner, configuration, null, configuration.getOptionConfiguration(), resultSet.getOptionSet());
-			parseParameters(scanner, configuration, null, configuration.getParameterConfiguration(), resultSet.getParameterSet());
+			parseOptions(scanner, configuration, null, configuration.getOptionConfiguration(), resultSet.getOptionInput());
+			parseParameters(scanner, configuration, null, configuration.getParameterConfiguration(), resultSet.getParameterInput());
 		}
 		scanner.close();
 		
-		resultSet.validate();
+		validate( configuration, resultSet);
+		
 		return resultSet;
 	}
 	
@@ -101,14 +102,14 @@ class DefaultCommandLineParser extends CommandLineParser {
 		}
 		sbOptionFlags.setCharAt(sbOptionFlags.length()-1, ')');
 		
-		Pattern commandsParam = Pattern.compile(String.format("^(%s)", sbOptionFlags.toString()));
+		Pattern commandsParam = Pattern.compile(String.format("^%s", sbOptionFlags.toString()));
 		String token = scanner.findInLine(commandsParam);
 		if(token==null) {
 			return false;
 		}
 		
 		MatchResult result = scanner.match();
-		String cmdIdentifier = result.group(1);
+		String cmdIdentifier = result.group(0);
 		CommandMetadata cmdMetadata = configuration.getCommandMetadata(cmdIdentifier);
 		resultSet.setMatchingCommand(new CommandInputImpl(cmdIdentifier, cmdMetadata));
 		
@@ -120,8 +121,8 @@ class DefaultCommandLineParser extends CommandLineParser {
 			MatchResult paramResult = scanner.match();
 			LOGGER.info(String.format("Options=%s%n", paramResult.group(1)));
 			Scanner scannerOptions = new Scanner(paramResult.group(1));
-			parseOptions(scannerOptions, configuration, cmdMetadata, cmdMetadata.getOptionConfigurations(), resultSet.getOptionSet());
-			parseParameters(scannerOptions, configuration, cmdMetadata, cmdMetadata.getParameterConfigurations(), resultSet.getParameterSet());
+			parseOptions(scannerOptions, configuration, cmdMetadata, cmdMetadata.getOptionConfigurations(), resultSet.getOptionInput());
+			parseParameters(scannerOptions, configuration, cmdMetadata, cmdMetadata.getParameterConfigurations(), resultSet.getParameterInput());
 			scannerOptions.close();
 		}
 		
@@ -234,7 +235,8 @@ class DefaultCommandLineParser extends CommandLineParser {
 		}
 	}
 	
-	private boolean parseParameters(Scanner scanner, CommandLineConfiguration config, CommandMetadata cmdMetadata, ParameterConfiguration parameterConfig, ParameterInputSet resultSet) throws InvalidInputException {
+	private boolean parseParameters(Scanner scanner, CommandLineConfiguration config, CommandMetadata cmdMetadata, 
+			ParameterConfiguration parameterConfig, ParameterInputSet resultSet) throws InvalidInputException {
 		
 		if(parameterConfig.isEmpty()) {
 			return true;
@@ -278,12 +280,49 @@ class DefaultCommandLineParser extends CommandLineParser {
 			CommandLineParseResult result = parse(configuration, args);
 			resultSet.clear();
 			resultSet.setMatchingCommand(result.getMatchingCommand());
-			resultSet.getOptionSet().addAll(result.getOptionSet());
-			resultSet.getParameterSet().addAll(result.getParameterSet());
+			resultSet.getOptionInput().addAll(result.getOptionInput());
+			resultSet.getParameterInput().addAll(result.getParameterInput());
 			return true;
 		} catch (InvalidInputException e) {
 			return false;
 		}
+	}
+	
+	void validate(CommandLineConfiguration configuration, CommandLineParseResult result) throws InvalidInputException {
+		
+		OptionConfiguration optionConfig = configuration.getOptionConfiguration();
+		ParameterConfiguration parameterConig = configuration.getParameterConfiguration();
+		if(result.isCommandMatch()) {
+			CommandMetadata cmdMetadata = (CommandMetadata) result.getMatchingCommand().getMetadata();
+			optionConfig = cmdMetadata.getOptionConfigurations();
+			parameterConig = cmdMetadata.getParameterConfigurations();
+		}
+		
+		// validate options
+		for(OptionMetadata metadata : optionConfig.getOptions()) {
+			if(metadata.isRequired()) {
+				if(!result.getOptionInput().contains(metadata.getIdentifier())) {
+					throw new InvalidInputException("Option " + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + " is required.");
+				}
+			}
+			if(metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired()) {
+				OptionInput option = result.getOptionInput().get(metadata.getIdentifier());
+				if(option.getParameter() == null || option.getParameter().getValue() == null) {
+					throw new InvalidInputException("Missing parameter for option " + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + ".");
+				}
+			}
+		}
+		
+		// validate parameters
+		for(ParameterMetadata metadata : parameterConig.values()) {
+			if(metadata.isRequired()) {
+				ParameterInput parameter = result.getParameterInput().get(metadata.getIdentifier());
+				if(parameter == null || parameter.getValue() == null) {
+					throw new InvalidInputException("Missing parameter " + configuration.getCommandLineProperties().getOptionPrefix() +  metadata.getIdentifier() + ".");
+				}
+			}
+		}
+			
 	}
 
 	public String format(CommandLineConfiguration config, InvalidInputException e) {

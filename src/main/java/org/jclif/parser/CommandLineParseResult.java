@@ -22,13 +22,7 @@ package org.jclif.parser;
 import org.jclif.type.CommandInput;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandMetadata;
-import org.jclif.type.OptionInput;
-import org.jclif.type.OptionConfiguration;
-import org.jclif.type.OptionMetadata;
 import org.jclif.type.OptionInputSet;
-import org.jclif.type.ParameterInput;
-import org.jclif.type.ParameterConfiguration;
-import org.jclif.type.ParameterMetadata;
 import org.jclif.type.ParameterInputSet;
 
 /**
@@ -74,49 +68,12 @@ public class CommandLineParseResult {
 		}
 	}
 	
-	public OptionInputSet getOptionSet() {
+	public OptionInputSet getOptionInput() {
 		return optionSet;
 	}
 
-	public ParameterInputSet getParameterSet() {
+	public ParameterInputSet getParameterInput() {
 		return parameterSet;
-	}
-	
-	public void validate() throws InvalidInputException {
-		
-		OptionConfiguration optionConfig = configuration.getOptionConfiguration();
-		ParameterConfiguration parameterConig = configuration.getParameterConfiguration();
-		if(this.isCommandMatch()) {
-			CommandMetadata cmdMetadata = (CommandMetadata) this.getMatchingCommand().getMetadata();
-			optionConfig = cmdMetadata.getOptionConfigurations();
-			parameterConig = cmdMetadata.getParameterConfigurations();
-		}
-		
-		// validate options
-		for(OptionMetadata metadata : optionConfig.getOptions()) {
-			if(metadata.isRequired()) {
-				if(!getOptionSet().contains(metadata.getIdentifier())) {
-					throw new InvalidInputException("Option " + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + " is required.");
-				}
-			}
-			if(metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired()) {
-				OptionInput option = getOptionSet().get(metadata.getIdentifier());
-				if(option.getParameter() == null || option.getParameter().getValue() == null) {
-					throw new InvalidInputException("Missing parameter for option " + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + ".");
-				}
-			}
-		}
-		
-		// validate parameters
-		for(ParameterMetadata metadata : parameterConig.values()) {
-			if(metadata.isRequired()) {
-				ParameterInput parameter = getParameterSet().get(metadata.getIdentifier());
-				if(parameter == null || parameter.getValue() == null) {
-					throw new InvalidInputException("Missing parameter " + configuration.getCommandLineProperties().getOptionPrefix() +  metadata.getIdentifier() + ".");
-				}
-			}
-		}
-			
 	}
 	
 	public void clear() {

@@ -40,7 +40,7 @@ public class MyClass {
 			.addOption("x", "Testing single valued");
 		try {
 			CommandLineParseResult resultSet = CommandLineParser.getInstance().parse(config, args);
-			List<File> fileList = (List<File>) resultSet.getOptionSet().get("i").getParameter().getValue();
+			List<File> fileList = (List<File>) resultSet.getOptionInput().get("i").getParameter().getValue();
 			// do your logic
 			for(File file: fileList) {
 				System.out.println("File:" + file.getName());

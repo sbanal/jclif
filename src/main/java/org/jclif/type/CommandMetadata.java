@@ -21,17 +21,14 @@ package org.jclif.type;
 
 
 /**
- * CommandMetadata interface defines the methods used describe the properties
- * of a command.
+ * CommandMetadata interface defines the methods used to describe the properties
+ * of a command input.
  * 
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
 public interface CommandMetadata extends InputMetadata {
 
-	public String getKeyword();
-	public String getDescription();
-	public String getLongDescription();
 	public OptionConfiguration getOptionConfigurations();
 	public ParameterConfiguration getParameterConfigurations();
 	

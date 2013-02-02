@@ -91,11 +91,11 @@ public class ExecutorHandlerRegistry {
 				LOGGER.info(String.format("processing field = " + field.getName()));
 				if(field.isAnnotationPresent(Option.class)) {
 					Option option = field.getAnnotation(Option.class);
-					boolean optionExist = result.getOptionSet().contains(option.identifier());
+					boolean optionExist = result.getOptionInput().contains(option.identifier());
 						
 					LOGGER.info(String.format("Setting field = " + field.getName() + " option specified"));
 					OptionMetadata optMetadata = optionConfig.get(option.identifier());
-					org.jclif.type.OptionInput optionValue = result.getOptionSet().get(option.identifier());
+					org.jclif.type.OptionInput optionValue = result.getOptionInput().get(option.identifier());
 					if(optionValue!=null) {
 						if(optMetadata.isParameterAccepted()) {
 							value = optionValue.getParameter().getValue();
@@ -112,8 +112,8 @@ public class ExecutorHandlerRegistry {
 					LOGGER.info(String.format("Setting field = " + field.getName() + ", value = " +  value));
 				} else if(field.isAnnotationPresent(Parameter.class)) {
 					Parameter parameter = field.getAnnotation(Parameter.class);
-					if(result.getParameterSet().contains(parameter.identifier())) {
-						value = result.getParameterSet().get(parameter.identifier()).getValue();
+					if(result.getParameterInput().contains(parameter.identifier())) {
+						value = result.getParameterInput().get(parameter.identifier()).getValue();
 					}
 					LOGGER.info(String.format("Setting parameter =" + field.getName() + ", value = " +  value));
 				}

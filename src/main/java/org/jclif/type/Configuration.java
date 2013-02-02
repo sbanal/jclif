@@ -27,7 +27,11 @@ import java.util.regex.Pattern;
 /**
  * This class is a collection class used to store command line input
  * configuration metadata information. Class is a LinkedHashMap<String, InputMetadata>
- * type and ensures that only one metadata exist for a given identifier in a collection.
+ * type and ensures that only one metadata exist in a collection. Class also ensures
+ * that the metadeta identifiers are valid and does not exist in the collection.
+ * 
+ * Any metadata added to the collection which has an invalid identifier or currently
+ * exist in the collection will trigger a InvalidIdentifierException from being thrown.
  * 
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *

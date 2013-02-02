@@ -51,8 +51,8 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("i").addOption("o", "output fule");
 		String[] args = {"-i", "-o"};
 		CommandLineParseResult parseResult = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("o"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("o"));
 	}
 	
 	@Test
@@ -61,8 +61,8 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("input"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("input"));
 	}
 	
 	@Test
@@ -72,9 +72,9 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input", "This is a test text"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("input"));
-		Assert.assertEquals("This is a test text", parseResult.getOptionSet().get("i").getParameter().getStringValue());
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("input"));
+		Assert.assertEquals("This is a test text", parseResult.getOptionInput().get("i").getParameter().getStringValue());
 	}
 	
 	@Test
@@ -84,9 +84,9 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=\"This is a test text\""};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("input"));
-		Assert.assertEquals("This is a test text", parseResult.getOptionSet().get("i").getParameter().getStringValue());
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("input"));
+		Assert.assertEquals("This is a test text", parseResult.getOptionInput().get("i").getParameter().getStringValue());
 	}
 	
 	@Test
@@ -96,9 +96,9 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=\"This is a test text\""};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("input"));
-		Assert.assertEquals("This is a test text", parseResult.getOptionSet().get("i").getParameter().getStringValue());
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("input"));
+		Assert.assertEquals("This is a test text", parseResult.getOptionInput().get("i").getParameter().getStringValue());
 	}
 	
 	@Test
@@ -108,9 +108,9 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input='This is a test text'"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("input"));
-		Assert.assertEquals("This is a test text", parseResult.getOptionSet().get("i").getParameter().getStringValue());
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("input"));
+		Assert.assertEquals("This is a test text", parseResult.getOptionInput().get("i").getParameter().getStringValue());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -120,11 +120,11 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input", "test.txt", "--input", "test2.txt"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("input"));
-		Assert.assertNotNull(parseResult.getOptionSet().get("i"));
-		Assert.assertTrue(parseResult.getOptionSet().get("i").getParameter().getValue() instanceof List);
-		List<?> fileList = (List<Object>) parseResult.getOptionSet().get("i").getParameter().getValue();
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("input"));
+		Assert.assertNotNull(parseResult.getOptionInput().get("i"));
+		Assert.assertTrue(parseResult.getOptionInput().get("i").getParameter().getValue() instanceof List);
+		List<?> fileList = (List<Object>) parseResult.getOptionInput().get("i").getParameter().getValue();
 		Assert.assertEquals(2, fileList.size());
 		Assert.assertTrue(fileList.get(0) instanceof File);
 		Assert.assertTrue(fileList.get(1) instanceof File);
@@ -140,11 +140,11 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=test.txt", "--input=test2.txt"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("input"));
-		Assert.assertNotNull(parseResult.getOptionSet().get("i"));
-		Assert.assertTrue(parseResult.getOptionSet().get("i").getParameter().getValue() instanceof List);
-		List<?> fileList = (List<Object>) parseResult.getOptionSet().get("i").getParameter().getValue();
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("input"));
+		Assert.assertNotNull(parseResult.getOptionInput().get("i"));
+		Assert.assertTrue(parseResult.getOptionInput().get("i").getParameter().getValue() instanceof List);
+		List<?> fileList = (List<Object>) parseResult.getOptionInput().get("i").getParameter().getValue();
 		Assert.assertEquals(2, fileList.size());
 		Assert.assertTrue(fileList.get(0) instanceof File);
 		Assert.assertTrue(fileList.get(1) instanceof File);
@@ -160,12 +160,12 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("x", "Testing single valued");
 		String[] args = {"--input", "test.txt", "--input", "test2.txt", "-x"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("input"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("x"));
-		Assert.assertNotNull(parseResult.getOptionSet().get("i"));
-		Assert.assertTrue(parseResult.getOptionSet().get("i").getParameter().getValue() instanceof List);
-		List<?> fileList = (List<Object>) parseResult.getOptionSet().get("i").getParameter().getValue();
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("input"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("x"));
+		Assert.assertNotNull(parseResult.getOptionInput().get("i"));
+		Assert.assertTrue(parseResult.getOptionInput().get("i").getParameter().getValue() instanceof List);
+		List<?> fileList = (List<Object>) parseResult.getOptionInput().get("i").getParameter().getValue();
 		Assert.assertEquals(2, fileList.size());
 		Assert.assertTrue(fileList.get(0) instanceof File);
 		Assert.assertTrue(fileList.get(1) instanceof File);
@@ -183,13 +183,13 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("x", "Testing single valued");
 		String[] args = {"--input", "test.txt", "--input"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("input"));
-		Assert.assertFalse(parseResult.getOptionSet().contains("x"));
-		Assert.assertNotNull(parseResult.getOptionSet().get("i"));
-		Assert.assertTrue(parseResult.getOptionSet().get("i").getParameter().getValue() instanceof List);
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("input"));
+		Assert.assertFalse(parseResult.getOptionInput().contains("x"));
+		Assert.assertNotNull(parseResult.getOptionInput().get("i"));
+		Assert.assertTrue(parseResult.getOptionInput().get("i").getParameter().getValue() instanceof List);
 		@SuppressWarnings("unchecked")
-		List<?> fileList = (List<Object>) parseResult.getOptionSet().get("i").getParameter().getValue();
+		List<?> fileList = (List<Object>) parseResult.getOptionInput().get("i").getParameter().getValue();
 		Assert.assertEquals(2, fileList.size());
 		Assert.assertTrue(fileList.get(0) instanceof File);
 		Assert.assertTrue(fileList.get(1) instanceof File);
@@ -203,7 +203,7 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
 		String[] args = {};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertTrue(parseResult.getOptionSet().isEmpty());
+		Assert.assertTrue(parseResult.getOptionInput().isEmpty());
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -231,13 +231,13 @@ public class CommandLineFormatTest {
 		config.getOptionConfiguration().addOption("i", "input", paramMetadata, true, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"-i", "1,2,3,4"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
-		Assert.assertFalse(parseResult.getOptionSet().isEmpty());
-		Assert.assertTrue(parseResult.getOptionSet().get("i").getParameter().getValue() instanceof List);
-		List valueList = (List) parseResult.getOptionSet().get("i").getParameter().getValue();
+		Assert.assertFalse(parseResult.getOptionInput().isEmpty());
+		Assert.assertTrue(parseResult.getOptionInput().get("i").getParameter().getValue() instanceof List);
+		List valueList = (List) parseResult.getOptionInput().get("i").getParameter().getValue();
 		for(Object obj : valueList) {
 			Assert.assertTrue(obj instanceof Integer);
 		}
-		List<Integer> intList = (List<Integer>) parseResult.getOptionSet().get("i").getParameter().getValue();
+		List<Integer> intList = (List<Integer>) parseResult.getOptionInput().get("i").getParameter().getValue();
 		Set<Integer> intSet = new HashSet<Integer>(intList);
 		Assert.assertEquals(4, intSet.size());
 		Assert.assertTrue(intSet.contains(1));
@@ -267,11 +267,11 @@ public class CommandLineFormatTest {
 		Assert.assertTrue(parseResult.isCommandMatch());
 		Assert.assertNotNull(parseResult.getMatchingCommand());
 		Assert.assertEquals("list", parseResult.getMatchingCommand().getIdentifier());
-		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
-		Assert.assertTrue(parseResult.getOptionSet().contains("o"));
-		Assert.assertEquals("input.txt", parseResult.getOptionSet().get("i").getParameter().getStringValue());
-		Assert.assertEquals("output.txt", parseResult.getOptionSet().get("o").getParameter().getStringValue());
-		Assert.assertEquals("directory1", parseResult.getParameterSet().get("dir1").getStringValue());
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("o"));
+		Assert.assertEquals("input.txt", parseResult.getOptionInput().get("i").getParameter().getStringValue());
+		Assert.assertEquals("output.txt", parseResult.getOptionInput().get("o").getParameter().getStringValue());
+		Assert.assertEquals("directory1", parseResult.getParameterInput().get("dir1").getStringValue());
 	}
 	
 }
