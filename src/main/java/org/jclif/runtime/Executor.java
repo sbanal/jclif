@@ -211,13 +211,13 @@ public final class Executor {
 				}
 				if(metadata.getIdentifier().equals("-default-")) {
 					for(OptionMetadata optMeta: metadata.getOptionConfigurations().values()) {
-						config.addOption(optMeta);
+						config.getOptionConfiguration().addOption(optMeta);
 					}
 					for(ParameterMetadata paramMeta: metadata.getParameterConfigurations().values()) {
-						config.addParameter(paramMeta);
+						config.getParameterConfiguration().addParameter(paramMeta);
 					}
 				} else {
-					config.addCommand(metadata);
+					config.getCommandConfiguration().addCommand(metadata);
 				}
 				
 			} catch (ClassNotFoundException e) {

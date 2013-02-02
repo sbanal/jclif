@@ -19,8 +19,6 @@
 
 package org.jclif.type;
 
-import java.util.Arrays;
-import java.util.regex.Pattern;
 
 
 /**
@@ -32,7 +30,6 @@ import java.util.regex.Pattern;
  */
 public class CommandLineConfiguration {
  
-	private final Pattern IDENTIFIER_REGEX = Pattern.compile("^([\\w]+)$");
 	
 	/**
 	 * Name of application
@@ -106,154 +103,67 @@ public class CommandLineConfiguration {
 		return description;
 	}
 
+	/**
+	 * Returns option configuration which contains all the supported options.
+	 * 
+	 * @return	OptionConfiguration	option configuration
+	 */
 	public OptionConfiguration getOptionConfiguration() {
 		return optionConfiguration;
 	}
 
+	/**
+	 * Returns command line properties used by command line input parser.
+	 * 
+	 * @return	CommandLineProperties	command configuration
+	 */
 	public CommandLineProperties getCommandLineProperties() {
 		return commandLineProperties;
 	}
 
+	/**
+	 * Sets command line properties used by command line input parser.
+	 * 
+	 * @param	OptionConfiguration	option configuration
+	 */
 	public void setCommandLineProperties(CommandLineProperties commandLineProperties) {
 		this.commandLineProperties =  (CommandLineProperties) commandLineProperties.clone();
 	}
 
+	/**
+	 * Returns parameter configuration which contains all the parameters supported in a command line input.
+	 * 
+	 * @return	ParameterConfiguration	parameter configuration
+	 */
 	public ParameterConfiguration getParameterConfiguration() {
 		return parameterConfiguration;
 	}
 
+	/**
+	 * Returns command configuration which contains all the commands supported in a command line input.
+	 * 
+	 * @return CommandConfiguration	 command configuration
+	 */
 	public CommandConfiguration getCommandConfiguration() {
 		return commandConfiguration;
 	}
 	
-	public CommandLineConfiguration addOption(String identifier) {
-		addOption(identifier, "", (ParameterMetadata) null, true, false, "", "");
-		return this;
-	}
-	
-	public CommandLineConfiguration addOption(String identifier, String description) {
-		addOption(identifier, "", (ParameterMetadata) null, true, false, description, "");
-		return this;
-	}
-	
-	public CommandLineConfiguration addOption(String identifier, boolean required, String description) {
-		addOption(identifier, "", (ParameterMetadata) null, required, false, description, "");
-		return this;
-	}
-
-	public CommandLineConfiguration addOption(String identifier, boolean required, boolean multiValued, String description) {
-		addOption(identifier, "", (ParameterMetadata) null, required, multiValued, description, "");
-		return this;
-	}
-	
-
-	public CommandLineConfiguration addOption(String identifier, String longIdentifier, 
-			ParameterType parameterType,
-			boolean required, boolean multiValued,
-			String description, String longDescription) {
-		
-		if(parameterType==ParameterType.CUSTOM) {
-			throw new IllegalArgumentException("ParameterType.CUSTOM is not supported in this method. Use adOptions(id,longId, metadata, required, ..) method.");
-		}
-		
-		ParameterMetadata parameter = new ParameterMetadataImpl( identifier, false, false, parameterType, null);
-		addOption(identifier, longIdentifier, parameter, required, multiValued, description, longDescription);
-		
-		return this;
-	}
-	
-	public CommandLineConfiguration addOption(String identifier, String longIdentifier, 
-			ParameterMetadata parameter,
-			boolean required, boolean multiValued,
-			String description, String longDescription) {
-		
-		validateIdentifier(identifier);
-		validateOptionIdentifier(identifier);
-		OptionMetadata option = new OptionMetadataImpl(
-				identifier, longIdentifier, 
-				parameter,
-				required, multiValued, 
-				description, longDescription);
-		optionConfiguration.addOption(option);
-		
-		return this;
-	}
-	
-	public CommandLineConfiguration addOption(OptionMetadata option) {
-		optionConfiguration.addOption(option);
-		return this;
-	}
-	
-	
-	void validateIdentifier(String identifier) {
-		if(identifier==null || identifier.isEmpty()) {
-			throw new InvalidIdentifierException("Identifier invalid, value is empty or null.");
-		}
-		if(!IDENTIFIER_REGEX.matcher(identifier).matches()) {
-			throw new InvalidIdentifierException("Identifier " + identifier + " is not valid. Only characters A-Z,a-z,0-9 and _ is allowed (in regex \\w) .");
-		}
-	}
-	
-	void validateCommandIdentifier(String identifier) {
-		if(commandConfiguration.containsKey(identifier)) {
-			throw new InvalidIdentifierException("Command " + identifier + " already exist.");
-		}
-	}
-	
-	void validateParameterIdentifier(String identifier) {
-		if(getParameterConfiguration().contains(identifier)) {
-			throw new InvalidIdentifierException("Parameter " + identifier + " already exist.");
-		}
-	}
-	
-	void validateOptionIdentifier(String identifier) {
-		if(null!=getOption(identifier)) {
-			throw new InvalidIdentifierException("Option " + identifier + " already exist.");
-		}
-	}
-	
+	/**
+	 * Returns the option metadata.
+	 * 
+	 * @param identifier	identifier string of an option
+	 * @return	OptionMetadata	option metadata
+	 */
 	public OptionMetadata getOption(String identifier) {
 		return optionConfiguration.getOption(identifier);
 	}
-	
-	public CommandLineConfiguration addParameter(ParameterMetadata metadata) {
-		validateIdentifier(metadata.getIdentifier());		
-		validateCommandIdentifier(metadata.getIdentifier());
-		parameterConfiguration.add(metadata);
-		return this;
-	}
-	
-	public CommandLineConfiguration addParameter(String identifier, boolean required, String description) {
-		ParameterMetadata param = new ParameterMetadataImpl(identifier, required, description);
-		addParameter(param);
-		return this;
-	}
-	
-	public CommandLineConfiguration addParameter(String identifier, boolean required, boolean multiValued, String description) {
-		ParameterMetadata param = new ParameterMetadataImpl(identifier, required, multiValued, description);
-		addParameter(param);
-		return this;
-	}
-	
-	public CommandLineConfiguration addCommand(String keyword, OptionConfiguration optionConfiguration, String description) {
-		CommandMetadata metadata = new CommandMetadataImpl( keyword, optionConfiguration, description, null);
-		addCommand(metadata);
-		return this;
-	}
-	
-	public CommandLineConfiguration addCommand(String keyword, OptionConfiguration optionConfiguration, String description, ParameterMetadata... parameters) {
-		CommandMetadata metadata = new CommandMetadataImpl( keyword, optionConfiguration, Arrays.asList(parameters), description, null);
-		addCommand(metadata);
-		return this;
-	}
-	
-	public CommandLineConfiguration addCommand(CommandMetadata metadata) {
-		validateIdentifier(metadata.getKeyword());
-		validateParameterIdentifier(metadata.getKeyword());
-		commandConfiguration.add(metadata);
-		return this;
-	}
-	
+
+	/**
+	 * Returns the command metadata.
+	 * 
+	 * @param identifier	identifier of command
+	 * @return	CommandMetadata	command metadata
+	 */
 	public CommandMetadata getCommandMetadata(String identifier) {
 		return commandConfiguration.get(identifier);
 	}

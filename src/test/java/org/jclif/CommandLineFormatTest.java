@@ -48,7 +48,7 @@ public class CommandLineFormatTest {
 	@Test
 	public void testParseSimpleOption() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.addOption("i").addOption("o", "output fule");
+		config.getOptionConfiguration().addOption("i").addOption("o", "output fule");
 		String[] args = {"-i", "-o"};
 		CommandLineParseResult parseResult = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
@@ -58,7 +58,7 @@ public class CommandLineFormatTest {
 	@Test
 	public void testParseLongOption() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.addOption("i", "input", ParameterType.FILE, false, false, "Sample desc", "A very long sample desc of the option");
+		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
@@ -69,7 +69,7 @@ public class CommandLineFormatTest {
 	public void testParseStringOptionParameterWithSpaceDelim() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
 		config.getCommandLineProperties().setOptionParameterDelim(" ");
-		config.addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
+		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input", "This is a test text"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
@@ -81,7 +81,7 @@ public class CommandLineFormatTest {
 	public void testParseStringOptionParameterWithEqualDelim() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
 		config.getCommandLineProperties().setOptionParameterDelim("=");
-		config.addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
+		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=\"This is a test text\""};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
@@ -93,7 +93,7 @@ public class CommandLineFormatTest {
 	public void testParseStringOptionParameterWithEqualDelimQuoted() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
 		config.getCommandLineProperties().setOptionParameterDelim("=");
-		config.addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
+		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=\"This is a test text\""};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
@@ -105,7 +105,7 @@ public class CommandLineFormatTest {
 	public void testParseStringOptionParameterWithEqualDelimSingleQuoted() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
 		config.getCommandLineProperties().setOptionParameterDelim("=");
-		config.addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
+		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input='This is a test text'"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
@@ -117,7 +117,7 @@ public class CommandLineFormatTest {
 	@Test
 	public void testParseMultiValuedOption() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
+		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input", "test.txt", "--input", "test2.txt"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
@@ -137,7 +137,7 @@ public class CommandLineFormatTest {
 	public void testParseMultiValuedOptionWithEqualDelim() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
 		config.getCommandLineProperties().setOptionParameterDelim("=");
-		config.addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
+		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=test.txt", "--input=test2.txt"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
@@ -156,8 +156,8 @@ public class CommandLineFormatTest {
 	@Test
 	public void testParseMultiValuedWithSingleValuedOption() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
-		config.addOption("x", "Testing single valued");
+		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
+		config.getOptionConfiguration().addOption("x", "Testing single valued");
 		String[] args = {"--input", "test.txt", "--input", "test2.txt", "-x"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
@@ -179,8 +179,8 @@ public class CommandLineFormatTest {
 		ParameterMetadata paramMetadata = new ParameterMetadataImpl("input", 
 				true, false, "", "",
 				ParameterType.FILE, null);
-		config.addOption("i", "input", paramMetadata, true, true, "Sample desc", "A very long sample desc of the option");
-		config.addOption("x", "Testing single valued");
+		config.getOptionConfiguration().addOption("i", "input", paramMetadata, true, true, "Sample desc", "A very long sample desc of the option");
+		config.getOptionConfiguration().addOption("x", "Testing single valued");
 		String[] args = {"--input", "test.txt", "--input"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionSet().contains("i"));
@@ -200,7 +200,7 @@ public class CommandLineFormatTest {
 	@Test
 	public void testParseMultiValuedWithMissingOptionaldOption() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
+		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
 		String[] args = {};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionSet().isEmpty());
@@ -228,7 +228,7 @@ public class CommandLineFormatTest {
 		ParameterMetadata paramMetadata = new ParameterMetadataImpl("input", 
 				true, false, "", "",
 				ParameterType.CUSTOM, validator);
-		config.addOption("i", "input", paramMetadata, true, false, "Sample desc", "A very long sample desc of the option");
+		config.getOptionConfiguration().addOption("i", "input", paramMetadata, true, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"-i", "1,2,3,4"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertFalse(parseResult.getOptionSet().isEmpty());
@@ -249,7 +249,7 @@ public class CommandLineFormatTest {
 	@Test
 	public void testShortFormat() {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.addOption("i", "input file").addOption("o", "output file");
+		config.getOptionConfiguration().addOption("i", "input file").addOption("o", "output file");
 		String formatValue = CommandLineParser.getInstance().format(config);
 		System.out.printf("ShortFormatValue%n%s", formatValue);
 	}
@@ -261,7 +261,7 @@ public class CommandLineFormatTest {
 		ParameterMetadata param1 = new ParameterMetadataImpl("dir1", true, "dir 1");
 		ParameterMetadata param2 = new ParameterMetadataImpl("dir2", false, "dir 2");
 		argConfig.addOption("i", ParameterType.STRING, "").addOption("o", ParameterType.STRING, "output fule");
-		config.addCommand("list", argConfig, "Shows list of files", param1, param2);
+		config.getCommandConfiguration().addCommand("list", argConfig, "Shows list of files", param1, param2);
 		String[] args = {"list", "-i", "input.txt", "-o", "output.txt", "directory1"};
 		CommandLineParseResult parseResult = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.isCommandMatch());

@@ -63,7 +63,7 @@ public class CommandLineConfigurationTest {
 	public void testAddOptionString() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
 		String id = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
-		conf.addOption(id);
+		conf.getOptionConfiguration().addOption(id);
 		assertDefaultOptionProperties(conf, id);
 	}
 	
@@ -79,19 +79,19 @@ public class CommandLineConfigurationTest {
 	@Test(expected=InvalidIdentifierException.class)
 	public void testAddOptionStringInvalid1() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
-		conf.addOption("te st1-");
+		conf.getOptionConfiguration().addOption("te st1-");
 	}
 	
 	@Test(expected=InvalidIdentifierException.class)
 	public void testAddOptionStringInvalid2() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
-		conf.addOption("tes+*()t20");
+		conf.getOptionConfiguration().addOption("tes+*()t20");
 	}
 
 	@Test
 	public void testAddOptionStringString() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
-		conf.addOption("test", "");
+		conf.getOptionConfiguration().addOption("test", "");
 		assertDefaultOptionProperties(conf, "test");
 	}
 
@@ -99,7 +99,7 @@ public class CommandLineConfigurationTest {
 	public void testAddOptionStringBooleanString() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
 		String id = "test1";
-		conf.addOption( id, false, "desc");
+		conf.getOptionConfiguration().addOption( id, false, "desc");
 		Assert.assertNotNull(conf.getOption(id));
 		Assert.assertEquals("desc", conf.getOption(id).getDescription());
 		Assert.assertEquals(false, conf.getOption(id).isRequired());
@@ -112,7 +112,7 @@ public class CommandLineConfigurationTest {
 	public void testAddOptionStringBooleanString2() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
 		String id = "test1";
-		conf.addOption( id, true, "desc");
+		conf.getOptionConfiguration().addOption( id, true, "desc");
 		Assert.assertNotNull(conf.getOption(id));
 		Assert.assertEquals("desc", conf.getOption(id).getDescription());
 		Assert.assertEquals(true, conf.getOption(id).isRequired());
@@ -125,7 +125,7 @@ public class CommandLineConfigurationTest {
 	public void testAddOptionStringBooleanBooleanString() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
 		String id = "test1";
-		conf.addOption( id, true, false, "desc");
+		conf.getOptionConfiguration().addOption( id, true, false, "desc");
 		Assert.assertNotNull(conf.getOption(id));
 		Assert.assertEquals("desc", conf.getOption(id).getDescription());
 		Assert.assertEquals(true, conf.getOption(id).isRequired());
@@ -138,7 +138,7 @@ public class CommandLineConfigurationTest {
 	public void testAddOptionStringBooleanBooleanString2() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
 		String id = "test1";
-		conf.addOption( id, false, true, "desc");
+		conf.getOptionConfiguration().addOption( id, false, true, "desc");
 		Assert.assertNotNull(conf.getOption(id));
 		Assert.assertEquals("desc", conf.getOption(id).getDescription());
 		Assert.assertEquals(false, conf.getOption(id).isRequired());
@@ -152,7 +152,7 @@ public class CommandLineConfigurationTest {
 	public void testAddParameterStringBooleanString() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
 		String id = "test1";
-		conf.addParameter(id, false, "desc");
+		conf.getParameterConfiguration().addParameter(id, false, "desc");
 		Assert.assertNotNull(conf.getParameterConfiguration().contains(id));
 		Assert.assertEquals("desc", conf.getParameterConfiguration().get(id).getDescription());
 		Assert.assertEquals(false, conf.getParameterConfiguration().get(id).isRequired());
@@ -164,7 +164,7 @@ public class CommandLineConfigurationTest {
 	public void testAddParameterStringBooleanBooleanString() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
 		String id = "test1";
-		conf.addParameter(id, false, false, "desc");
+		conf.getParameterConfiguration().addParameter(id, false, false, "desc");
 		Assert.assertNotNull(conf.getParameterConfiguration().contains(id));
 		Assert.assertEquals("desc", conf.getParameterConfiguration().get(id).getDescription());
 		Assert.assertEquals(false, conf.getParameterConfiguration().get(id).isRequired());
@@ -176,7 +176,7 @@ public class CommandLineConfigurationTest {
 	public void testAddParameterStringBooleanBooleanString2() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
 		String id = "test1";
-		conf.addParameter(id, true, false, "desc");
+		conf.getParameterConfiguration().addParameter(id, true, false, "desc");
 		Assert.assertNotNull(conf.getParameterConfiguration().contains(id));
 		Assert.assertEquals("desc", conf.getParameterConfiguration().get(id).getDescription());
 		Assert.assertEquals(true, conf.getParameterConfiguration().get(id).isRequired());
@@ -188,7 +188,7 @@ public class CommandLineConfigurationTest {
 	public void testAddParameterStringBooleanBooleanString3() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
 		String id = "test1";
-		conf.addParameter(id, true, true, "desc");
+		conf.getParameterConfiguration().addParameter(id, true, true, "desc");
 		Assert.assertNotNull(id, conf.getParameterConfiguration().get(id).getIdentifier());
 		Assert.assertEquals("desc", conf.getParameterConfiguration().get(id).getDescription());
 		Assert.assertEquals(true, conf.getParameterConfiguration().get(id).isRequired());
@@ -200,7 +200,7 @@ public class CommandLineConfigurationTest {
 	public void testAddCommandStringOptionConfigurationString() {
 		CommandLineConfiguration conf = new CommandLineConfiguration("app1", "testdesc");
 		String id = "test1";
-		conf.addCommand(id, null, "desc");
+		conf.getCommandConfiguration().addCommand(id, null, "desc");
 		Assert.assertNotNull(id, conf.getCommandConfiguration().get(id).getIdentifier());
 		Assert.assertEquals("desc", conf.getCommandConfiguration().get(id).getDescription());
 		Assert.assertEquals(false, conf.getCommandConfiguration().get(id).isRequired());

@@ -58,9 +58,18 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 	 * @return OptionConfiguration	this configuration
 	 */
 	public OptionConfiguration addOption(OptionMetadata option) {
-		super.add(option);
-		optionLongMap.put(option.getIdentifier(IdentifierType.LONG), option);
+		
+		String longIdentfier = option.getIdentifier(IdentifierType.LONG);
+		validateIdentifier(longIdentfier, false);
+		if (longIdentfier!=null && !longIdentfier.isEmpty() && null != optionLongMap.get(longIdentfier)) {
+			throw new InvalidIdentifierException(this.getId() + " identifer '" + longIdentfier + "' already exist.");
+		}
+		
 		LOGGER.info("Adding option " + option);
+		
+		optionLongMap.put(longIdentfier, option);
+		super.add(option);
+		
 		return this;
 	}
 	

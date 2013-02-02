@@ -35,8 +35,9 @@ public class MyClass {
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.addOption("i", "input", ParameterType.FILE, true, true, "Sample desc", "A very long sample desc of the option");
-		config.addOption("x", "Testing single valued");
+		config.getOptionConfiguration()
+			.addOption("i", "input", ParameterType.FILE, true, true, "Sample desc", "A very long sample desc of the option")
+			.addOption("x", "Testing single valued");
 		try {
 			CommandLineParseResult resultSet = CommandLineParser.getInstance().parse(config, args);
 			List<File> fileList = (List<File>) resultSet.getOptionSet().get("i").getParameter().getValue();

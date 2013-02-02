@@ -22,6 +22,7 @@ package org.jclif.type;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * This class is a collection class used to store command line input
@@ -33,6 +34,8 @@ import java.util.Map;
  */
 public abstract class Configuration<T extends InputMetadata> extends LinkedHashMap<String, T> {
 
+	private final Pattern IDENTIFIER_REGEX = Pattern.compile("^([\\w]+)$");
+	
 	/**
 	 * 
 	 */
@@ -55,6 +58,10 @@ public abstract class Configuration<T extends InputMetadata> extends LinkedHashM
 	}
 	
 	public T add(T metadata) {
+		validateIdentifier(metadata.getIdentifier(), true);
+		if (null != get(metadata.getIdentifier())) {
+			throw new InvalidIdentifierException(this.getId() + " identifer '" + metadata.getIdentifier() + "' already exist.");
+		}
 		return super.put(metadata.getIdentifier(), metadata);
 	}
 	
@@ -87,6 +94,19 @@ public abstract class Configuration<T extends InputMetadata> extends LinkedHashM
 	
 	public T remove(T metadata) {
 		return remove(metadata.getIdentifier());
+	}
+	
+	void validateIdentifier(String identifier, boolean required) {
+		if(!required && (identifier==null || identifier.isEmpty())) { 
+			return;
+		}
+		if(identifier==null || identifier.isEmpty()) {
+			throw new InvalidIdentifierException("Identifier invalid, value is empty or null.");
+		}
+		if(!IDENTIFIER_REGEX.matcher(identifier).matches()) {
+			throw new InvalidIdentifierException("Identifier " + identifier + " is not valid. "
+					+ "Only characters A-Z,a-z,0-9 and _ is allowed (in regex \\w) .");
+		}
 	}
 	
 }
