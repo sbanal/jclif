@@ -122,7 +122,7 @@ public class CommandLineProperties implements Cloneable {
 	/**
 	 * Sets the prefix string used in option identifiers.
 	 * 
-	 * @param String optionPrefix delimiter string
+	 * @param optionPrefix delimiter string
 	 */
 	public void setOptionPrefix(String optionPrefix) {
 		this.optionPrefix = optionPrefix;
@@ -140,7 +140,7 @@ public class CommandLineProperties implements Cloneable {
 	/**
 	 * Sets the prefix string used in option long identifiers.
 	 * 
-	 * @param String optionLongPrefix delimiter string
+	 * @param optionLongPrefix delimiter string
 	 */
 	public void setOptionLongPrefix(String optionLongPrefix) {
 		this.optionLongPrefix = optionLongPrefix;
@@ -158,7 +158,7 @@ public class CommandLineProperties implements Cloneable {
 	/**
 	 * Sets the delimiter used between a command line option and its parameter.
 	 * 
-	 * @param String optionParameterDelim delimiter string
+	 * @param optionParameterDelim delimiter string
 	 */
 	public void setOptionParameterDelim(String optionParameterDelim) {
 		this.optionParameterDelim = optionParameterDelim;

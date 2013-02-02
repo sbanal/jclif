@@ -124,7 +124,7 @@ public class CommandLineConfiguration {
 	/**
 	 * Sets command line properties used by command line input parser.
 	 * 
-	 * @param	OptionConfiguration	option configuration
+	 * @param commandLineProperties	command line properties
 	 */
 	public void setCommandLineProperties(CommandLineProperties commandLineProperties) {
 		this.commandLineProperties =  (CommandLineProperties) commandLineProperties.clone();
