@@ -95,7 +95,7 @@ public class ExecutorHandlerRegistry {
 						
 					LOGGER.info(String.format("Setting field = " + field.getName() + " option specified"));
 					OptionMetadata optMetadata = optionConfig.get(option.identifier());
-					org.jclif.type.Option optionValue = result.getOptionSet().get(option.identifier());
+					org.jclif.type.OptionInput optionValue = result.getOptionSet().get(option.identifier());
 					if(optionValue!=null) {
 						if(optMetadata.isParameterAccepted()) {
 							value = optionValue.getParameter().getValue();

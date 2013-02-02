@@ -19,33 +19,15 @@
 
 package org.jclif.type;
 
-import java.util.HashSet;
-import java.util.Set;
-
-
 /**
- * This class is a collection which serves as container of all parameters
- * parsed from a command line input. This collection basically contains
- * the parameters parsed and their corresponding metadata.
+ * This interface defines the properties which describes a command in a
+ * command line input.
  * 
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
-public class ParameterSet extends InputSet<Parameter, ParameterMetadata> {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8323112069381380752L;
+public interface CommandInput extends Input {
 	
-	private ParameterConfiguration parameterConfig = new ParameterConfiguration();
-	
-	public ParameterSet(ParameterConfiguration parameterConfig) {
-		this.parameterConfig.addAll(parameterConfig.values());
-	}
-	
-	public Set<ParameterMetadata> getParameterList() {
-		return new HashSet<ParameterMetadata>(parameterConfig.values());
-	}
+	public String getIdentifier();
 	
 }

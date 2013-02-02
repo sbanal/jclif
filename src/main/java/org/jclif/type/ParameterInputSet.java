@@ -19,37 +19,33 @@
 
 package org.jclif.type;
 
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
- * Option class represents an instance of an option parsed from the 
- * command line option list parsed by CommandLineFormat parse method.
+ * This class is a collection which serves as container of all parameters
+ * parsed from a command line input. This collection basically contains
+ * the parameters parsed and their corresponding metadata.
  * 
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
-public class OptionImpl implements Option {
+public class ParameterInputSet extends InputSet<ParameterInput, ParameterMetadata> {
 
-	private OptionMetadata option;
-	private Parameter parameter;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8323112069381380752L;
 	
-	public OptionImpl(OptionMetadata option, Parameter parameter) {
-		this.option = option;
-		this.parameter = parameter;
+	private ParameterConfiguration parameterConfig = new ParameterConfiguration();
+	
+	public ParameterInputSet(ParameterConfiguration parameterConfig) {
+		this.parameterConfig.addAll(parameterConfig.values());
 	}
 	
-	@Override
-	public OptionMetadata getMetadata() {
-		return option;
+	public Set<ParameterMetadata> getParameterList() {
+		return new HashSet<ParameterMetadata>(parameterConfig.values());
 	}
 	
-	@Override
-	public Parameter getParameter() {
-		return parameter;
-	}
-	
-	public String toString() {
-		return String.format("OptionImpl[option=%s,parameter=%s]", option, parameter);
-	}
-
 }

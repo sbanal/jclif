@@ -19,17 +19,17 @@
 
 package org.jclif.parser;
 
-import org.jclif.type.Command;
+import org.jclif.type.CommandInput;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandMetadata;
-import org.jclif.type.Option;
+import org.jclif.type.OptionInput;
 import org.jclif.type.OptionConfiguration;
 import org.jclif.type.OptionMetadata;
-import org.jclif.type.OptionSet;
-import org.jclif.type.Parameter;
+import org.jclif.type.OptionInputSet;
+import org.jclif.type.ParameterInput;
 import org.jclif.type.ParameterConfiguration;
 import org.jclif.type.ParameterMetadata;
-import org.jclif.type.ParameterSet;
+import org.jclif.type.ParameterInputSet;
 
 /**
  * CommandLineParseResult class represents the result of command line parsing.
@@ -39,15 +39,15 @@ import org.jclif.type.ParameterSet;
  */
 public class CommandLineParseResult {
 
-	private OptionSet optionSet;
-	private ParameterSet parameterSet;
-	private Command matchingCommand;
+	private OptionInputSet optionSet;
+	private ParameterInputSet parameterSet;
+	private CommandInput matchingCommand;
 	private CommandLineConfiguration configuration;
 	
 	CommandLineParseResult(CommandLineConfiguration configuration) {
 		this.configuration = configuration;
-		optionSet = new OptionSet(configuration.getOptionConfiguration());
-		parameterSet = new ParameterSet(configuration.getParameterConfiguration());
+		optionSet = new OptionInputSet(configuration.getOptionConfiguration());
+		parameterSet = new ParameterInputSet(configuration.getParameterConfiguration());
 	}
 
 	public CommandLineConfiguration getConfiguration() {
@@ -58,27 +58,27 @@ public class CommandLineParseResult {
 		return getMatchingCommand() != null;
 	}
 
-	public Command getMatchingCommand() {
+	public CommandInput getMatchingCommand() {
 		return matchingCommand;
 	}
 
-	void setMatchingCommand(Command matchingCommand) {
+	void setMatchingCommand(CommandInput matchingCommand) {
 		this.matchingCommand = matchingCommand;
 		if(matchingCommand!=null) {
 			CommandMetadata metadata = (CommandMetadata) matchingCommand.getMetadata();
-			this.optionSet = new OptionSet(metadata.getOptionConfigurations());
-			this.parameterSet = new ParameterSet(metadata.getParameterConfigurations());
+			this.optionSet = new OptionInputSet(metadata.getOptionConfigurations());
+			this.parameterSet = new ParameterInputSet(metadata.getParameterConfigurations());
 		} else {
-			optionSet = new OptionSet(configuration.getOptionConfiguration());
-			parameterSet = new ParameterSet(configuration.getParameterConfiguration());
+			optionSet = new OptionInputSet(configuration.getOptionConfiguration());
+			parameterSet = new ParameterInputSet(configuration.getParameterConfiguration());
 		}
 	}
 	
-	public OptionSet getOptionSet() {
+	public OptionInputSet getOptionSet() {
 		return optionSet;
 	}
 
-	public ParameterSet getParameterSet() {
+	public ParameterInputSet getParameterSet() {
 		return parameterSet;
 	}
 	
@@ -100,7 +100,7 @@ public class CommandLineParseResult {
 				}
 			}
 			if(metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired()) {
-				Option option = getOptionSet().get(metadata.getIdentifier());
+				OptionInput option = getOptionSet().get(metadata.getIdentifier());
 				if(option.getParameter() == null || option.getParameter().getValue() == null) {
 					throw new InvalidInputException("Missing parameter for option " + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + ".");
 				}
@@ -110,7 +110,7 @@ public class CommandLineParseResult {
 		// validate parameters
 		for(ParameterMetadata metadata : parameterConig.values()) {
 			if(metadata.isRequired()) {
-				Parameter parameter = getParameterSet().get(metadata.getIdentifier());
+				ParameterInput parameter = getParameterSet().get(metadata.getIdentifier());
 				if(parameter == null || parameter.getValue() == null) {
 					throw new InvalidInputException("Missing parameter " + configuration.getCommandLineProperties().getOptionPrefix() +  metadata.getIdentifier() + ".");
 				}

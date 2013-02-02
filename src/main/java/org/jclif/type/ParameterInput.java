@@ -29,7 +29,7 @@ import java.io.File;
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
-public interface Parameter extends Input {
+public interface ParameterInput extends Input {
 	
 	/**
 	 * Returns the metadata of this parameter.

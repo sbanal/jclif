@@ -27,12 +27,12 @@ import java.io.File;
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
-public class ParameterImpl implements Parameter {
+public class ParameterInputImpl implements ParameterInput {
 
 	private ParameterMetadata parameterMetadata;
 	private Object value;
 	
-	public ParameterImpl(ParameterMetadata parameterMetadata, Object value) {
+	public ParameterInputImpl(ParameterMetadata parameterMetadata, Object value) {
 		this.parameterMetadata = parameterMetadata;
 		this.value = value;
 	}

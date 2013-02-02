@@ -19,15 +19,39 @@
 
 package org.jclif.type;
 
+
+
 /**
- * This interface defines the properties which describes a command in a
- * command line input.
+ * OptionSet class is a HashSet of Option type. This class
+ * serves as container of all the options parsed from command line input.
  * 
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
-public interface Command extends Input {
+public class OptionInputSet extends InputSet<OptionInput, OptionMetadata> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2671453277762411033L;
 	
-	public String getIdentifier();
+	private OptionConfiguration configuration;
 	
+	public OptionInputSet(OptionConfiguration config) {
+		this.configuration = config;
+	}
+	
+	public boolean contains(String identifier) {
+		OptionMetadata optionMetadata = configuration.getOption(identifier);
+		return (optionMetadata!=null && super.contains(optionMetadata.getIdentifier()));
+	}
+	
+	public OptionInput get(String identifier) {
+		OptionMetadata optionMetadata = configuration.getOption(identifier);
+		if(optionMetadata!=null) {
+			return super.get(optionMetadata);
+		}
+		return null;
+	}
+
 }

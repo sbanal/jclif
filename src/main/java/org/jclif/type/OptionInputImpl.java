@@ -22,36 +22,34 @@ package org.jclif.type;
 
 
 /**
- * OptionSet class is a HashSet of Option type. This class
- * serves as container of all the options parsed from command line input.
+ * Option class represents an instance of an option parsed from the 
+ * command line option list parsed by CommandLineFormat parse method.
  * 
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
-public class OptionSet extends InputSet<Option, OptionMetadata> {
+public class OptionInputImpl implements OptionInput {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2671453277762411033L;
+	private OptionMetadata option;
+	private ParameterInput parameter;
 	
-	private OptionConfiguration configuration;
-	
-	public OptionSet(OptionConfiguration config) {
-		this.configuration = config;
+	public OptionInputImpl(OptionMetadata option, ParameterInput parameter) {
+		this.option = option;
+		this.parameter = parameter;
 	}
 	
-	public boolean contains(String identifier) {
-		OptionMetadata optionMetadata = configuration.getOption(identifier);
-		return (optionMetadata!=null && super.contains(optionMetadata.getIdentifier()));
+	@Override
+	public OptionMetadata getMetadata() {
+		return option;
 	}
 	
-	public Option get(String identifier) {
-		OptionMetadata optionMetadata = configuration.getOption(identifier);
-		if(optionMetadata!=null) {
-			return super.get(optionMetadata);
-		}
-		return null;
+	@Override
+	public ParameterInput getParameter() {
+		return parameter;
+	}
+	
+	public String toString() {
+		return String.format("OptionImpl[option=%s,parameter=%s]", option, parameter);
 	}
 
 }

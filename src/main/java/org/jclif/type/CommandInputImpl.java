@@ -25,12 +25,12 @@ package org.jclif.type;
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
-public class CommandImpl implements Command {
+public class CommandInputImpl implements CommandInput {
 
 	private String command;
 	private CommandMetadata metadata;
 	
-	public CommandImpl(String command, CommandMetadata metadata) {
+	public CommandInputImpl(String command, CommandMetadata metadata) {
 		this.command = command;
 		this.metadata = metadata;
 	}

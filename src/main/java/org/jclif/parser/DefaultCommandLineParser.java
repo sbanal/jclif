@@ -28,20 +28,20 @@ import java.util.logging.Logger;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import org.jclif.type.CommandImpl;
+import org.jclif.type.CommandInputImpl;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandMetadata;
-import org.jclif.type.Option;
+import org.jclif.type.OptionInput;
 import org.jclif.type.OptionConfiguration;
-import org.jclif.type.OptionImpl;
+import org.jclif.type.OptionInputImpl;
 import org.jclif.type.OptionMetadata;
-import org.jclif.type.OptionSet;
-import org.jclif.type.Parameter;
+import org.jclif.type.OptionInputSet;
+import org.jclif.type.ParameterInput;
 import org.jclif.type.ParameterConfiguration;
-import org.jclif.type.ParameterImpl;
+import org.jclif.type.ParameterInputImpl;
 import org.jclif.type.ParameterMetadata;
 import org.jclif.type.ParameterParser;
-import org.jclif.type.ParameterSet;
+import org.jclif.type.ParameterInputSet;
 import org.jclif.type.ParameterType;
 import org.jclif.type.OptionMetadata.IdentifierType;
 import org.jclif.util.StringUtil;
@@ -110,7 +110,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 		MatchResult result = scanner.match();
 		String cmdIdentifier = result.group(1);
 		CommandMetadata cmdMetadata = configuration.getCommandMetadata(cmdIdentifier);
-		resultSet.setMatchingCommand(new CommandImpl(cmdIdentifier, cmdMetadata));
+		resultSet.setMatchingCommand(new CommandInputImpl(cmdIdentifier, cmdMetadata));
 		
 		LOGGER.info(String.format("Token=%s%n", token));
 		LOGGER.info(String.format("Command=%s%n", scanner));
@@ -130,7 +130,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 	
 	@SuppressWarnings("unchecked")
 	private boolean parseOptions(Scanner scanner, CommandLineConfiguration config, CommandMetadata cmdMetadata, OptionConfiguration optionConfig, 
-			OptionSet resultSet) throws InvalidInputException {
+			OptionInputSet resultSet) throws InvalidInputException {
 		
 		if(optionConfig.getOptions().isEmpty()) {
 			return true;
@@ -194,19 +194,19 @@ class DefaultCommandLineParser extends CommandLineParser {
 			}
 
 			// create the parameter value
-			Parameter parameter = null;
-			Option optionValue = resultSet.get(paramId);
+			ParameterInput parameter = null;
+			OptionInput optionValue = resultSet.get(paramId);
 			if (optionValue == null) {
 				if (metadata.isParameterAccepted()) {
 					if (metadata.isMultiValued()) {
 						List<Object> valueList = new ArrayList<Object>();
 						valueList.add(parameterValue);
-						parameter = new ParameterImpl(metadata.getParameterMetadata(), valueList);
+						parameter = new ParameterInputImpl(metadata.getParameterMetadata(), valueList);
 					} else {
-						parameter = new ParameterImpl(metadata.getParameterMetadata(), parameterValue);
+						parameter = new ParameterInputImpl(metadata.getParameterMetadata(), parameterValue);
 					}
 				}
-				optionValue = new OptionImpl(metadata, parameter);
+				optionValue = new OptionInputImpl(metadata, parameter);
 				resultSet.add(optionValue);
 			} else {
 				parameter = optionValue.getParameter();
@@ -234,7 +234,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 		}
 	}
 	
-	private boolean parseParameters(Scanner scanner, CommandLineConfiguration config, CommandMetadata cmdMetadata, ParameterConfiguration parameterConfig, ParameterSet resultSet) throws InvalidInputException {
+	private boolean parseParameters(Scanner scanner, CommandLineConfiguration config, CommandMetadata cmdMetadata, ParameterConfiguration parameterConfig, ParameterInputSet resultSet) throws InvalidInputException {
 		
 		if(parameterConfig.isEmpty()) {
 			return true;
@@ -254,13 +254,13 @@ class DefaultCommandLineParser extends CommandLineParser {
 				if(paramMeta.isRequired() && valueList.isEmpty()) {
 					throw new InvalidInputException("Parameter " + paramMeta.getIdentifier() + " is required but not specified", cmdMetadata);
 				}
-				resultSet.add(new ParameterImpl(paramMeta, valueList));
+				resultSet.add(new ParameterInputImpl(paramMeta, valueList));
 			} else {
 				if(scanner.hasNext()) {
 					String token = scanner.next();
 					LOGGER.info(String.format("Parameter={%s}", token));
 					paraValue = getParameterValue(cmdMetadata, paramMeta, token);
-					resultSet.add(new ParameterImpl(paramMeta, paraValue));
+					resultSet.add(new ParameterInputImpl(paramMeta, paraValue));
 				} else {
 					if(paramMeta.isRequired()) {
 						throw new InvalidInputException("Parameter " + paramMeta.getIdentifier() + " is required but not specified", cmdMetadata);

@@ -28,7 +28,7 @@ package org.jclif.type;
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
-public interface Option extends Input {
+public interface OptionInput extends Input {
 	
 	/**
 	 * Returns the option meta data information of an option.
@@ -42,6 +42,6 @@ public interface Option extends Input {
 	 * 
 	 * @return Parameter parameter
 	 */
-	public Parameter getParameter();
+	public ParameterInput getParameter();
 	
 }
