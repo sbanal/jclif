@@ -19,6 +19,8 @@
 
 package org.jclif.type;
 
+import java.util.Arrays;
+
 /**
  * This class is collection class used to register all the commands supported by 
  * a command line application. This class is backed by a LinkedHashMap<String,CommandMetadata>
@@ -36,6 +38,23 @@ public class CommandConfiguration extends Configuration<CommandMetadata> {
 
 	public CommandConfiguration() {
 		super("command", "Command configuration");		
+	}
+
+	public CommandConfiguration addCommand(CommandMetadata metadata) {
+		add(metadata);
+		return this;
+	}
+	
+	public CommandConfiguration addCommand(String keyword, OptionConfiguration optionConfiguration, String description) {
+		CommandMetadata metadata = new CommandMetadataImpl( keyword, optionConfiguration, description, null);
+		addCommand(metadata);
+		return this;
+	}
+	
+	public CommandConfiguration addCommand(String keyword, OptionConfiguration optionConfiguration, String description, ParameterMetadata... parameters) {
+		CommandMetadata metadata = new CommandMetadataImpl( keyword, optionConfiguration, Arrays.asList(parameters), description, null);
+		addCommand(metadata);
+		return this;
 	}
 	
 }

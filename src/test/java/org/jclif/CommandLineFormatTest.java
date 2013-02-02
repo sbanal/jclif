@@ -68,7 +68,7 @@ public class CommandLineFormatTest {
 	@Test
 	public void testParseStringOptionParameterWithSpaceDelim() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.getOptionConfiguration().setParameterDelimitter(" ");
+		config.getCommandLineProperties().setOptionParameterDelim(" ");
 		config.addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input", "This is a test text"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
@@ -80,7 +80,7 @@ public class CommandLineFormatTest {
 	@Test
 	public void testParseStringOptionParameterWithEqualDelim() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.getOptionConfiguration().setParameterDelimitter("=");
+		config.getCommandLineProperties().setOptionParameterDelim("=");
 		config.addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=\"This is a test text\""};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
@@ -92,7 +92,7 @@ public class CommandLineFormatTest {
 	@Test
 	public void testParseStringOptionParameterWithEqualDelimQuoted() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.getOptionConfiguration().setParameterDelimitter("=");
+		config.getCommandLineProperties().setOptionParameterDelim("=");
 		config.addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=\"This is a test text\""};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
@@ -104,7 +104,7 @@ public class CommandLineFormatTest {
 	@Test
 	public void testParseStringOptionParameterWithEqualDelimSingleQuoted() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.getOptionConfiguration().setParameterDelimitter("=");
+		config.getCommandLineProperties().setOptionParameterDelim("=");
 		config.addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input='This is a test text'"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
@@ -136,7 +136,7 @@ public class CommandLineFormatTest {
 	@Test
 	public void testParseMultiValuedOptionWithEqualDelim() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
-		config.getOptionConfiguration().setParameterDelimitter("=");
+		config.getCommandLineProperties().setOptionParameterDelim("=");
 		config.addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=test.txt", "--input=test2.txt"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);

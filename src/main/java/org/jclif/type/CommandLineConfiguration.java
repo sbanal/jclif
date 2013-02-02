@@ -34,7 +34,14 @@ public class CommandLineConfiguration {
  
 	private final Pattern IDENTIFIER_REGEX = Pattern.compile("^([\\w]+)$");
 	
+	/**
+	 * Name of application
+	 */
 	private String name;
+	
+	/**
+	 * Description of application used in help text.
+	 */
 	private String description;
 	
 	private OptionConfiguration optionConfiguration = new OptionConfiguration();
@@ -42,31 +49,59 @@ public class CommandLineConfiguration {
 	private CommandConfiguration commandConfiguration = new CommandConfiguration();
 	private CommandLineProperties commandLineProperties = null;
 	
+	/**
+	 * Creates a new command line configuration using systems default command line properties.
+	 */
 	public CommandLineConfiguration() {
-		this("appname", "", CommandLineProperties.UNIX_COMMAND_LINE_PROPERTIES);
+		this("appname", "", CommandLineProperties.getSystemProperties());
 	}
 	
+	/**
+	 * Creates a new command line configuration using systems default command line properties.
+	 * 
+	 * @param name			name of application, value is used in printing help text
+	 * @param description 	description of application
+	 */
 	public CommandLineConfiguration(String name, String description) {
-		this(name, description, CommandLineProperties.UNIX_COMMAND_LINE_PROPERTIES);
+		this(name, description, CommandLineProperties.getSystemProperties());
 	}
 	
+	/**
+	 * Creates a new command line configuration.
+	 * 
+	 * @param name			name of application, value is used in printing help text
+	 * @param description 	description of application
+	 * @param commandLineProperties	command line properties to use in parsing command line input
+	 */
 	public CommandLineConfiguration(String name, String description, CommandLineProperties commandLineProperties) {
 		this.name = name;
 		this.description = description;
-		this.commandLineProperties = new CommandLineProperties(
-				commandLineProperties.getOptionPrefix(),
-				commandLineProperties.getOptionLongPrefix(),
-				commandLineProperties.getOptionParameterDelim());
+		this.commandLineProperties = (CommandLineProperties) commandLineProperties.clone();
 	}
 
+	/**
+	 * Returns the name of the console based application.
+	 * 
+	 * @return	String	name of console based application
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Sets the name of a console based application.
+	 * 
+	 * @param name		name of console based application
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
+	/**
+	 * Returns description of a console based application as shown in help or usage text.
+	 * 
+	 * @return	String 	description of application
+	 */
 	public String getDescription() {
 		return description;
 	}
@@ -80,10 +115,7 @@ public class CommandLineConfiguration {
 	}
 
 	public void setCommandLineProperties(CommandLineProperties commandLineProperties) {
-		this.commandLineProperties =  new CommandLineProperties(
-				commandLineProperties.getOptionPrefix(),
-				commandLineProperties.getOptionLongPrefix(),
-				commandLineProperties.getOptionParameterDelim());
+		this.commandLineProperties =  (CommandLineProperties) commandLineProperties.clone();
 	}
 
 	public ParameterConfiguration getParameterConfiguration() {

@@ -78,8 +78,8 @@ class DefaultCommandLineParser extends CommandLineParser {
 		Scanner scanner = new Scanner(sb.toString());
 		boolean cmdFound = parseCommand(scanner, configuration, resultSet);
 		if(!cmdFound){
-			parseOptions(scanner, null, configuration.getOptionConfiguration(), resultSet.getOptionSet());
-			parseParameters(scanner, null, configuration.getParameterConfiguration(), resultSet.getParameterSet());
+			parseOptions(scanner, configuration, null, configuration.getOptionConfiguration(), resultSet.getOptionSet());
+			parseParameters(scanner, configuration, null, configuration.getParameterConfiguration(), resultSet.getParameterSet());
 		}
 		scanner.close();
 		
@@ -120,8 +120,8 @@ class DefaultCommandLineParser extends CommandLineParser {
 			MatchResult paramResult = scanner.match();
 			LOGGER.info(String.format("Options=%s%n", paramResult.group(1)));
 			Scanner scannerOptions = new Scanner(paramResult.group(1));
-			parseOptions(scannerOptions, cmdMetadata, cmdMetadata.getOptionConfigurations(), resultSet.getOptionSet());
-			parseParameters(scannerOptions, cmdMetadata, cmdMetadata.getParameterConfigurations(), resultSet.getParameterSet());
+			parseOptions(scannerOptions, configuration, cmdMetadata, cmdMetadata.getOptionConfigurations(), resultSet.getOptionSet());
+			parseParameters(scannerOptions, configuration, cmdMetadata, cmdMetadata.getParameterConfigurations(), resultSet.getParameterSet());
 			scannerOptions.close();
 		}
 		
@@ -129,20 +129,20 @@ class DefaultCommandLineParser extends CommandLineParser {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private boolean parseOptions(Scanner scanner, CommandMetadata cmdMetadata, OptionConfiguration configuration, 
+	private boolean parseOptions(Scanner scanner, CommandLineConfiguration config, CommandMetadata cmdMetadata, OptionConfiguration optionConfig, 
 			OptionSet resultSet) throws InvalidInputException {
 		
-		if(configuration.getOptions().isEmpty()) {
+		if(optionConfig.getOptions().isEmpty()) {
 			return true;
 		}
 		
 		// Build the regex of all possible identifiers
 		StringBuffer sbOptionFlags = new StringBuffer("(");
-		for(OptionMetadata optionMetadata : configuration.getOptions()) {
-			sbOptionFlags.append(String.format("%s%s", configuration.getOptionPrefix(), optionMetadata.getIdentifier()));
+		for(OptionMetadata optionMetadata : optionConfig.getOptions()) {
+			sbOptionFlags.append(String.format("%s%s", config.getCommandLineProperties().getOptionPrefix(), optionMetadata.getIdentifier()));
 			String longIdentifier = optionMetadata.getIdentifier(IdentifierType.LONG);
 			if(longIdentifier!=null && !longIdentifier.isEmpty()) {
-				sbOptionFlags.append(String.format("|%s%s", configuration.getOptionLongPrefix(), longIdentifier));
+				sbOptionFlags.append(String.format("|%s%s", config.getCommandLineProperties().getOptionLongPrefix(), longIdentifier));
 			}
 			sbOptionFlags.append("|");
 		}
@@ -162,15 +162,15 @@ class DefaultCommandLineParser extends CommandLineParser {
 
 			// parse option identifier extract option identifier and get its metadata
 			String paramIdentifierStr = result.group(1);
-			String paramId = paramIdentifierStr.startsWith(configuration.getOptionLongPrefix()) ? paramIdentifierStr.substring(2) : paramIdentifierStr.substring(1);
-			OptionMetadata metadata = configuration.getOption(paramId);
+			String paramId = paramIdentifierStr.startsWith(config.getCommandLineProperties().getOptionLongPrefix()) ? paramIdentifierStr.substring(2) : paramIdentifierStr.substring(1);
+			OptionMetadata metadata = optionConfig.getOption(paramId);
 			if (metadata == null) {
 				throw new InvalidInputException("Option " + paramIdentifierStr + " is not found.", cmdMetadata);
 			}
 
 			// parse the parameter
 			Object parameterValue = null;
-			token = scanner.findInLine(configuration.getParameterDelimitter());
+			token = scanner.findInLine(config.getCommandLineProperties().getOptionParameterDelim());
 			if (metadata.isParameterAccepted() && token!=null) {
 				
 				Pattern paramValueRegEx = Pattern.compile("((\"[\\p{Alnum}\\p{Punct}\\p{Space}&&[^\"]]+\")|('[\\p{Alnum}\\p{Punct}\\p{Space}&&[^']]+')|([\\p{Alnum}\\p{Punct}]+))");
@@ -184,10 +184,10 @@ class DefaultCommandLineParser extends CommandLineParser {
 				if (token != null) {
 					MatchResult paramResult = scanner.match();
 					for(int i=0;i<paramResult.groupCount();i++) {
-						LOGGER.info(String.format("[%d] Delim={%s}, Param={%s}", i, configuration.getParameterDelimitter(), paramResult.group(i)));
+						LOGGER.info(String.format("[%d] Delim={%s}, Param={%s}", i, config.getCommandLineProperties().getOptionParameterDelim(), paramResult.group(i)));
 					}
 					String groupValue = StringUtil.extractQuotedValue(paramResult.group(1));
-					LOGGER.info(String.format("Delim={%s}, Param={%s}", configuration.getParameterDelimitter(), groupValue));
+					LOGGER.info(String.format("Delim={%s}, Param={%s}", config.getCommandLineProperties().getOptionParameterDelim(), groupValue));
 					parameterValue = getParameterValue(cmdMetadata, parameterMetadata, groupValue);
 				}
 				
@@ -234,7 +234,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 		}
 	}
 	
-	private boolean parseParameters(Scanner scanner, CommandMetadata cmdMetadata, ParameterConfiguration parameterConfig, ParameterSet resultSet) throws InvalidInputException {
+	private boolean parseParameters(Scanner scanner, CommandLineConfiguration config, CommandMetadata cmdMetadata, ParameterConfiguration parameterConfig, ParameterSet resultSet) throws InvalidInputException {
 		
 		if(parameterConfig.isEmpty()) {
 			return true;
@@ -402,7 +402,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 		String formattedOption = null;
 		if(metadata.isParameterAccepted()) {
 			boolean isParamRequired = (metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired());
-			String paramDelim = StringUtil.formatDelimValue(config.getOptionConfiguration().getParameterDelimitter());
+			String paramDelim = StringUtil.formatDelimValue(config.getCommandLineProperties().getOptionParameterDelim());
 			String paramUsageStr = "";
 			if(metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().getParameterType()!=ParameterType.NONE) {
 				String paramName =  "";
@@ -419,20 +419,20 @@ class DefaultCommandLineParser extends CommandLineParser {
 			String longIdentifier = metadata.getIdentifier(IdentifierType.LONG);
 			if(longIdentifier!=null && !longIdentifier.isEmpty()) {
 				formattedOption = String.format("%s%s, %s%s%s", 
-						config.getOptionConfiguration().getOptionPrefix(), 
+						config.getCommandLineProperties().getOptionPrefix(), 
 						metadata.getIdentifier(), 
-						config.getOptionConfiguration().getOptionLongPrefix(), 
+						config.getCommandLineProperties().getOptionLongPrefix(), 
 						metadata.getIdentifier(IdentifierType.LONG),
 						paramUsageStr);
 			} else {
 				formattedOption = String.format("%s%s%s", 
-						config.getOptionConfiguration().getOptionPrefix(), 
+						config.getCommandLineProperties().getOptionPrefix(), 
 						metadata.getIdentifier(), 
 						paramUsageStr);
 			}
 		} else {
 			formattedOption = String.format("%s%s", 
-					config.getOptionConfiguration().getOptionPrefix(),  
+					config.getCommandLineProperties().getOptionPrefix(),  
 					metadata.getIdentifier());
 		}
 		return formattedOption;

@@ -96,13 +96,13 @@ public class CommandLineParseResult {
 		for(OptionMetadata metadata : optionConfig.getOptions()) {
 			if(metadata.isRequired()) {
 				if(!getOptionSet().contains(metadata.getIdentifier())) {
-					throw new InvalidInputException("Option " + configuration.getOptionConfiguration().getOptionPrefix() + metadata.getIdentifier() + " is required.");
+					throw new InvalidInputException("Option " + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + " is required.");
 				}
 			}
 			if(metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired()) {
 				Option option = getOptionSet().get(metadata.getIdentifier());
 				if(option.getParameter() == null || option.getParameter().getValue() == null) {
-					throw new InvalidInputException("Missing parameter for option " + configuration.getOptionConfiguration().getOptionPrefix() + metadata.getIdentifier() + ".");
+					throw new InvalidInputException("Missing parameter for option " + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + ".");
 				}
 			}
 		}
@@ -112,7 +112,7 @@ public class CommandLineParseResult {
 			if(metadata.isRequired()) {
 				Parameter parameter = getParameterSet().get(metadata.getIdentifier());
 				if(parameter == null || parameter.getValue() == null) {
-					throw new InvalidInputException("Missing parameter " + configuration.getOptionConfiguration().getOptionPrefix() +  metadata.getIdentifier() + ".");
+					throw new InvalidInputException("Missing parameter " + configuration.getCommandLineProperties().getOptionPrefix() +  metadata.getIdentifier() + ".");
 				}
 			}
 		}

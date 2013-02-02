@@ -46,24 +46,17 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 	private final static Logger LOGGER = Logger.getLogger(OptionConfiguration.class.getName());
 	
 	private Map<String, OptionMetadata> optionLongMap = new HashMap<String, OptionMetadata>();
-	private CommandLineProperties commandLineProperties = null;
 	
 	public OptionConfiguration() {
-		this(CommandLineProperties.UNIX_COMMAND_LINE_PROPERTIES);
-	}
-	
-	public OptionConfiguration(CommandLineProperties commandLineProperties) {
 		super("option", "Option configuration");
-		this.commandLineProperties = new CommandLineProperties(
-				commandLineProperties.getOptionPrefix(),
-				commandLineProperties.getOptionLongPrefix(),
-				commandLineProperties.getOptionParameterDelim());
 	}
 
-	public CommandLineProperties getCommandLineProperties() {
-		return commandLineProperties;
-	}
-
+	/**
+	 * Adds a new option metadata which describes the option's identifier and other information.
+	 * 
+	 * @param option	option metadata
+	 * @return OptionConfiguration	this configuration
+	 */
 	public OptionConfiguration addOption(OptionMetadata option) {
 		super.add(option);
 		optionLongMap.put(option.getIdentifier(IdentifierType.LONG), option);
@@ -71,26 +64,67 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 		return this;
 	}
 	
+	/**
+	 * Adds a new option with no description and no parameter.
+	 * 
+	 * @param identifier			identifier
+	 * @return OptionConfiguration	this configuration
+	 */
 	public OptionConfiguration addOption(String identifier) {
 		addOption(identifier, "");
 		return this;
 	}
 	
+	/**
+	 * Adds a new required command line option with description and no parameter.
+	 * 
+	 * @param identifier			identifier
+	 * @param description			description of option
+	 * @return OptionConfiguration	this configuration
+	 */
 	public OptionConfiguration addOption(String identifier, String description) {
 		addOption(identifier, true, description);
 		return this;
 	}
 	
+	/**
+	 * Adds a new command line option with no parameter.
+	 * 
+	 * @param identifier			identifier
+	 * @param required				true if option is required, otherwise false
+	 * @param description			description of option
+	 * @return OptionConfiguration	this configuration
+	 */
 	public OptionConfiguration addOption(String identifier, boolean required, String description) {
 		addOption(identifier, "", (ParameterMetadata) null, required, false, description, "");
 		return this;
 	}
 
+	/**
+	 * Adds a new command line option with no parameter.
+	 * 
+	 * @param identifier			identifier
+	 * @param required				true if option is required, otherwise false
+	 * @param multiValued			true if option is multi-valued, option is multi-valued if it can be specified more than once in comman line
+	 * @param description			description of option
+	 * @return OptionConfiguration	this configuration
+	 */
 	public OptionConfiguration addOption(String identifier, boolean required, boolean multiValued, String description) {
 		addOption(identifier, "", (ParameterMetadata) null, required, multiValued, description, "");
 		return this;
 	}
 	
+	/**
+	 * Adds a new command line option which supports short and long identifiers and has no parameter.
+	 * 
+	 * @param identifier			identifier
+	 * @param longIdentifier		long identifier
+	 * @param required				true if option is required, otherwise false
+	 * @param multiValued			true if option is multi-valued, option is multi-valued if it can be specified more than once in comman line
+	 * @param description			description of option
+	 * @param longDescription		long description of option
+	 * @return OptionConfiguration	this configuration
+	 */
 	public OptionConfiguration addOption(String identifier, String longIdentifier, 
 			ParameterMetadata parameter,
 			boolean required, boolean multiValued,
@@ -106,6 +140,14 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 		return this;
 	}
 	
+	/**
+	 * Adds a new required option which accepts a parameter.
+	 * 
+	 * @param identifier		option identifier
+	 * @param parameterType		parameter type
+	 * @param description		description of option
+	 * @return OptionConfiguration	this configuration
+	 */
 	public OptionConfiguration addOption(String identifier, ParameterType parameterType, String description) {
 		
 		ParameterMetadata parameter = new ParameterMetadataImpl( identifier, false, false, parameterType, null);
@@ -119,6 +161,16 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 		return this;
 	}
 	
+	/**
+	 * Adds a new option which accepts a parameter.
+	 * 
+	 * @param identifier		option identifier
+	 * @param longIdentifier	option long identifier
+	 * @param parameterType		parameter type
+	 * @param description		description of option
+	 * @param longDescription	long description of option
+	 * @return OptionConfiguration	this configuration
+	 */
 	public OptionConfiguration addOption(String identifier, String longIdentifier, 
 			ParameterType parameterType,
 			boolean required, boolean multiValued,
@@ -135,6 +187,12 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 		return this;
 	}
 	
+	/**
+	 * Returns metadata of an option. Identifier can be the short or long identifier. 
+	 * 
+	 * @param identifier	identifier of option, can be the long or short identifier.
+	 * @return OptionMetadata metadata of option
+	 */
 	public OptionMetadata getOption(String identifier) {
 		OptionMetadata option = super.get(identifier);
 		if(option==null) {
@@ -143,6 +201,13 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 		return option;
 	}
 
+	/**
+	 * Returns metadata of an option depending on the identifier type passed.
+	 * 
+	 * @param identifier	option identifier string
+	 * @param type			identifier tpe
+	 * @return OptionMetadata metadata of option
+	 */
 	public OptionMetadata getOption(String identifier, IdentifierType type) {
 		if(type==IdentifierType.LONG) {
 			return optionLongMap.get(identifier);
@@ -150,32 +215,13 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 		return super.get(identifier);
 	}
 	
+	/**
+	 * Returns the list of options registered to this configuration.
+	 * 
+	 * @return List<OptionMetadata> list of options.
+	 */
 	public List<OptionMetadata> getOptions() {
 		return new ArrayList<OptionMetadata>(values());
-	}
-
-	public String getParameterDelimitter() {
-		return commandLineProperties.getOptionParameterDelim();
-	}
-
-	public void setParameterDelimitter(String parameterDelimitter) {
-		this.commandLineProperties.setOptionParameterDelim(parameterDelimitter);
-	}
-
-	public String getOptionPrefix() {
-		return commandLineProperties.getOptionPrefix();
-	}
-
-	public void setOptionPrefix(String optionPrefix) {
-		commandLineProperties.setOptionPrefix(optionPrefix);
-	}
-
-	public String getOptionLongPrefix() {
-		return commandLineProperties.getOptionLongPrefix();
-	}
-
-	public void setOptionLongPrefix(String optionLongPrefix) {
-		commandLineProperties.setOptionLongPrefix(optionLongPrefix);
 	}
 
 }

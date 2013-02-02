@@ -60,7 +60,7 @@ public abstract class Configuration<T extends InputMetadata> extends LinkedHashM
 	
 	public boolean addAll(Collection<T> metadataList) {
 		for(T metadata: metadataList) {
-			super.put(metadata.getIdentifier(), metadata);
+			add(metadata);
 		}
 		return !metadataList.isEmpty();
 	}

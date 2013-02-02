@@ -37,4 +37,22 @@ public class ParameterConfiguration extends Configuration<ParameterMetadata> {
 		super("parameter", "Parameter configuration");
 	}
 	
+	public ParameterConfiguration addParameter(ParameterMetadata metadata) {
+		add(metadata);
+		return this;
+	}
+	
+	public ParameterConfiguration addParameter(String identifier, boolean required, String description) {
+		ParameterMetadata param = new ParameterMetadataImpl(identifier, required, description);
+		addParameter(param);
+		return this;
+	}
+	
+	public ParameterConfiguration addParameter(String identifier, boolean required, boolean multiValued, String description) {
+		ParameterMetadata param = new ParameterMetadataImpl(identifier, required, multiValued, description);
+		addParameter(param);
+		return this;
+	}
+	
+	
 }
