@@ -64,4 +64,12 @@ public final class StringUtil {
 		}
 	}
 	
+	public static String sourceNameToClassName(String path) {
+		if(path.endsWith(".java")) {
+			return path.substring(0, path.length() - 5).replace("/", ".");
+		} else {
+			return path.replace("/", ".");
+		}
+	}
+	
 }

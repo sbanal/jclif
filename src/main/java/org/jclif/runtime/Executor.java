@@ -44,10 +44,9 @@ import org.jclif.annotation.Command;
 import org.jclif.annotation.Handler;
 import org.jclif.annotation.Option;
 import org.jclif.annotation.Parameter;
-import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.CommandLineParseResult;
+import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
-import org.jclif.runtime.ExecutorHandlerRegistry.ExecutorHandler;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandMetadata;
 import org.jclif.type.CommandMetadataImpl;
@@ -205,21 +204,21 @@ public final class Executor {
 		for(String className : classList) {
 			try {
 				Class<?> classInstance = Class.forName(className);
-				CommandMetadata metadata = annotationToMetadata(classInstance);
-				if(metadata==null) {
+				ExecutorHandler handler = annotationToMetadata(classInstance);
+				if(handler==null) {
 					continue;
 				}
-				if(metadata.getIdentifier().equals("-default-")) {
-					for(OptionMetadata optMeta: metadata.getOptionConfigurations().values()) {
+				if(handler.getMetadata().getIdentifier().equals("-default-")) {
+					for(OptionMetadata optMeta: handler.getMetadata().getOptionConfigurations().values()) {
 						config.getOptionConfiguration().addOption(optMeta);
 					}
-					for(ParameterMetadata paramMeta: metadata.getParameterConfigurations().values()) {
+					for(ParameterMetadata paramMeta: handler.getMetadata().getParameterConfigurations().values()) {
 						config.getParameterConfiguration().addParameter(paramMeta);
 					}
 				} else {
-					config.getCommandConfiguration().addCommand(metadata);
+					config.getCommandConfiguration().addCommand(handler.getMetadata());
 				}
-				
+				handlerRegistry.add(handler);
 			} catch (ClassNotFoundException e) {
 				LOGGER.log(Level.WARNING, "Application configuration error. Handler class " + className + " not found", e);
 			}
@@ -227,7 +226,7 @@ public final class Executor {
 		
 	}
 	
-	CommandMetadata annotationToMetadata(Class<?> commandHandler)
+	public static ExecutorHandler annotationToMetadata(Class<?> commandHandler)
 	{
 		LOGGER.info("--- Start Processing annotation details: " + commandHandler.getCanonicalName());
 		
@@ -310,12 +309,10 @@ public final class Executor {
 					parameterConfig, 
 					commandAnnotation.description(), 
 					commandAnnotation.longDescription());
-			handlerRegistry.add(metadata, commandHandler, handlerMethod);
-			return metadata;
+			return new ExecutorHandler(metadata, commandHandler, handlerMethod);
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Unable to register command metadata to registry", e);
 		}
-		
 		
 	}
 	
