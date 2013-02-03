@@ -1,0 +1,15 @@
+Building from GitHub
+
+Using Maven
+
+	git clone https://github.com/sbanal/jclif.git
+	cd jclif
+	mvn clean install
+
+Using Ant
+
+	git clone https://github.com/sbanal/jclif.git
+	cd jclif
+	ant clean package
+
+
