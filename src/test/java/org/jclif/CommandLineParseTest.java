@@ -39,7 +39,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
-public class CommandLineFormatTest {
+public class CommandLineParseTest {
 	
 	public static void main(String[] args) {
 		System.out.println("Main Input: " + Arrays.asList(args));

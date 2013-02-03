@@ -151,8 +151,11 @@ class DefaultCommandLineParser extends CommandLineParser {
 		LOGGER.info(String.format("OptionsFlags regex={%s}", sbOptionFlags.toString()));
 		
 		// parse options
-		String token = null;		
 		Pattern optionsParam = Pattern.compile(sbOptionFlags.toString());
+		String token = null;
+		
+		
+		
 		while ((token = scanner.findInLine(optionsParam)) != null) {
 
 			MatchResult result = scanner.match();
@@ -222,6 +225,26 @@ class DefaultCommandLineParser extends CommandLineParser {
 			}
 
 		}
+		
+		// check if the next token is a possible flag but was wrongly specified
+		if(token==null) {
+			Pattern prefixPattern = null;
+			if(!config.getCommandLineProperties().getOptionLongPrefix().isEmpty()) {
+				prefixPattern = Pattern.compile(String.format("^(%s|%s)(\\w)",
+						config.getCommandLineProperties().getOptionPrefix(), 
+						config.getCommandLineProperties().getOptionLongPrefix()));
+			} else {
+				prefixPattern = Pattern.compile(String.format("^(%s)(\\w)",
+						config.getCommandLineProperties().getOptionPrefix()));
+			}
+			token = scanner.findInLine(prefixPattern);
+			if(token!=null) {
+				MatchResult result = scanner.match();
+				String paramIdentifierStr = result.group(2);
+				throw new InvalidInputException("Invalid Option " + paramIdentifierStr);
+			}
+		}
+		
 	
 		return !resultSet.isEmpty();
 	}
@@ -372,9 +395,16 @@ class DefaultCommandLineParser extends CommandLineParser {
 		if(!config.getDescription().isEmpty()) {
 			sb.append(String.format("Description: %s%n", config.getDescription()));
 		}
-		sb.append(String.format("Usage:    %s [options] %s%n", config.getName(), parameterFormatList));
-		if(!config.getCommandConfiguration().isEmpty()) {
-			sb.append(String.format("      or  %s [command] [options] parameters...%n", config.getName()));
+		
+		sb.append("Usage:");
+		boolean defaultCommandExist = (!config.getOptionConfiguration().isEmpty() || !config.getParameterConfiguration().isEmpty());
+		if(defaultCommandExist){
+			sb.append(String.format("  %s [options] %s%n", config.getName(), parameterFormatList));
+		}
+		if(defaultCommandExist && !config.getCommandConfiguration().isEmpty()) {
+			sb.append(String.format("   or   %s [command] [options] parameters...%n", config.getName()));
+		} else {
+			sb.append(String.format("  %s [command] [options] parameters...%n", config.getName()));
 		}
 		
 		sb.append(formatOptionList(config, config.getOptionConfiguration(), formatType));
