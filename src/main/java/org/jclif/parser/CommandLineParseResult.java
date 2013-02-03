@@ -76,6 +76,10 @@ public class CommandLineParseResult {
 		return parameterSet;
 	}
 	
+	public boolean containsInput() {
+		return (this.getOptionInput().isEmpty() && this.getParameterInput().isEmpty());
+	}
+	
 	public void clear() {
 		matchingCommand = null;
 		optionSet.clear();

@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Calendar;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jclif.runtime.Executor;
@@ -74,17 +75,18 @@ public class CodeGenerator {
 		// scan all classes of a directory and detect which ones are JCLIF annotated
 		RuntimeConfiguration jclifProperties = new RuntimeConfiguration(getAppName());
 		for(File srcFile : files) {
-			String className = StringUtil.sourceNameToClassName(srcFile.getName());
+			String classNameFromFile = StringUtil.sourceNameToClassName(srcFile.getName());
+			String className = commandAnnotatedPackage + "." + classNameFromFile;
 			try {
-				Class<?> classType = Class.forName(commandAnnotatedPackage + "." + className);
+				Class<?> classType = Class.forName(className);
 				ExecutorHandler handler = Executor.annotationToMetadata(classType);
 				if(handler!=null) {
 					jclifProperties.addHandler(handler.getHandlerClass());
 				}
 			} catch (ClassNotFoundException e) {
-				LOGGER.info(String.format("Unable to load class %s due to error '%s'", className, e.getMessage()));
+				LOGGER.log(Level.WARNING, String.format("Unable to load class %s due to error '%s'", className, e.getMessage()), e);
 			} catch(Exception e) {
-				LOGGER.info(String.format("Unable to load class %s due to error '%s'", className, e.getMessage()));
+				LOGGER.log(Level.WARNING, String.format("Unable to load class %s due to error '%s'", className, e.getMessage()), e);
 			}
 			
 		}

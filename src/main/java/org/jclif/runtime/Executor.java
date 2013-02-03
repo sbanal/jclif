@@ -32,9 +32,12 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -44,6 +47,7 @@ import org.jclif.annotation.Command;
 import org.jclif.annotation.Handler;
 import org.jclif.annotation.Option;
 import org.jclif.annotation.Parameter;
+import org.jclif.parser.CommandLineFormatType;
 import org.jclif.parser.CommandLineParseResult;
 import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
@@ -119,42 +123,43 @@ public final class Executor {
 			String appJarEntryMainClass = appMain.replace(".", "/") + ".class";
 			url = Executor.class.getClassLoader().getResource(appJarEntryMainClass);
 		} else {
-			String appPackage = appConfig.getProperty(CONFIG_PROPERTY_APP_HANDLER_PACKAGE,"");
-			appMainPackage = appPackage.replace(".", "/");
-			url = Executor.class.getClassLoader().getResource("jclif.properties");
-			LOGGER.info("Loading Main handler url path " + url.getPath());
+			String appPackage = appConfig.getProperty(CONFIG_PROPERTY_APP_HANDLER_PACKAGE,null);
+			if(appPackage!=null) {
+				appMainPackage = appPackage.replace(".", "/");
+				url = Executor.class.getClassLoader().getResource("jclif.properties");
+				LOGGER.info("Loading Main handler url path " + url.getPath());
+			}
 		}
 
-		if(appMainPackage==null) {
-			throw new Exception("Handler package not configured. Please check configuration file.");
-		}
-		
 		LOGGER.info("Loading Main handler: " + appMainPackage);
 		
-		List<String> mainPackageClasses = new ArrayList<String>();
-		URLConnection urlConn = url.openConnection();
-		if (urlConn instanceof JarURLConnection){
-			JarURLConnection conn = (JarURLConnection) urlConn;
-			LOGGER.info("Loading Handler from jar: " + conn.getJarFile().getName());
-			for(Enumeration<JarEntry> e = conn.getJarFile().entries(); e.hasMoreElements(); ) {
-				JarEntry entry = e.nextElement();
-				if(entry==null) {
-					continue;
+		Set<String> mainPackageClasses = new HashSet<String>();
+		if(url!=null) {
+			URLConnection urlConn = url.openConnection();
+			if (urlConn instanceof JarURLConnection){
+				JarURLConnection conn = (JarURLConnection) urlConn;
+				LOGGER.info("Loading Handler from jar: " + conn.getJarFile().getName());
+				for(Enumeration<JarEntry> e = conn.getJarFile().entries(); e.hasMoreElements(); ) {
+					JarEntry entry = e.nextElement();
+					if(entry==null) {
+						continue;
+					}
+					LOGGER.info("Checking Handler from jar path: " + entry.getName());
+					if(entry.getName().startsWith(appMainPackage)
+						&& !entry.isDirectory()
+						&& entry.getName().endsWith(".class")) {
+						mainPackageClasses.add(StringUtil.pathToClassName(entry.getName()));
+					}
 				}
-				LOGGER.info("Checking Handler from jar path: " + entry.getName());
-				if(entry.getName().startsWith(appMainPackage)
-					&& !entry.isDirectory()
-					&& entry.getName().endsWith(".class")) {
-					mainPackageClasses.add(StringUtil.pathToClassName(entry.getName()));
-				}
+			} else if(url.getProtocol().equalsIgnoreCase("file")){
+				File fileDir = new File(url.toURI());
+				LOGGER.info("Loading Handler from local path: " + fileDir.getCanonicalFile().getParentFile());
+				extractClassPackages(fileDir.getCanonicalFile().getParentFile(), appMainPackage, mainPackageClasses);
 			}
-		} else if(url.getProtocol().equalsIgnoreCase("file")){
-			File fileDir = new File(url.toURI());
-			LOGGER.info("Loading Handler from local path: " + fileDir.getCanonicalFile().getParentFile());
-			extractClassPackages(fileDir.getCanonicalFile().getParentFile(), appMainPackage, mainPackageClasses);
 		}
-		
+			
 		// Add addition handler specified in configuration file
+		int handlerGetCount = 0;
 		for(int i = 1; ;i++) {
 			String key = CONFIG_PROPERTY_APP_HANDLER_LIST + "." + i;
 			String configHandler = this.appConfig.getProperty(key);
@@ -167,11 +172,17 @@ public final class Executor {
 			configHandler = configHandler.trim();
 			LOGGER.info("Loading Handler from config " + key + "='" + configHandler + "'");
 			mainPackageClasses.add(configHandler);
+			handlerGetCount++;
 		}
-
+		
+		if((appMainPackage==null || handlerGetCount==0) && mainPackageClasses.isEmpty()) {
+			throw new Exception("Handler package not configured or no " + CONFIG_PROPERTY_APP_HANDLER_LIST 
+					+ ".<X> entry found. Please check configuration file.");
+		}
+		
 		LOGGER.info("Handler classe list: " + mainPackageClasses);
 
-		return mainPackageClasses;
+		return new ArrayList<String>(mainPackageClasses);
 	}
 	
 	private static final FileFilter classFilter = new FileFilter() {
@@ -181,7 +192,7 @@ public final class Executor {
 		}
 	};
 	
-	void extractClassPackages(File srcDir, String appMainPackage, List<String> mainPackageClasses) throws IOException {
+	void extractClassPackages(File srcDir, String appMainPackage, Collection<String> mainPackageClasses) throws IOException {
 		File[] files = srcDir.listFiles(classFilter);
 		for(File file : files) {
 			String entryFilePath = file.getCanonicalPath();
@@ -208,6 +219,7 @@ public final class Executor {
 				if(handler==null) {
 					continue;
 				}
+				LOGGER.log(Level.INFO, "Adding class handler " + classInstance.getCanonicalName());
 				if(handler.getMetadata().getIdentifier().equals("-default-")) {
 					for(OptionMetadata optMeta: handler.getMetadata().getOptionConfigurations().values()) {
 						config.getOptionConfiguration().addOption(optMeta);
@@ -316,30 +328,40 @@ public final class Executor {
 		
 	}
 	
-	public void execute(String... args) throws Exception {
-		List<String> handlerList = loadHandlerResources();
-		processConfigAnnotations(handlerList);
-		CommandLineParseResult result = CommandLineParser.getInstance().parse(config, args);
-		LOGGER.info("Command match: " + result.isCommandMatch() + ",command=" + result.getMatchingCommand());
-		ExecutorHandler handler = null;
-		if(result.isCommandMatch()) {
-			handler = handlerRegistry.getHandler(result.getMatchingCommand().getMetadata());
-		} else {
-			handler = handlerRegistry.getDefaultHandler();
+	public void execute(String... args) {
+		
+		CommandLineParseResult result = null;
+		try {
+			List<String> handlerList = loadHandlerResources();
+			processConfigAnnotations(handlerList);
+			result = CommandLineParser.getInstance().parse(config, args);
+			LOGGER.info("Command match: " + result.isCommandMatch() + ",command=" + result.getMatchingCommand());
+			ExecutorHandler handler = null;
+			if(result.isCommandMatch()) {
+				handler = handlerRegistry.getHandler(result.getMatchingCommand().getMetadata());
+			} else {
+				handler = handlerRegistry.getDefaultHandler();
+			}
+			if(handler!=null) {
+				handler.execute(result);
+			} else {
+				String usage = CommandLineParser.getInstance().format(config);
+				System.out.println(usage);
+			}
+		} catch (InvalidInputException e) {
+			printUsage(e);
+		} catch (FileNotFoundException e) {
+			printUsage("Unable to find JCLIF configuration. " + e.getMessage());
+		} catch (IOException e) {
+			printUsage("Unable to read JCLIF configuration. " + e.getMessage());
+		} catch (Exception e) {
+			printUsage("Unknwon exception. " + e.getMessage() + ". Cause = " + ((e.getCause()!=null)?e.getCause().getMessage():""));
+			e.printStackTrace();
 		}
-		if(handler==null) {
-			throw new IllegalArgumentException("Executor not found for command " + result.getMatchingCommand().getIdentifier());
-		}
-		handler.execute(result);
 	}
 	
 	public void printUsage(InvalidInputException e) {
 		String usage = CommandLineParser.getInstance().format(config, e);
-		System.out.println(usage);
-	}
-	
-	public void printUsage(Exception e) {
-		String usage = CommandLineParser.getInstance().format(config, e.getMessage());
 		System.out.println(usage);
 	}
 	
@@ -373,26 +395,14 @@ public final class Executor {
 	 * automatically.
 	 * 
 	 * @param args	argument passed in command line input
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		configureLoggingProperties();
-		
-		Executor executor = null;
-		
-		try {
-			executor = new Executor();
-			executor.execute(args);
-		} catch (InvalidInputException e) {
-			executor.printUsage(e);
-		} catch (FileNotFoundException e) {
-			executor.printUsage("Unable to find JCLIF configuration. " + e.getMessage());
-		} catch (IOException e) {
-			executor.printUsage("Unable to read JCLIF configuration. " + e.getMessage());
-		} catch (Exception e) {
-			executor.printUsage("Unknwon excetpion. " + e.getMessage() + ". Cause = " + ((e.getCause()!=null)?e.getCause().getMessage():""));
-		}
-		
+		Executor executor = new Executor();
+		executor.execute(args);
+
 	}
 	
 }

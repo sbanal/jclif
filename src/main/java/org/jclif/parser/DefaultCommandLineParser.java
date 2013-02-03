@@ -344,7 +344,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 	}
 	
 	public String format(CommandLineConfiguration config, CommandMetadata commandMetadata, CommandLineFormatType formatType) {
-	
+		
 		List<OptionMetadata> optionMetaDataList = commandMetadata.getOptionConfigurations().getOptions();
 		Map<String, OptionMetadata> optionFormatMap = new LinkedHashMap<String, OptionMetadata>();
 		Integer maxIdLength = 0;

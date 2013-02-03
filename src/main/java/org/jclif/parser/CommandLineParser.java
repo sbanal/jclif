@@ -20,6 +20,7 @@
 package org.jclif.parser;
 
 import org.jclif.type.CommandLineConfiguration;
+import org.jclif.type.CommandMetadata;
 
 
 /**
@@ -61,6 +62,8 @@ public abstract class CommandLineParser {
 	 * @return boolean true if it configuration matches options, otherwise false
 	 */
 	public abstract  boolean matches(CommandLineConfiguration configuration, CommandLineParseResult resultSet, String... args);
+	
+	public abstract String format(CommandLineConfiguration config, CommandMetadata metadata, CommandLineFormatType formatType);
 	
 	public abstract String format(CommandLineConfiguration config, InvalidInputException e);
 	

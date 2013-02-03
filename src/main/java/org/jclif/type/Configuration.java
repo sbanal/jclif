@@ -22,6 +22,7 @@ package org.jclif.type;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -38,6 +39,8 @@ import java.util.regex.Pattern;
  */
 public abstract class Configuration<T extends InputMetadata> extends LinkedHashMap<String, T> {
 
+	private static final Logger LOGGER = Logger.getLogger(Configuration.class.getCanonicalName());
+	
 	private final Pattern IDENTIFIER_REGEX = Pattern.compile("^([\\w]+)$");
 	
 	/**
@@ -62,6 +65,7 @@ public abstract class Configuration<T extends InputMetadata> extends LinkedHashM
 	}
 	
 	public T add(T metadata) {
+		LOGGER.info("Add identifier: " + metadata.getIdentifier() + ", metadata-desc:" + metadata.getDescription());
 		validateIdentifier(metadata.getIdentifier(), true);
 		if (null != get(metadata.getIdentifier())) {
 			throw new InvalidIdentifierException(this.getId() + " identifer '" + metadata.getIdentifier() + "' already exist.");
