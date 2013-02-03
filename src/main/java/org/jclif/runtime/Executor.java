@@ -52,6 +52,7 @@ import org.jclif.parser.CommandLineParseResult;
 import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
 import org.jclif.type.CommandLineConfiguration;
+import org.jclif.type.CommandLineProperties;
 import org.jclif.type.CommandMetadata;
 import org.jclif.type.CommandMetadataImpl;
 import org.jclif.type.OptionConfiguration;
@@ -334,6 +335,8 @@ public final class Executor {
 		try {
 			List<String> handlerList = loadHandlerResources();
 			processConfigAnnotations(handlerList);
+			String customOsName = System.getProperty("org.jclif.runtime.system.os.name", System.getProperty("os.name"));
+			config.setCommandLineProperties(CommandLineProperties.getSystemProperties(customOsName));
 			result = CommandLineParser.getInstance().parse(config, args);
 			LOGGER.info("Command match: " + result.isCommandMatch() + ",command=" + result.getMatchingCommand());
 			ExecutorHandler handler = null;
