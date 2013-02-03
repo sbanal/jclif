@@ -166,7 +166,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 
 			// parse option identifier extract option identifier and get its metadata
 			String paramIdentifierStr = result.group(1);
-			String paramId = paramIdentifierStr.startsWith(config.getCommandLineProperties().getOptionLongPrefix()) ? paramIdentifierStr.substring(2) : paramIdentifierStr.substring(1);
+			String paramId = paramIdentifierStr.startsWith(config.getCommandLineProperties().getOptionLongPrefix()) ? paramIdentifierStr.substring(config.getCommandLineProperties().getOptionLongPrefix().length()) : paramIdentifierStr.substring(config.getCommandLineProperties().getOptionPrefix().length());
 			OptionMetadata metadata = optionConfig.getOption(paramId);
 			if (metadata == null) {
 				throw new InvalidInputException("Option " + paramIdentifierStr + " is not found.", cmdMetadata);

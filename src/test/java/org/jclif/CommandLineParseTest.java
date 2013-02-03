@@ -30,6 +30,7 @@ import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.CommandLineParseResult;
 import org.jclif.parser.InvalidInputException;
 import org.jclif.type.CommandLineConfiguration;
+import org.jclif.type.CommandLineProperties;
 import org.jclif.type.OptionConfiguration;
 import org.jclif.type.ParameterMetadata;
 import org.jclif.type.ParameterMetadataImpl;
@@ -50,6 +51,17 @@ public class CommandLineParseTest {
 		CommandLineConfiguration config = new CommandLineConfiguration();
 		config.getOptionConfiguration().addOption("i").addOption("o", "output fule");
 		String[] args = {"-i", "-o"};
+		CommandLineParseResult parseResult = CommandLineParser.getInstance().parse(config, args);
+		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
+		Assert.assertTrue(parseResult.getOptionInput().contains("o"));
+	}
+	
+	@Test
+	public void testWindowsParseSimpleOption() throws InvalidInputException {
+		CommandLineConfiguration config = new CommandLineConfiguration();
+		config.setCommandLineProperties(CommandLineProperties.getSystemProperties("Windows"));
+		config.getOptionConfiguration().addOption("i").addOption("o", "output fule");
+		String[] args = {"/i", "/o"};
 		CommandLineParseResult parseResult = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
 		Assert.assertTrue(parseResult.getOptionInput().contains("o"));
