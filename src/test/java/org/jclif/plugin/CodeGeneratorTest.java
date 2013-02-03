@@ -36,6 +36,8 @@ public class CodeGeneratorTest {
 		
 		Assert.assertTrue(handlerSet.contains(Class.forName("examples.DefaultCommand")));
 		Assert.assertTrue(handlerSet.contains(Class.forName("examples.ListCommand")));
+		
+		file.delete();
 	}
 	
 }
