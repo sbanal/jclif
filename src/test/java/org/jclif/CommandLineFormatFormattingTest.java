@@ -19,8 +19,8 @@
 
 package org.jclif;
 
-import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.CommandLineFormatType;
+import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.OptionConfiguration;
@@ -110,17 +110,47 @@ public class CommandLineFormatFormattingTest {
 	
 	@Test
 	public void testCommandShortFormat() throws InvalidInputException {
+		
 		CommandLineConfiguration config = new CommandLineConfiguration();
 		config.setName("mysampleapp");
 		OptionConfiguration argConfig = new OptionConfiguration();
 		ParameterMetadata param1 = new ParameterMetadataImpl("dir1", true, "dir 1");
 		ParameterMetadata param2 = new ParameterMetadataImpl("dir2", false, "dir 2");
-		config.getOptionConfiguration().addOption("i", ParameterType.STRING, "").addOption("o", ParameterType.STRING, "output fule");
-		config.getCommandConfiguration().addCommand("list", argConfig, "List all modified files", param1, param2);
+		config.getOptionConfiguration().addOption("i", ParameterType.STRING, "").addOption("o", "options", ParameterType.STRING, false, false, "output file", "some long desc");
+		
 		config.getCommandConfiguration().addCommand("pull", argConfig, "Pull files from remote", param1, param2);
 		config.getCommandConfiguration().addCommand("push", argConfig, "Push files to remote", param1, param2);
+		
 		String formatValue = CommandLineParser.getInstance().format(config, CommandLineFormatType.SHORT);
 		System.out.printf("LongFormatValue:%n%s", formatValue);
+		String formatValue3 = CommandLineParser.getInstance().format(config, config.getCommandConfiguration().get("pull"), 
+				CommandLineFormatType.FULL);
+		System.out.printf("LongFormatValue Pull:%n%s", formatValue3);
+	
+	}
+	
+	@Test
+	public void testCommandShortFormatCommand() throws InvalidInputException {
+	
+		CommandLineConfiguration config = new CommandLineConfiguration();
+		config.setName("mysampleapp");
+		
+		ParameterMetadata param1 = new ParameterMetadataImpl("dir1", true, "dir 1");
+		ParameterMetadata param2 = new ParameterMetadataImpl("dir2", false, "dir 2");
+		
+		OptionConfiguration optionConfig = new OptionConfiguration();
+		optionConfig.addOption("i", "input", ParameterType.FILE, false, false, "output file", "some long desc1");
+		optionConfig.addOption("o", "options", ParameterType.STRING, false, false, "options string", "some long desc2");
+		config.getCommandConfiguration().addCommand("list", optionConfig, "List all modified files", param1, param2);
+		
+		String formatValue2 = CommandLineParser.getInstance().format(config, config.getCommandConfiguration().get("list"), 
+				CommandLineFormatType.FULL);
+		System.out.printf("LongFormatValue List:%n%s", formatValue2);	
+		
+		formatValue2 = CommandLineParser.getInstance().format(config,
+				new InvalidInputException("Example error message", config.getCommandConfiguration().get("list")));
+		System.out.printf("LongFormatValue List:%n%s", formatValue2);	
+		
 	}
 	
 	@Test

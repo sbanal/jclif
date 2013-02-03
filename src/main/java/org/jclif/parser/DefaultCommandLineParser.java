@@ -391,6 +391,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 		Integer maxIdLength = 0;
 		for(OptionMetadata metadata : optionMetaDataList) {
 			String optionFormatStr = formatOption(metadata, config);
+			LOGGER.info("formatOption: " + optionFormatStr + "-->"+ metadata);
 			maxIdLength = Math.max(optionFormatStr.length(), maxIdLength);
 			optionFormatMap.put(optionFormatStr, metadata);
 		}
@@ -470,9 +471,18 @@ class DefaultCommandLineParser extends CommandLineParser {
 						paramUsageStr);
 			}
 		} else {
-			formattedOption = String.format("%s%s", 
-					config.getCommandLineProperties().getOptionPrefix(),  
-					metadata.getIdentifier());
+			String longIdentifier = metadata.getIdentifier(IdentifierType.LONG);
+			if(longIdentifier!=null && !longIdentifier.isEmpty()) {
+				formattedOption = String.format("%s%s, %s%s", 
+						config.getCommandLineProperties().getOptionPrefix(), 
+						metadata.getIdentifier(), 
+						config.getCommandLineProperties().getOptionLongPrefix(), 
+						metadata.getIdentifier(IdentifierType.LONG));
+			} else {
+				formattedOption = String.format("%s%s", 
+						config.getCommandLineProperties().getOptionPrefix(), 
+						metadata.getIdentifier());
+			}
 		}
 		return formattedOption;
 	}
