@@ -22,14 +22,12 @@ package examples;
 import java.io.File;
 import java.util.List;
 
-import org.jclif.annotation.Command;
-import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.CommandLineParseResult;
+import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.ParameterType;
 
-@Command(identifier="",description="List files")
 public class MyClass {
 
 	@SuppressWarnings("unchecked")

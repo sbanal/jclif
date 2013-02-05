@@ -60,7 +60,7 @@ public class CommandLineParseTest {
 	public void testWindowsParseSimpleOption() throws InvalidInputException {
 		CommandLineConfiguration config = new CommandLineConfiguration();
 		config.setCommandLineProperties(CommandLineProperties.getSystemProperties("Windows"));
-		config.getOptionConfiguration().addOption("i").addOption("o", "output fule");
+		config.getOptionConfiguration().addOption("i").addOption("o", "output file");
 		String[] args = {"/i", "/o"};
 		CommandLineParseResult parseResult = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
@@ -75,6 +75,15 @@ public class CommandLineParseTest {
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
 		Assert.assertTrue(parseResult.getOptionInput().contains("i"));
 		Assert.assertTrue(parseResult.getOptionInput().contains("input"));
+	}
+	
+	@Test(expected=InvalidInputException.class)
+	public void testParseWrongLongOptionWithInvalidPrefix() throws InvalidInputException {
+		CommandLineConfiguration config = new CommandLineConfiguration();
+		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, false, "Sample desc", "A very long sample desc of the option");
+		String[] args = {"-input"};
+		CommandLineParser.getInstance().parse(config, args);
+		Assert.assertTrue( "expected to fail", false);
 	}
 	
 	@Test
