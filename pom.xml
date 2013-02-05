@@ -13,7 +13,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>jclif</name>
-	<description>Java Command Line Interface Framework</description>
+	<description>
+		Java Command Line Interface Framework(JCLIF)
+		Framework for parsing and formatting command line commands, options and parameters.
+	</description>
 	<url>https://github.com/sbanal/jclif</url>
 
 	<licenses>
