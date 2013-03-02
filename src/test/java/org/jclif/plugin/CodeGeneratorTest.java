@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jclif.runtime.RuntimeConfiguration;
+import org.jclif.runtime.Configuration;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class CodeGeneratorTest {
 		
 		Assert.assertTrue(file.exists());
 		
-		RuntimeConfiguration prop = new RuntimeConfiguration("appname");
+		Configuration prop = new Configuration("appname");
 		prop.load(new FileInputStream(file));
 		List<Class<?>> handlerList = prop.getHandlerList();
 		Set<Class<?>> handlerSet = new HashSet<Class<?>>(handlerList);;

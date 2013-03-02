@@ -19,6 +19,8 @@
 
 package org.jclif.type;
 
+import org.jclif.annotation.Option;
+
 
 
 /**
@@ -31,6 +33,18 @@ public class OptionMetadataImpl extends InputMetadataImpl implements OptionMetad
 
 	private String longIdentifier;
 	private ParameterMetadata parameterMetadata;
+	
+	public OptionMetadataImpl(Option optionAnnotation, ParameterMetadata parameterMetadata, 
+			boolean multiValued) {
+		this(
+			optionAnnotation.identifier(),
+			optionAnnotation.longIdentifier(),
+			parameterMetadata,
+			optionAnnotation.required(),
+			multiValued,
+			optionAnnotation.description(),
+			optionAnnotation.longDescription());
+	}
 	
 	public OptionMetadataImpl(String identifier, ParameterMetadata parameterMetadata, 
 			boolean required, boolean multiValued, String description) {

@@ -9,6 +9,7 @@ import org.jclif.annotation.Parameter;
 import org.jclif.parser.CommandLineParseResult;
 import org.jclif.type.CommandMetadata;
 import org.jclif.type.OptionConfiguration;
+import org.jclif.type.OptionInput;
 import org.jclif.type.OptionMetadata;
 import org.jclif.util.ReflectionUtil;
 
@@ -62,12 +63,13 @@ public class ExecutorHandler {
 			String fieldName = field.getName();
 			LOGGER.info(String.format("processing field = " + field.getName()));
 			if(field.isAnnotationPresent(Option.class)) {
+				
 				Option option = field.getAnnotation(Option.class);
 				boolean optionExist = result.getOptionInput().contains(option.identifier());
-					
+
 				LOGGER.info(String.format("Setting field = " + field.getName() + " option specified"));
 				OptionMetadata optMetadata = optionConfig.get(option.identifier());
-				org.jclif.type.OptionInput optionValue = result.getOptionInput().get(option.identifier());
+				OptionInput optionValue = result.getOptionInput().get(option.identifier());
 				if(optionValue!=null) {
 					if(optMetadata.isParameterAccepted()) {
 						value = optionValue.getParameter().getValue();

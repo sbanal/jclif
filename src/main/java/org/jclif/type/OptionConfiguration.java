@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.jclif.type.OptionMetadata.IdentifierType;
 
@@ -43,9 +42,8 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 	 */
 	private static final long serialVersionUID = -6514260728828963130L;
 
-	private final static Logger LOGGER = Logger.getLogger(OptionConfiguration.class.getName());
-	
 	private Map<String, OptionMetadata> optionLongMap = new HashMap<String, OptionMetadata>();
+
 	
 	public OptionConfiguration() {
 		super("option", "Option configuration");
@@ -61,11 +59,12 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 		
 		String longIdentfier = option.getIdentifier(IdentifierType.LONG);
 		validateIdentifier(longIdentfier, false);
-		if (longIdentfier!=null && !longIdentfier.isEmpty() && null != optionLongMap.get(longIdentfier)) {
-			throw new InvalidIdentifierException(this.getId() + " identifer '" + longIdentfier + "' already exist.");
+		if (longIdentfier!=null 
+				&& !longIdentfier.isEmpty() 
+				&& null != optionLongMap.get(longIdentfier)) {
+			throw new InvalidIdentifierException(this.getId() + " identifer '" + longIdentfier 
+					+ "' already exist.");
 		}
-		
-		LOGGER.info("Adding option " + option);
 		
 		optionLongMap.put(longIdentfier, option);
 		super.add(option);
@@ -118,7 +117,8 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 	 * @param description			description of option
 	 * @return OptionConfiguration	this configuration
 	 */
-	public OptionConfiguration addOption(String identifier, boolean required, boolean multiValued, String description) {
+	public OptionConfiguration addOption(String identifier, boolean required, boolean multiValued, 
+			String description) {
 		addOption(identifier, "", (ParameterMetadata) null, required, multiValued, description, "");
 		return this;
 	}
@@ -159,7 +159,7 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 	 */
 	public OptionConfiguration addOption(String identifier, ParameterType parameterType, String description) {
 		
-		ParameterMetadata parameter = new ParameterMetadataImpl( identifier, false, false, parameterType, null);
+		ParameterMetadata parameter = new ParameterMetadataImpl( identifier, parameterType);
 		OptionMetadata option = new OptionMetadataImpl(
 				identifier, "", 
 				parameter,
@@ -185,7 +185,7 @@ public class OptionConfiguration extends Configuration<OptionMetadata>{
 			boolean required, boolean multiValued,
 			String description, String longDescription) {
 		
-		ParameterMetadata parameter = new ParameterMetadataImpl( identifier, false, false, parameterType, null);
+		ParameterMetadata parameter = new ParameterMetadataImpl( identifier, parameterType);
 		OptionMetadata option = new OptionMetadataImpl(
 				identifier, longIdentifier, 
 				parameter,

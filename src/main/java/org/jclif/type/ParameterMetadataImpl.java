@@ -19,6 +19,8 @@
 
 package org.jclif.type;
 
+import org.jclif.annotation.Parameter;
+
 
 /**
  * This class provides concrete implementation of ParameterMetadata interface.
@@ -30,6 +32,19 @@ public class ParameterMetadataImpl extends InputMetadataImpl implements Paramete
 
 	private ParameterType parameterType;
 	private ParameterParser parameterValidator;
+	
+	public ParameterMetadataImpl(Parameter parameterAnnotation) {
+		this(parameterAnnotation.identifier(),
+				parameterAnnotation.required(),
+				parameterAnnotation.multiValued(),
+				parameterAnnotation.type(),
+				parameterAnnotation.description(),
+				parameterAnnotation.longDescription());
+	}
+	
+	public ParameterMetadataImpl(String identifier, ParameterType parameterType) {
+		this(identifier, false, false, parameterType, null);
+	}
 	
 	public ParameterMetadataImpl(String identifier, boolean required, String description) {
 		this(identifier, required, false, description, null, ParameterType.STRING, null);

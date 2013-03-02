@@ -10,9 +10,9 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jclif.runtime.Executor;
+import org.jclif.runtime.AnnotationProcessor;
 import org.jclif.runtime.ExecutorHandler;
-import org.jclif.runtime.RuntimeConfiguration;
+import org.jclif.runtime.Configuration;
 import org.jclif.util.StringUtil;
 
 /**
@@ -73,13 +73,13 @@ public class CodeGenerator {
 		}
 		
 		// scan all classes of a directory and detect which ones are JCLIF annotated
-		RuntimeConfiguration jclifProperties = new RuntimeConfiguration(getAppName());
+		Configuration jclifProperties = new Configuration(getAppName());
 		for(File srcFile : files) {
 			String classNameFromFile = StringUtil.sourceNameToClassName(srcFile.getName());
 			String className = commandAnnotatedPackage + "." + classNameFromFile;
 			try {
 				Class<?> classType = Class.forName(className);
-				ExecutorHandler handler = Executor.annotationToMetadata(classType);
+				ExecutorHandler handler = AnnotationProcessor.createExecutorHandler(classType);
 				if(handler!=null) {
 					jclifProperties.addHandler(handler.getHandlerClass());
 				}
@@ -92,7 +92,7 @@ public class CodeGenerator {
 		}
 		
 		// write to file
-		File generatedFile = new File(targetDirectory, Executor.DEFAULT_EXECUTOR_CONFIG_FILE);
+		File generatedFile = new File(targetDirectory, Configuration.DEFAULT_EXECUTOR_CONFIG_FILE);
 		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(generatedFile)));
 		jclifProperties.store(out, "JCLIF Generated file - " + Calendar.getInstance().getTime());
 		

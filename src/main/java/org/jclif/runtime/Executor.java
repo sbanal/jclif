@@ -19,52 +19,28 @@
 
 package org.jclif.runtime;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
+import java.io.PrintStream;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
 import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import org.jclif.annotation.Command;
-import org.jclif.annotation.Handler;
-import org.jclif.annotation.Option;
-import org.jclif.annotation.Parameter;
 import org.jclif.parser.CommandLineParseResult;
 import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandLineProperties;
-import org.jclif.type.CommandMetadata;
-import org.jclif.type.CommandMetadataImpl;
-import org.jclif.type.OptionConfiguration;
 import org.jclif.type.OptionMetadata;
-import org.jclif.type.ParameterConfiguration;
 import org.jclif.type.ParameterMetadata;
-import org.jclif.type.ParameterMetadataImpl;
-import org.jclif.type.ParameterType;
-import org.jclif.util.StringUtil;
+import org.jclif.util.LoggerUtil;
+
 
 /**
- * This class is the main class used by applications which uses annotations. This class is registered
- * as the main class in its manifest files of applications to support JCLIF annotations
+ * This class execute command handlers registered to its registry or . This class is registered
+ * as the main class in a manifest file of an application to support JCLIF annotations
  * in their code.
  * 
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
@@ -74,282 +50,97 @@ public final class Executor {
 
 	private static final Logger LOGGER = Logger.getLogger(Executor.class.getCanonicalName());
 	
-	public static final String DEFAULT_EXECUTOR_CONFIG_FILE = "jclif.properties";
-	public static final String PROPERTY_JCLIF_INSTALL_PATH  = "org.jclif.app.installation.path";
-	public static final String PROPERTY_JCLIF_CONFIG_FILE   = "org.jclif.app.configuration.file";
-	
-	public static final String CONFIG_PROPERTY_APP_NAME = "org.jclif.app.name";
-	public static final String CONFIG_PROPERTY_APP_MAIN = "org.jclif.app.main";
-	public static final String CONFIG_PROPERTY_APP_HANDLER_LIST = "org.jclif.app.handler";
-	public static final String CONFIG_PROPERTY_APP_HANDLER_PACKAGE = "org.jclif.app.handler.package";
-	
-	private Properties appConfig = new Properties();
+	private Configuration appConfig = new Configuration();
 	private CommandLineConfiguration config = new CommandLineConfiguration();
 	private ExecutorHandlerRegistry handlerRegistry = new ExecutorHandlerRegistry();
+	private InputStream configurationStream;
+	private PrintStream outputStream;
 	
-	private Executor() throws IOException {
-		appConfig.load(getConfigInputStream());
+	private Executor(InputStream configurationStream, PrintStream outputStream) throws IOException {
+		this.configurationStream = configurationStream;
+		this.outputStream = outputStream;
 	}
 	
-	private InputStream getConfigInputStream() throws IOException {
-		InputStream stream = Executor.class.getClassLoader().getResourceAsStream(DEFAULT_EXECUTOR_CONFIG_FILE);
-		if(stream==null) {
-			String configFileName = System.getProperty(PROPERTY_JCLIF_CONFIG_FILE, DEFAULT_EXECUTOR_CONFIG_FILE);
-			String configDirPath = System.getProperty(PROPERTY_JCLIF_INSTALL_PATH, System.getProperty("user.dir"));
-			File configFile = new File(new File(configDirPath).getCanonicalFile(), configFileName);
-			stream = new FileInputStream(configFile);
-			LOGGER.info(String.format("Executor using file config file '%s'", configFile.getCanonicalPath()));
-		}  else {
-			LOGGER.info(String.format("Executor using resource config file '%s'", DEFAULT_EXECUTOR_CONFIG_FILE));
-		}
-		return stream;
+	private Executor(PrintStream outputStream) throws IOException {
+		this.outputStream = outputStream;
 	}
 	
 	public CommandLineConfiguration getConfig() {
 		return config;
 	}
-
-	List<String> loadHandlerResources() throws Exception {
+	
+	void loadHandlers() throws Exception {
 		
-		String appName = appConfig.getProperty(CONFIG_PROPERTY_APP_NAME, "appname");
-		config.setName(appName);
-		
-		URL url = null;
-		String appMainPackage = null;
-		String appMain = appConfig.getProperty(CONFIG_PROPERTY_APP_MAIN);
-		if(appMain!=null) {
-			Class<?> appMainClass = Class.forName(appMain);
-			appMainPackage = appMainClass.getPackage().getName().replace(".", "/");
-			String appJarEntryMainClass = appMain.replace(".", "/") + ".class";
-			url = Executor.class.getClassLoader().getResource(appJarEntryMainClass);
+		if(configurationStream==null) {
+			appConfig.load();
 		} else {
-			String appPackage = appConfig.getProperty(CONFIG_PROPERTY_APP_HANDLER_PACKAGE,null);
-			if(appPackage!=null) {
-				appMainPackage = appPackage.replace(".", "/");
-				url = Executor.class.getClassLoader().getResource("jclif.properties");
-				LOGGER.info("Loading Main handler url path " + url.getPath());
-			}
-		}
-
-		LOGGER.info("Loading Main handler: " + appMainPackage);
-		
-		Set<String> mainPackageClasses = new HashSet<String>();
-		if(url!=null) {
-			URLConnection urlConn = url.openConnection();
-			if (urlConn instanceof JarURLConnection){
-				JarURLConnection conn = (JarURLConnection) urlConn;
-				LOGGER.info("Loading Handler from jar: " + conn.getJarFile().getName());
-				for(Enumeration<JarEntry> e = conn.getJarFile().entries(); e.hasMoreElements(); ) {
-					JarEntry entry = e.nextElement();
-					if(entry==null) {
-						continue;
-					}
-					LOGGER.info("Checking Handler from jar path: " + entry.getName());
-					if(entry.getName().startsWith(appMainPackage)
-						&& !entry.isDirectory()
-						&& entry.getName().endsWith(".class")) {
-						mainPackageClasses.add(StringUtil.pathToClassName(entry.getName()));
-					}
-				}
-			} else if(url.getProtocol().equalsIgnoreCase("file")){
-				File fileDir = new File(url.toURI());
-				LOGGER.info("Loading Handler from local path: " + fileDir.getCanonicalFile().getParentFile());
-				extractClassPackages(fileDir.getCanonicalFile().getParentFile(), appMainPackage, mainPackageClasses);
-			}
-		}
-			
-		// Add addition handler specified in configuration file
-		int handlerGetCount = 0;
-		for(int i = 1; ;i++) {
-			String key = CONFIG_PROPERTY_APP_HANDLER_LIST + "." + i;
-			String configHandler = this.appConfig.getProperty(key);
-			if(configHandler==null) {
-				break;
-			}
-			if(configHandler.isEmpty()) {
-				continue;
-			}
-			configHandler = configHandler.trim();
-			LOGGER.info("Loading Handler from config " + key + "='" + configHandler + "'");
-			mainPackageClasses.add(configHandler);
-			handlerGetCount++;
+			appConfig.load(configurationStream);
 		}
 		
-		if((appMainPackage==null || handlerGetCount==0) && mainPackageClasses.isEmpty()) {
-			throw new Exception("Handler package not configured or no " + CONFIG_PROPERTY_APP_HANDLER_LIST 
-					+ ".<X> entry found. Please check configuration file.");
-		}
+		Set<Class<?>> handlerClassList = new HashSet<Class<?>>();
+		handlerClassList.addAll(appConfig.getPackageHandlerList());
+		handlerClassList.addAll(appConfig.getHandlerList());
+		processHandlerAnnotations(handlerClassList);
 		
-		LOGGER.info("Handler classe list: " + mainPackageClasses);
-
-		return new ArrayList<String>(mainPackageClasses);
-	}
-	
-	private static final FileFilter classFilter = new FileFilter() {
-		@Override
-		public boolean accept(File f) {
-			return f.getName().endsWith(".class");
-		}
-	};
-	
-	void extractClassPackages(File srcDir, String appMainPackage, Collection<String> mainPackageClasses) throws IOException {
-		File[] files = srcDir.listFiles(classFilter);
-		for(File file : files) {
-			String entryFilePath = file.getCanonicalPath();
-			LOGGER.info("Checking Handler from local path: " + entryFilePath);
-			if(file.isDirectory()) {
-				extractClassPackages(file, appMainPackage, mainPackageClasses);
-			} else {
-				if(entryFilePath.endsWith(appMainPackage+ "/" +  file.getName())
-					&& !file.isDirectory() 
-					&& file.getName().endsWith(".class")) {
-					LOGGER.info("Adding Handler from local path: " + entryFilePath);
-					mainPackageClasses.add(StringUtil.pathToClassName(appMainPackage + "/" + file.getName()));	
-				}
-			}
-		}
-	}
-	
-	void processConfigAnnotations(List<String> classList) {
-	
-		for(String className : classList) {
-			try {
-				Class<?> classInstance = Class.forName(className);
-				ExecutorHandler handler = annotationToMetadata(classInstance);
-				if(handler==null) {
-					continue;
-				}
-				LOGGER.log(Level.INFO, "Adding class handler " + classInstance.getCanonicalName());
-				if(handler.getMetadata().getIdentifier().equals("-default-")) {
-					for(OptionMetadata optMeta: handler.getMetadata().getOptionConfigurations().values()) {
-						config.getOptionConfiguration().addOption(optMeta);
-					}
-					for(ParameterMetadata paramMeta: handler.getMetadata().getParameterConfigurations().values()) {
-						config.getParameterConfiguration().addParameter(paramMeta);
-					}
-				} else {
-					config.getCommandConfiguration().addCommand(handler.getMetadata());
-				}
-				handlerRegistry.add(handler);
-			} catch (ClassNotFoundException e) {
-				LOGGER.log(Level.WARNING, "Application configuration error. Handler class " + className + " not found", e);
-			}
-		}
+		LOGGER.info("Handler class list: " + handlerClassList);
 		
 	}
 	
-	public static ExecutorHandler annotationToMetadata(Class<?> commandHandler)
-	{
-		LOGGER.info("--- Start Processing annotation details: " + commandHandler.getCanonicalName());
+	void processHandlerAnnotations(Set<Class<?>> classList) {
+		for(Class<?> classInstance : classList) {
+			registerHandler(classInstance);
+		}
+	}
+	
+	public void registerHandler(Class<?> handlerClass) {
 		
-		// extract class annotation of command
-		Command commandAnnotation = commandHandler.getAnnotation(Command.class);
-		if(commandAnnotation==null) {
-			LOGGER.log(Level.WARNING,"Unable to extract annotation from class" + commandHandler + ". Skipping processing.");
-			return null;
+		ExecutorHandler handler = AnnotationProcessor.createExecutorHandler(handlerClass);
+		if(handler==null) {
+			return;
 		}
 		
-		// extract executor method
-		Method handlerMethod = null;
-		for(Method method : commandHandler.getMethods()) {
-			if(!Modifier.isStatic(method.getModifiers()) && method.getParameterTypes().length == 0) {
-				Handler annotation = method.getAnnotation(Handler.class);
-				if(annotation!=null) {
-					handlerMethod = method;
-					break;
-				}
+		LOGGER.log(Level.INFO, "Adding class handler " + handlerClass.getCanonicalName());
+		
+		if(handler.getMetadata().getIdentifier().equals("-default-")) {
+			for(OptionMetadata optMeta: handler.getMetadata().getOptionConfigurations().values()) {
+				config.getOptionConfiguration().addOption(optMeta);
 			}
-		}
-		
-		if(handlerMethod == null) {
-			LOGGER.log(Level.WARNING,"Command handler annotation not found in " + commandHandler.getCanonicalName() + ". Skipping processing.");
-			return null;
-		}
-		
-		// extract option annotations of command
-		OptionConfiguration optionConfig = new OptionConfiguration();
-		ParameterConfiguration parameterConfig = new ParameterConfiguration();
-		for(Field field : commandHandler.getDeclaredFields()) {
-			if(field.isAnnotationPresent(Option.class)) {
-				Option optionAnnotation = field.getAnnotation(Option.class);
-				if(optionAnnotation==null) {
-					LOGGER.info("skipping field " + field.getName() + ", no annotation found.");
-					continue;
-				}
-				
-				LOGGER.info("Option annotation[" + optionAnnotation + "] ");
-				
-				ParameterType paramType = optionAnnotation.type();
-				if(paramType==null) {
-					paramType = ParameterType.toParamType(field.getType());
-				}
-				
-				LOGGER.info("Option param type = [" + paramType + "] ");
-				
-				boolean multiValued = field.getType() == List.class;
-				optionConfig.addOption(
-						optionAnnotation.identifier(),
-						optionAnnotation.longIdentifier(),
-						paramType,
-						optionAnnotation.required(),
-						multiValued,
-						optionAnnotation.description(),
-						optionAnnotation.longDescription());
-			} else if(field.isAnnotationPresent(Parameter.class)) {
-				Parameter parameterAnnotation = field.getAnnotation(Parameter.class);
-				if(parameterAnnotation!=null) {
-					ParameterMetadata parameterMetadata = new ParameterMetadataImpl(
-							parameterAnnotation.identifier(),
-							parameterAnnotation.required(),
-							parameterAnnotation.multiValued(),
-							parameterAnnotation.type(),
-							parameterAnnotation.description(),
-							parameterAnnotation.longDescription());
-					parameterConfig.add(parameterMetadata);
-				}
+			for(ParameterMetadata paramMeta: handler.getMetadata().getParameterConfigurations().values()) {
+				config.getParameterConfiguration().addParameter(paramMeta);
 			}
+		} else {
+			config.getCommandConfiguration().addCommand(handler.getMetadata());
 		}
 		
-		
-		LOGGER.info("Adding handler Command[command=" + commandAnnotation.identifier() + ", desc=" + commandAnnotation.description() + "]");
-		
-		LOGGER.info("--- End Processing annotation details: " + commandHandler.getCanonicalName());
-		
-		try {
-			CommandMetadata metadata = new CommandMetadataImpl(commandAnnotation.identifier(), 
-					optionConfig, 
-					parameterConfig, 
-					commandAnnotation.description(), 
-					commandAnnotation.longDescription());
-			return new ExecutorHandler(metadata, commandHandler, handlerMethod);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Unable to register command metadata to registry", e);
-		}
-		
+		handlerRegistry.add(handler);
+	}
+	
+	public void setOperatingSystem(String osName) {
+		config.setCommandLineProperties(CommandLineProperties.getSystemProperties(osName));
 	}
 	
 	public void execute(String... args) {
 		
-		CommandLineParseResult result = null;
 		try {
-			List<String> handlerList = loadHandlerResources();
-			processConfigAnnotations(handlerList);
-			String customOsName = System.getProperty("org.jclif.runtime.system.os.name", System.getProperty("os.name"));
-			config.setCommandLineProperties(CommandLineProperties.getSystemProperties(customOsName));
-			result = CommandLineParser.getInstance().parse(config, args);
-			LOGGER.info("Command match: " + result.isCommandMatch() + ",command=" + result.getMatchingCommand());
+			
+			CommandLineParseResult result = CommandLineParser.getInstance().parse(config, args);
+			
+			LOGGER.info("Command match: " + result.isCommandMatch() 
+					+ ",command=" + result.getMatchingCommand());
+			
 			ExecutorHandler handler = null;
 			if(result.isCommandMatch()) {
 				handler = handlerRegistry.getHandler(result.getMatchingCommand().getMetadata());
 			} else {
 				handler = handlerRegistry.getDefaultHandler();
 			}
+			
 			if(handler!=null) {
 				handler.execute(result);
 			} else {
-				String usage = CommandLineParser.getInstance().format(config);
-				System.out.println(usage);
+				printUsage( (InvalidInputException) null );
 			}
+			
 		} catch (InvalidInputException e) {
 			printUsage(e);
 		} catch (FileNotFoundException e) {
@@ -357,52 +148,42 @@ public final class Executor {
 		} catch (IOException e) {
 			printUsage("Unable to read JCLIF configuration. " + e.getMessage());
 		} catch (Exception e) {
-			printUsage("Unknwon exception. " + e.getMessage() + ". Cause = " + ((e.getCause()!=null)?e.getCause().getMessage():""));
-			e.printStackTrace();
+			printUsage("Unknwon exception. " + e.getMessage() 
+					+ ". Cause = " + ((e.getCause()!=null)?e.getCause().getMessage():""));
 		}
+		
 	}
 	
 	public void printUsage(InvalidInputException e) {
-		String usage = CommandLineParser.getInstance().format(config, e);
-		System.out.println(usage);
+		if(null==e) {
+			outputStream.println(CommandLineParser.getInstance().format(config));
+		} else {
+			outputStream.println(CommandLineParser.getInstance().format(config, e));
+		}
 	}
 	
 	public void printUsage(String error) {
 		String usage = CommandLineParser.getInstance().format(config, error);
-		System.out.println(usage);
-	}
-	
-	static void configureLoggingProperties() {
-		try {
-			if(System.getProperty("java.util.logging.config.file")!=null) {
-				System.out.println("Using logging property file " + System.getProperty("java.util.logging.config.file"));
-				return;
-			}
-			InputStream loggingStream = Executor.class.getClassLoader().getResourceAsStream("logging.properties");
-			if(loggingStream==null) {
-				return;
-			}
-			LogManager.getLogManager().readConfiguration(loggingStream);
-		} catch (SecurityException e) {
-			e.printStackTrace();
-			System.err.println("Error loading logging.prroperties from class loader. Error:" + e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.err.println("Error loading logging.prroperties from class loader. Error:" + e.getMessage());
-		}
+		outputStream.println(usage);
 	}
 	
 	/**
-	 * Main method which calls the runtime annotation detection tool and runs the parser and help text formatter
-	 * automatically.
+	 * Main method which calls the runtime annotation detection tool and runs the 
+	 * parser and help text formatter automatically.
 	 * 
 	 * @param args	argument passed in command line input
-	 * @throws IOException 
+	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		
-		configureLoggingProperties();
-		Executor executor = new Executor();
+		LoggerUtil.initializeLogger();
+		
+		String osName = System.getProperty(Configuration.PROPERTY_JCLIF_OS_NAME, 
+				System.getProperty("os.name"));
+		
+		Executor executor = new Executor(System.out);
+		executor.setOperatingSystem(osName);
+		executor.loadHandlers();
 		executor.execute(args);
 
 	}

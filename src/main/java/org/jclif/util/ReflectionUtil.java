@@ -20,6 +20,7 @@
 package org.jclif.util;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * This class provides all the utility methods used by the framework to discover class methods and fields
@@ -34,10 +35,25 @@ public final class ReflectionUtil {
 		
 	}
 	
-	public static Method getSetterMethod(Class<?> classType, String fieldName, Class<?> paramType) throws NoSuchMethodException {
+	/**
+	 * Returns true if a method is a non-static public method with no arguments.
+	 * 
+	 * @param method	Method to check
+	 * @return boolean	true if method is a non-static public method with no arguments, otherwise false
+	 */
+	public static boolean isPublicNoArgMethod(Method method) {
+		return Modifier.isPublic(method.getModifiers())  
+				&& !Modifier.isStatic(method.getModifiers())
+				&& method.getParameterTypes().length == 0;
+	}
+	
+	public static Method getSetterMethod(Class<?> classType, String fieldName, Class<?> paramType) 
+			throws NoSuchMethodException {
+		
 		String methodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 		Method m = null;
 		NoSuchMethodException firstException = null;
+		
 		while(paramType!=null && m==null) {
 			try {
 				m = classType.getDeclaredMethod( methodName, paramType);
@@ -56,9 +72,11 @@ public final class ReflectionUtil {
 			}
 			
 		}
+		
 		if(m==null && firstException!=null) {
 			throw firstException;
 		}
+		
 		return m;
 	}
 }

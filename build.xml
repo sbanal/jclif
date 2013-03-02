@@ -15,6 +15,7 @@
     <path id="jclif.classpath">
         <pathelement location="${javac.output.dir}"/>
         <path refid="JUnit 4.libraryclasspath"/>
+        <pathelement location="lib/ant-1.8.4.jar"/>
     </path>
     <target name="init">
         <mkdir dir="${javac.output.dir}"/>
