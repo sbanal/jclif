@@ -24,8 +24,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jclif.type.ParameterType;
-
 /**
  * Annotation used to mark a field as command line option variable.
  * The identifier is the option flag used in command line.

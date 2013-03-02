@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
+import org.jclif.annotation.ParameterType;
 import org.jclif.type.CommandInputImpl;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandLineProperties;
@@ -44,7 +45,6 @@ import org.jclif.type.ParameterInputImpl;
 import org.jclif.type.ParameterInputSet;
 import org.jclif.type.ParameterMetadata;
 import org.jclif.type.ParameterParser;
-import org.jclif.type.ParameterType;
 import org.jclif.util.StringUtil;
 
 

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.LogManager;
 
-import org.jclif.runtime.Executor;
-
 public class LoggerUtil {
 
 	public static void initializeLogger() {
@@ -15,7 +13,7 @@ public class LoggerUtil {
 				System.out.println("Using logging property file " + System.getProperty("java.util.logging.config.file"));
 				return;
 			}
-			InputStream loggingStream = Executor.class.getClassLoader().getResourceAsStream("logging.properties");
+			InputStream loggingStream = LoggerUtil.class.getClassLoader().getResourceAsStream("logging.properties");
 			if(loggingStream==null) {
 				return;
 			}

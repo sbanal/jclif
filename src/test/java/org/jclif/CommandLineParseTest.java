@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jclif.annotation.ParameterType;
 import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.CommandLineParseResult;
 import org.jclif.parser.InvalidInputException;
@@ -35,7 +36,6 @@ import org.jclif.type.OptionConfiguration;
 import org.jclif.type.ParameterMetadata;
 import org.jclif.type.ParameterMetadataImpl;
 import org.jclif.type.ParameterParser;
-import org.jclif.type.ParameterType;
 import org.junit.Assert;
 import org.junit.Test;
 

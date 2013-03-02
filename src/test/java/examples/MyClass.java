@@ -22,11 +22,11 @@ package examples;
 import java.io.File;
 import java.util.List;
 
+import org.jclif.annotation.ParameterType;
 import org.jclif.parser.CommandLineParseResult;
 import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
 import org.jclif.type.CommandLineConfiguration;
-import org.jclif.type.ParameterType;
 
 public class MyClass {
 

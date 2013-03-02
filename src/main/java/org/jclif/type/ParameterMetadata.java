@@ -19,6 +19,8 @@
 
 package org.jclif.type;
 
+import org.jclif.annotation.ParameterType;
+
 
 
 /**

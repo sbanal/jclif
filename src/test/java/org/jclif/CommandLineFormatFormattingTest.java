@@ -19,6 +19,7 @@
 
 package org.jclif;
 
+import org.jclif.annotation.ParameterType;
 import org.jclif.parser.CommandLineFormatType;
 import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
@@ -26,7 +27,6 @@ import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.OptionConfiguration;
 import org.jclif.type.ParameterMetadata;
 import org.jclif.type.ParameterMetadataImpl;
-import org.jclif.type.ParameterType;
 import org.junit.Test;
 
 

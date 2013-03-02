@@ -20,6 +20,7 @@
 package org.jclif.type;
 
 import org.jclif.annotation.Parameter;
+import org.jclif.annotation.ParameterType;
 
 
 /**

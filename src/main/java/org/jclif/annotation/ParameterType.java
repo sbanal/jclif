@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jclif.type;
+package org.jclif.annotation;
 
 import java.io.File;
 

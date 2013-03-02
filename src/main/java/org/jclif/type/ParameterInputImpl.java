@@ -21,6 +21,8 @@ package org.jclif.type;
 
 import java.io.File;
 
+import org.jclif.annotation.ParameterType;
+
 /**
  * This class is a concrete implementation of Parameter interface. 
  * 

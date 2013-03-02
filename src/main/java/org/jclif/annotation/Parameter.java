@@ -24,8 +24,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jclif.type.ParameterType;
-
 /**
  * Parameter annotation is used to mark a field as a storage
  * of command line input parameter or option parameter value.

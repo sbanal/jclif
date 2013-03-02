@@ -26,7 +26,7 @@ import org.jclif.annotation.Command;
 import org.jclif.annotation.Handler;
 import org.jclif.annotation.Option;
 import org.jclif.annotation.Parameter;
-import org.jclif.type.ParameterType;
+import org.jclif.annotation.ParameterType;
 
 @Command(identifier="list",description="List files")
 public class ListCommand {

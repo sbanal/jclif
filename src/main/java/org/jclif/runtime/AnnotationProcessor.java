@@ -9,6 +9,7 @@ import org.jclif.annotation.Command;
 import org.jclif.annotation.Handler;
 import org.jclif.annotation.Option;
 import org.jclif.annotation.Parameter;
+import org.jclif.annotation.ParameterType;
 import org.jclif.type.CommandMetadata;
 import org.jclif.type.CommandMetadataImpl;
 import org.jclif.type.OptionConfiguration;
@@ -17,7 +18,6 @@ import org.jclif.type.OptionMetadataImpl;
 import org.jclif.type.ParameterConfiguration;
 import org.jclif.type.ParameterMetadata;
 import org.jclif.type.ParameterMetadataImpl;
-import org.jclif.type.ParameterType;
 import org.jclif.util.ReflectionUtil;
 
 public class AnnotationProcessor {
