@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -153,9 +154,9 @@ public class Configuration extends Properties {
 	 * org.jclif.app.handler.package property of properties file. 
 	 * 
 	 * @return List<Class<?>> list of handler classes
-	 * @throws Exception
+	 * @throws IOException 
 	 */
-	public List<Class<?>> getPackageHandlerList() throws Exception {
+	public List<Class<?>> getPackageHandlerList() throws IOException {
 		
 		URL url = null;
 		String appMainPackage = null;
@@ -171,7 +172,7 @@ public class Configuration extends Properties {
 		LOGGER.info("Loading Main handler url path " + url);
 		
 		if(!appMainPackage.isEmpty() && url==null) {
-			throw new Exception("Handler package is set but no " 
+			throw new IllegalArgumentException("Handler package is set but no " 
 					+ DEFAULT_EXECUTOR_CONFIG_FILE + " is found in classpath.");
 		}
 		
@@ -180,29 +181,42 @@ public class Configuration extends Properties {
 		URLConnection urlConn = url.openConnection();
 		
 		if (urlConn instanceof JarURLConnection){
+			
 			JarURLConnection conn = (JarURLConnection) urlConn;
+			
 			LOGGER.info("Loading Handler from jar: " + conn.getJarFile().getName());
+			
 			for(Enumeration<JarEntry> e = conn.getJarFile().entries(); e.hasMoreElements(); ) {
 				JarEntry entry = e.nextElement();
 				if(entry==null) {
 					continue;
 				}
 				LOGGER.info("Checking Handler from jar path: " + entry.getName());
-				if(entry.getName().startsWith(appMainPackage)
-					&& !entry.isDirectory()
-					&& entry.getName().endsWith(".class")) {
-					Class<?> classType = Class.forName(StringUtil.pathToClassName(entry.getName()));
-					packageHandlerList.add(classType);
+				if(entry.getName().startsWith(appMainPackage) && !entry.isDirectory() && entry.getName().endsWith(".class")) {
+					
+					try {
+						Class<?> classType = Class.forName(StringUtil.pathToClassName(entry.getName()));
+						packageHandlerList.add(classType);
+					} catch (ClassNotFoundException e1) {
+						e1.printStackTrace();
+					}
+					
 				}
 			}
+			
 		} else if(url.getProtocol().equalsIgnoreCase("file")){
-			File fileDir = new File(url.toURI());
-			LOGGER.info("Loading Handler from local path: " + fileDir.getCanonicalFile().getParentFile());
-			extractClassPackages(fileDir.getCanonicalFile().getParentFile(), appMainPackage, packageHandlerList);
+			try {
+				File fileDir = new File(url.toURI());
+				LOGGER.info("Loading Handler from local path: " + fileDir.getCanonicalFile().getParentFile());
+				extractClassPackages(fileDir.getCanonicalFile().getParentFile(), 
+						appMainPackage, packageHandlerList);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
 		}
 			
 		if(packageHandlerList.isEmpty()) {
-			throw new Exception("Handler package not configured or no "
+			throw new IllegalArgumentException("Handler package not configured or no "
 					+ Configuration.CONFIG_PROPERTY_APP_HANDLER_LIST 
 					+ ".<X> entry found. Please check configuration file.");
 		}
@@ -218,13 +232,19 @@ public class Configuration extends Properties {
 	};
 	
 	void extractClassPackages(File srcDir, String appMainPackage, 
-			Collection<Class<?>> packageClasses) throws IOException {
+			Collection<Class<?>> packageClasses) {
 		
 		File[] files = srcDir.listFiles(classFilter);
 		
 		for(File file : files) {
 			
-			String entryFilePath = file.getCanonicalPath();
+			String entryFilePath;
+			try {
+				entryFilePath = file.getCanonicalPath();
+			} catch (IOException e1) {
+				continue;
+			}
+			
 			if(file.isDirectory()) {
 				extractClassPackages(file, appMainPackage, packageClasses);
 			} else {

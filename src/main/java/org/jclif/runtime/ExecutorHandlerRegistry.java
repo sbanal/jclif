@@ -56,6 +56,11 @@ public class ExecutorHandlerRegistry {
 		}
 	}
 	
+	/**
+	 * Adds an executor handler.
+	 * 
+	 * @param handler handler instance
+	 */
 	public void add(ExecutorHandler handler) {
 		handlerRegistry.put(handler.getMetadata(), handler);
 		LOGGER.info("Added handler for " + handler.getMetadata());

@@ -19,7 +19,6 @@
 
 package org.jclif.runtime;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -28,6 +27,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jclif.annotation.Command;
 import org.jclif.parser.CommandLineParseResult;
 import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
@@ -56,20 +56,44 @@ public final class Executor {
 	private InputStream configurationStream;
 	private PrintStream outputStream;
 	
-	private Executor(InputStream configurationStream, PrintStream outputStream) throws IOException {
+	/**
+	 * Creates an Executor instance which uses a custom input stream of configuration properties
+	 * and output stream of command line usage text.
+	 *  
+	 * @param configurationStream	input stream where the configurations are read
+	 * @param outputStream			output stream where the help text are written
+	 */
+	public Executor(InputStream configurationStream, PrintStream outputStream) {
 		this.configurationStream = configurationStream;
 		this.outputStream = outputStream;
 	}
 	
-	private Executor(PrintStream outputStream) throws IOException {
+	/**
+	 * Creates an Executor instance which uses a specified output stream where the command line
+	 * usage text are written.
+	 * 
+	 * @param outputStream	output stream where the help text are written
+	 */
+	public Executor(PrintStream outputStream) {
 		this.outputStream = outputStream;
 	}
 	
+	/**
+	 * Returns the comman line configuration of this executor.
+	 * 
+	 * @return	CommandLineConfiguration
+	 */
 	public CommandLineConfiguration getConfig() {
 		return config;
 	}
 	
-	void loadHandlers() throws Exception {
+	/**
+	 * Loads command line handlers from configuration input stream and registers the handlers
+	 * to the command line configuration.
+	 * 
+	 * @throws IOException thrown if an error occurs while loading the configuration properties 
+	 */
+	public void loadHandlers() throws IOException {
 		
 		if(configurationStream==null) {
 			appConfig.load();
@@ -92,13 +116,18 @@ public final class Executor {
 		}
 	}
 	
+	/**
+	 * Registers a class as a command line handler.
+	 * 
+	 * @param handlerClass command line handler
+	 */
 	public void registerHandler(Class<?> handlerClass) {
 		
 		ExecutorHandler handler = AnnotationProcessor.createExecutorHandler(handlerClass);
 		
 		LOGGER.log(Level.INFO, "Adding class handler " + handlerClass.getCanonicalName());
 		
-		if(handler.getMetadata().getIdentifier().equals("-default-")) {
+		if(handler.getMetadata().getIdentifier().equals(Command.DEFAULT_COMMAND_IDENTIFIER)) {
 			for(OptionMetadata optMeta: handler.getMetadata().getOptionConfigurations().values()) {
 				config.getOptionConfiguration().addOption(optMeta);
 			}
@@ -112,10 +141,23 @@ public final class Executor {
 		handlerRegistry.add(handler);
 	}
 	
+	/**
+	 * Sets operating system name of command line properties to use.
+	 * Operating system name value can be any of the System.getProperty("os.name") values
+	 * returned by JVM.
+	 * 
+	 * @param osName OS Name
+	 */
 	public void setOperatingSystem(String osName) {
 		config.setCommandLineProperties(CommandLineProperties.getSystemProperties(osName));
 	}
 	
+	/**
+	 * Executes a command line handler which matches the command line arguments and if 
+	 * a parsing error occurs prints the usage message.
+	 * 
+	 * @param args	command line arguments
+	 */
 	public void execute(String... args) {
 		
 		try {
@@ -140,10 +182,6 @@ public final class Executor {
 			
 		} catch (InvalidInputException e) {
 			printUsage(e);
-		} catch (FileNotFoundException e) {
-			printUsage("Unable to find JCLIF configuration. " + e.getMessage());
-		} catch (IOException e) {
-			printUsage("Unable to read JCLIF configuration. " + e.getMessage());
 		} catch (Exception e) {
 			printUsage("Unknwon exception. " + e.getMessage() 
 					+ ". Cause = " + ((e.getCause()!=null)?e.getCause().getMessage():""));
@@ -151,7 +189,7 @@ public final class Executor {
 		
 	}
 	
-	public void printUsage(InvalidInputException e) {
+	void printUsage(InvalidInputException e) {
 		if(null==e) {
 			outputStream.println(CommandLineParser.getInstance().format(config));
 		} else {
@@ -159,7 +197,7 @@ public final class Executor {
 		}
 	}
 	
-	public void printUsage(String error) {
+	void printUsage(String error) {
 		String usage = CommandLineParser.getInstance().format(config, error);
 		outputStream.println(usage);
 	}
@@ -169,20 +207,25 @@ public final class Executor {
 	 * parser and help text formatter automatically.
 	 * 
 	 * @param args	argument passed in command line input
-	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		
-		LoggerUtil.initializeLogger();
+		try {
+			
+			LoggerUtil.initializeLogger();
+			
+			String osName = System.getProperty(Configuration.PROPERTY_JCLIF_OS_NAME, 
+					System.getProperty("os.name"));
+			
+			Executor executor = new Executor(System.out);
+			executor.setOperatingSystem(osName);
+			executor.loadHandlers();
+			executor.execute(args);
+			
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+		}
 		
-		String osName = System.getProperty(Configuration.PROPERTY_JCLIF_OS_NAME, 
-				System.getProperty("os.name"));
-		
-		Executor executor = new Executor(System.out);
-		executor.setOperatingSystem(osName);
-		executor.loadHandlers();
-		executor.execute(args);
-
 	}
 	
 }

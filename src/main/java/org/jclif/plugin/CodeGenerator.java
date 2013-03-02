@@ -10,9 +10,8 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jclif.runtime.AnnotationProcessor;
-import org.jclif.runtime.ExecutorHandler;
 import org.jclif.runtime.Configuration;
+import org.jclif.runtime.ExecutorHandler;
 import org.jclif.util.StringUtil;
 
 /**
@@ -75,14 +74,13 @@ public class CodeGenerator {
 		// scan all classes of a directory and detect which ones are JCLIF annotated
 		Configuration jclifProperties = new Configuration(getAppName());
 		for(File srcFile : files) {
+			
 			String classNameFromFile = StringUtil.sourceNameToClassName(srcFile.getName());
 			String className = commandAnnotatedPackage + "." + classNameFromFile;
 			try {
 				Class<?> classType = Class.forName(className);
-				ExecutorHandler handler = AnnotationProcessor.createExecutorHandler(classType);
-				if(handler!=null) {
-					jclifProperties.addHandler(handler.getHandlerClass());
-				}
+				ExecutorHandler handler = new ExecutorHandler(classType);
+				jclifProperties.addHandler(handler.getHandlerClass());
 			} catch (ClassNotFoundException e) {
 				LOGGER.log(Level.WARNING, String.format("Unable to load class %s due to error '%s'", className, e.getMessage()), e);
 			} catch(Exception e) {

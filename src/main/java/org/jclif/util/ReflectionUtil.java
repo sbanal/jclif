@@ -47,6 +47,15 @@ public final class ReflectionUtil {
 				&& method.getParameterTypes().length == 0;
 	}
 	
+	/**
+	 * Retrieves setter method of a field.
+	 * 
+	 * @param classType		class type
+	 * @param fieldName		field name
+	 * @param paramType		return type
+	 * @return Method		setter method of field
+	 * @throws NoSuchMethodException thrown if method is not found
+	 */
 	public static Method getSetterMethod(Class<?> classType, String fieldName, Class<?> paramType) 
 			throws NoSuchMethodException {
 		
@@ -79,4 +88,5 @@ public final class ReflectionUtil {
 		
 		return m;
 	}
+	
 }

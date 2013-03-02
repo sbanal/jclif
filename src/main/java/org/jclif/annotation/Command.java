@@ -35,7 +35,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Command {
-	public String identifier() default "-default-";
+	
+	public static final String DEFAULT_COMMAND_IDENTIFIER = "-default-";
+	
+	public String identifier() default DEFAULT_COMMAND_IDENTIFIER;
 	public String longIdentifier() default "";
 	public String description() default "";
 	public String longDescription() default "";
