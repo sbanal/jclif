@@ -3,7 +3,6 @@ package org.jclif.runtime;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.jclif.annotation.Command;
 import org.jclif.annotation.Handler;
@@ -22,8 +21,13 @@ import org.jclif.util.ReflectionUtil;
 
 public class AnnotationProcessor {
 
-	private static Logger LOGGER = Logger.getLogger(AnnotationProcessor.class.getCanonicalName());
-	
+	/**
+	 * Returns an ExecutorHandler of a JCLIF annotated class.
+	 * 
+	 * @param commandHandler	handler class
+	 * @return ExecutorHandler	executor handler of handler class
+	 * @throws IllegalArgumentException thrown if a class is not a recognized as a valid handler
+	 */
 	public static ExecutorHandler createExecutorHandler(Class<?> commandHandler)
 	{
 		
@@ -84,23 +88,13 @@ public class AnnotationProcessor {
 			}
 		}
 		
-		
-		LOGGER.info("Adding handler Command[command=" + commandAnnotation.identifier() 
-				+ ", desc=" + commandAnnotation.description() + "]");
-		
-		LOGGER.info("--- End Processing annotation details: " + commandHandler.getCanonicalName());
-		
-		try {
-			CommandMetadata metadata = new CommandMetadataImpl(commandAnnotation.identifier(), 
-					optionConfig, 
-					parameterConfig, 
-					commandAnnotation.description(), 
-					commandAnnotation.longDescription());
-			return new ExecutorHandler(metadata, commandHandler, handlerMethod);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Unable to register command metadata to registry", e);
-		}
-		
+		CommandMetadata metadata = new CommandMetadataImpl(commandAnnotation.identifier(), 
+				optionConfig, 
+				parameterConfig, 
+				commandAnnotation.description(), 
+				commandAnnotation.longDescription());
+		return new ExecutorHandler(metadata, commandHandler, handlerMethod);
+
 	}
 	
 }

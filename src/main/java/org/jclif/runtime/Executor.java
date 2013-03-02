@@ -95,9 +95,6 @@ public final class Executor {
 	public void registerHandler(Class<?> handlerClass) {
 		
 		ExecutorHandler handler = AnnotationProcessor.createExecutorHandler(handlerClass);
-		if(handler==null) {
-			return;
-		}
 		
 		LOGGER.log(Level.INFO, "Adding class handler " + handlerClass.getCanonicalName());
 		
