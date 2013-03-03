@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.jclif.annotation.Command;
 import org.jclif.type.CommandMetadata;
 import org.jclif.type.InputMetadata;
 
@@ -49,11 +50,7 @@ public class ExecutorHandlerRegistry {
 	 * @param handlerMethod	handler method annotated by Handler annotatin
 	 */
 	public void add(CommandMetadata metadata, Class<?> handlerClass, Method handlerMethod) {
-		handlerRegistry.put(metadata, new ExecutorHandler(metadata, handlerClass, handlerMethod));
-		LOGGER.info("Added handler for " + metadata);
-		if(metadata.getIdentifier().equals("-default-")) {
-			defaultMetadata = metadata;
-		}
+		add(new ExecutorHandler(metadata, handlerClass, handlerMethod));
 	}
 	
 	/**
@@ -64,7 +61,7 @@ public class ExecutorHandlerRegistry {
 	public void add(ExecutorHandler handler) {
 		handlerRegistry.put(handler.getMetadata(), handler);
 		LOGGER.info("Added handler for " + handler.getMetadata());
-		if(handler.getMetadata().getIdentifier().equals("-default-")) {
+		if(handler.getMetadata().getIdentifier().equals(Command.DEFAULT_COMMAND_IDENTIFIER)) {
 			defaultMetadata = handler.getMetadata();
 		}
 	}

@@ -27,9 +27,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.jclif.annotation.ParameterType;
-import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.CommandLineParseResult;
+import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
+import org.jclif.text.CommandLineFormat;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandLineProperties;
 import org.jclif.type.OptionConfiguration;
@@ -271,7 +272,7 @@ public class CommandLineParseTest {
 	public void testShortFormat() {
 		CommandLineConfiguration config = new CommandLineConfiguration();
 		config.getOptionConfiguration().addOption("i", "input file").addOption("o", "output file");
-		String formatValue = CommandLineParser.getInstance().format(config);
+		String formatValue = CommandLineFormat.getInstance().format(config);
 		System.out.printf("ShortFormatValue%n%s", formatValue);
 	}
 	

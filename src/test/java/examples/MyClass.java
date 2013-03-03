@@ -26,6 +26,7 @@ import org.jclif.annotation.ParameterType;
 import org.jclif.parser.CommandLineParseResult;
 import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
+import org.jclif.text.CommandLineFormat;
 import org.jclif.type.CommandLineConfiguration;
 
 public class MyClass {
@@ -44,7 +45,7 @@ public class MyClass {
 				System.out.println("File:" + file.getName());
 			}
 		} catch (InvalidInputException e) {
-			String usage = CommandLineParser.getInstance().format(config, e);
+			String usage = CommandLineFormat.getInstance().format(config, e);
 			System.out.println(usage);
 		}
 	}

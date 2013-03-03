@@ -31,11 +31,11 @@ public class CodeGeneratorTest {
 		
 		Configuration prop = new Configuration("appname");
 		prop.load(new FileInputStream(file));
+		prop.setHandlerPackage("");
 		List<Class<?>> handlerList = prop.getHandlerList();
-		Set<Class<?>> handlerSet = new HashSet<Class<?>>(handlerList);;
 		
-		Assert.assertTrue(handlerSet.contains(Class.forName("examples.DefaultCommand")));
-		Assert.assertTrue(handlerSet.contains(Class.forName("examples.ListCommand")));
+		Assert.assertTrue(handlerList.contains(Class.forName("examples.DefaultCommand")));
+		Assert.assertTrue(handlerList.contains(Class.forName("examples.ListCommand")));
 		
 		file.delete();
 	}

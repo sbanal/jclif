@@ -21,8 +21,8 @@ package org.jclif;
 
 import org.jclif.annotation.ParameterType;
 import org.jclif.parser.CommandLineFormatType;
-import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
+import org.jclif.text.CommandLineFormat;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.OptionConfiguration;
 import org.jclif.type.ParameterMetadata;
@@ -37,7 +37,7 @@ public class CommandLineFormatFormattingTest {
 		CommandLineConfiguration config = new CommandLineConfiguration();
 		config.setName("mysampleapp");
 		config.getOptionConfiguration().addOption("i", "input file").addOption("o", "output file");
-		String formatValue = CommandLineParser.getInstance().format(config, "Some very short error message.");
+		String formatValue = CommandLineFormat.getInstance().format(config, "Some very short error message.");
 		System.out.printf("ShortFormatValue%n%s", formatValue);
 	}
 	
@@ -47,7 +47,7 @@ public class CommandLineFormatFormattingTest {
 		config.setName("mysampleapp");
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, false, "This is a short desc 1", "This is a very very very very long description 1")
 			.addOption("o", "output", ParameterType.FILE, false, false, "This is a short desc 2", "This is a very very very very long description 2");
-		String formatValue = CommandLineParser.getInstance().format(config, CommandLineFormatType.FULL);
+		String formatValue = CommandLineFormat.getInstance().format(config, CommandLineFormatType.FULL);
 		System.out.printf("LongFormatValue:%n%s", formatValue);
 	}
 	
@@ -59,7 +59,7 @@ public class CommandLineFormatFormattingTest {
 			.addOption("o", "output", ParameterType.FILE, false, false, "This is a short desc 2", "This is a very very very very long description 2");
 		config.getParameterConfiguration().addParameter("dir1", true, false, "Directory 1");
 		config.getParameterConfiguration().addParameter("dir2", true, false, "Directory 2");
-		String formatValue = CommandLineParser.getInstance().format(config, CommandLineFormatType.FULL);
+		String formatValue = CommandLineFormat.getInstance().format(config, CommandLineFormatType.FULL);
 		System.out.printf("LongFormatValue:%n%s", formatValue);
 	}
 	
@@ -71,7 +71,7 @@ public class CommandLineFormatFormattingTest {
 			.addOption("o", "output", ParameterType.FILE, false, false, "This is a short desc 2", "This is a very very very very long description 2");
 		config.getParameterConfiguration().addParameter("dir1", true, false, "Directory 1");
 		config.getParameterConfiguration().addParameter("dir2", true, true, "Directory 2");
-		String formatValue = CommandLineParser.getInstance().format(config, CommandLineFormatType.FULL);
+		String formatValue = CommandLineFormat.getInstance().format(config, CommandLineFormatType.FULL);
 		System.out.printf("LongFormatValue:%n%s", formatValue);
 	}
 	
@@ -83,7 +83,7 @@ public class CommandLineFormatFormattingTest {
 			.addOption("o", "output", ParameterType.FILE, false, false, "This is a short desc 2", "This is a very very very very long description 2");
 		config.getParameterConfiguration().addParameter("dir1", true, false, "Directory 1");
 		config.getParameterConfiguration().addParameter("dir2", false, true, "Directory 2");
-		String formatValue = CommandLineParser.getInstance().format(config, CommandLineFormatType.FULL);
+		String formatValue = CommandLineFormat.getInstance().format(config, CommandLineFormatType.FULL);
 		System.out.printf("LongFormatValue:%n%s", formatValue);
 	}
 	
@@ -93,7 +93,7 @@ public class CommandLineFormatFormattingTest {
 		config.setName("mysampleapp");
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, false, "This is a short desc 1", "This is a very very very very long description 1")
 			.addOption("o", "output", ParameterType.FILE, false, false, "This is a short desc 2", "This is a very very very very long description 2");
-		String formatValue = CommandLineParser.getInstance().format(config, new InvalidInputException("Option -i is missing"));
+		String formatValue = CommandLineFormat.getInstance().format(config, new InvalidInputException("Option -i is missing"));
 		System.out.printf("LongFormatValue:%n%s", formatValue);
 	}
 	
@@ -104,7 +104,7 @@ public class CommandLineFormatFormattingTest {
 		config.getOptionConfiguration().addOption("a", "Some option named a").addOption("b", "Some option named b")
 			.addOption("i", "input", ParameterType.FILE, false, false, "This is a short desc 1", "This is a very very very very long description 1")
 			.addOption("o", "output", ParameterType.FILE, false, false, "This is a short desc 2", "This is a very very very very long description 2");
-		String formatValue = CommandLineParser.getInstance().format(config, CommandLineFormatType.FULL);
+		String formatValue = CommandLineFormat.getInstance().format(config, CommandLineFormatType.FULL);
 		System.out.printf("LongFormatValue:%n%s", formatValue);
 	}
 	
@@ -121,9 +121,9 @@ public class CommandLineFormatFormattingTest {
 		config.getCommandConfiguration().addCommand("pull", argConfig, "Pull files from remote", param1, param2);
 		config.getCommandConfiguration().addCommand("push", argConfig, "Push files to remote", param1, param2);
 		
-		String formatValue = CommandLineParser.getInstance().format(config, CommandLineFormatType.SHORT);
+		String formatValue = CommandLineFormat.getInstance().format(config, CommandLineFormatType.SHORT);
 		System.out.printf("LongFormatValue:%n%s", formatValue);
-		String formatValue3 = CommandLineParser.getInstance().format(config, config.getCommandConfiguration().get("pull"), 
+		String formatValue3 = CommandLineFormat.getInstance().format(config, config.getCommandConfiguration().get("pull"), 
 				CommandLineFormatType.FULL);
 		System.out.printf("LongFormatValue Pull:%n%s", formatValue3);
 	
@@ -143,11 +143,11 @@ public class CommandLineFormatFormattingTest {
 		optionConfig.addOption("o", "options", ParameterType.STRING, false, false, "options string", "some long desc2");
 		config.getCommandConfiguration().addCommand("list", optionConfig, "List all modified files", param1, param2);
 		
-		String formatValue2 = CommandLineParser.getInstance().format(config, config.getCommandConfiguration().get("list"), 
+		String formatValue2 = CommandLineFormat.getInstance().format(config, config.getCommandConfiguration().get("list"), 
 				CommandLineFormatType.FULL);
 		System.out.printf("LongFormatValue List:%n%s", formatValue2);	
 		
-		formatValue2 = CommandLineParser.getInstance().format(config,
+		formatValue2 = CommandLineFormat.getInstance().format(config,
 				new InvalidInputException("Example error message", config.getCommandConfiguration().get("list")));
 		System.out.printf("LongFormatValue List:%n%s", formatValue2);	
 		
@@ -167,7 +167,7 @@ public class CommandLineFormatFormattingTest {
 		config.getCommandConfiguration().addCommand("list", argConfig, "List all modified files", param1, param2);
 		config.getCommandConfiguration().addCommand("pull", argConfig, "Pull files from remote", param1, param2);
 		config.getCommandConfiguration().addCommand("push", argConfig, "Push files to remote", param1, param2);
-		String formatValue = CommandLineParser.getInstance().format(config, CommandLineFormatType.SHORT);
+		String formatValue = CommandLineFormat.getInstance().format(config, CommandLineFormatType.SHORT);
 		System.out.printf("LongFormatValue:%n%s", formatValue);
 	}
 	

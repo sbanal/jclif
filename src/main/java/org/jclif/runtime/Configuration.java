@@ -1,7 +1,6 @@
 package org.jclif.runtime;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarEntry;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jclif.util.StringUtil;
@@ -48,22 +48,13 @@ public class Configuration extends Properties {
 	public static final String CONFIG_PROPERTY_APP_HANDLER_LIST = "org.jclif.app.handler";
 	public static final String CONFIG_PROPERTY_APP_HANDLER_PACKAGE = "org.jclif.app.handler.package";
 	
-	private int handlerCount = 1;
+	private int handlerCount = 0;
 	
 	/**
 	 * Creates an empty configuration.
 	 */
 	public Configuration() {
 		
-	}
-	
-	/**
-	 * Creates a configuration based on an existing properties.
-	 *  
-	 * @param prop	Properties to copy
-	 */
-	public Configuration(Properties prop) {
-		super(prop);
 	}
 	
 	/**
@@ -89,7 +80,7 @@ public class Configuration extends Properties {
 	 * Loads configuration properties from default configuration input stream and 
 	 * loads handler list.
 	 * 
-	 * @param  inputStream  stream of propertie file to read
+	 * @param  inputStream  stream of properties file to read
 	 * @throws IOException	thrown if an I/O error occurs while reading the configuration stream
 	 */
 	public void load(InputStream inputStream) throws IOException {
@@ -122,7 +113,7 @@ public class Configuration extends Properties {
 	}
 	
 	public void addHandler(Class<?> handler) {
-		put(CONFIG_PROPERTY_APP_HANDLER_LIST + "." + (handlerCount++), handler.getCanonicalName());
+		put(CONFIG_PROPERTY_APP_HANDLER_LIST + "." + (++handlerCount), handler.getCanonicalName());
 	}
 	
 	/**
@@ -142,7 +133,8 @@ public class Configuration extends Properties {
 			try {
 				handlerList.add(Class.forName(className));
 			} catch (ClassNotFoundException e) {
-				// skip this class
+				LOGGER.log(Level.WARNING, "Handler class " + className + " not found in classpath", 
+						e);
 			}
 		}
 		this.handlerCount = handlerList.size();
@@ -197,8 +189,8 @@ public class Configuration extends Properties {
 					try {
 						Class<?> classType = Class.forName(StringUtil.pathToClassName(entry.getName()));
 						packageHandlerList.add(classType);
-					} catch (ClassNotFoundException e1) {
-						e1.printStackTrace();
+					} catch (ClassNotFoundException ex) {
+						LOGGER.log(Level.WARNING, "Loading Handler from jar path " + url, ex);
 					}
 					
 				}
@@ -211,7 +203,7 @@ public class Configuration extends Properties {
 				extractClassPackages(fileDir.getCanonicalFile().getParentFile(), 
 						appMainPackage, packageHandlerList);
 			} catch (URISyntaxException e) {
-				e.printStackTrace();
+				LOGGER.log(Level.WARNING, "Loading Handler from local path failed " + url, e);
 			}
 		}
 			
@@ -224,31 +216,27 @@ public class Configuration extends Properties {
 		return new ArrayList<Class<?>>(packageHandlerList);
 	}
 	
-	private static final FileFilter classFilter = new FileFilter() {
-		@Override
-		public boolean accept(File f) {
-			return f.getName().endsWith(".class");
-		}
-	};
-	
 	void extractClassPackages(File srcDir, String appMainPackage, 
 			Collection<Class<?>> packageClasses) {
 		
-		File[] files = srcDir.listFiles(classFilter);
+		File packageDir = new File(srcDir, appMainPackage);
+		File[] files =  packageDir.listFiles();
+		LOGGER.fine("extractClassPackages files: " + files);
 		
 		for(File file : files) {
 			
 			String entryFilePath;
 			try {
 				entryFilePath = file.getCanonicalPath();
-			} catch (IOException e1) {
+			} catch (IOException e) {
+				LOGGER.log(Level.WARNING, "extractClassPackages failed", e);
 				continue;
 			}
 			
 			if(file.isDirectory()) {
 				extractClassPackages(file, appMainPackage, packageClasses);
 			} else {
-				if(entryFilePath.endsWith(appMainPackage+ "/" +  file.getName())
+				if(entryFilePath.endsWith(appMainPackage + "/" +  file.getName())
 					&& !file.isDirectory() 
 					&& file.getName().endsWith(".class")) {
 					
@@ -258,6 +246,8 @@ public class Configuration extends Properties {
 						packageClasses.add(classType);	
 					} catch (ClassNotFoundException e) {
 						// Skipping those classes which cannot be found in classpath!
+						LOGGER.log(Level.WARNING, "Loading Handler from local path failed for " 
+								+ file, e);
 					}
 				}
 			}

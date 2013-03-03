@@ -51,7 +51,7 @@ public class AnnotationProcessor {
 		// extract class annotation of command
 		Command commandAnnotation = commandHandler.getAnnotation(Command.class);
 		if(commandAnnotation==null) {
-			throw new IllegalArgumentException("Unable to extract annotation from class" 
+			throw new IllegalArgumentException("Unable to extract annotation from " 
 					+ commandHandler + ". Skipping processing.");
 		}
 		

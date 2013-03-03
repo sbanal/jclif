@@ -31,6 +31,7 @@ import org.jclif.annotation.Command;
 import org.jclif.parser.CommandLineParseResult;
 import org.jclif.parser.CommandLineParser;
 import org.jclif.parser.InvalidInputException;
+import org.jclif.text.CommandLineFormat;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandLineProperties;
 import org.jclif.type.OptionMetadata;
@@ -112,7 +113,12 @@ public final class Executor {
 	
 	void processHandlerAnnotations(Set<Class<?>> classList) {
 		for(Class<?> classInstance : classList) {
-			registerHandler(classInstance);
+			try {
+				registerHandler(classInstance);
+			} catch(IllegalArgumentException e) {
+				LOGGER.log(Level.WARNING, "Handler " + classInstance.getCanonicalName() 
+						+ " is not a valid handler, skipping.", e);
+			}
 		}
 	}
 	
@@ -120,6 +126,7 @@ public final class Executor {
 	 * Registers a class as a command line handler.
 	 * 
 	 * @param handlerClass command line handler
+	 * @throws IllegalArgumentException thrown if handler class is not a valid Command handler
 	 */
 	public void registerHandler(Class<?> handlerClass) {
 		
@@ -191,14 +198,14 @@ public final class Executor {
 	
 	void printUsage(InvalidInputException e) {
 		if(null==e) {
-			outputStream.println(CommandLineParser.getInstance().format(config));
+			outputStream.println(CommandLineFormat.getInstance().format(config));
 		} else {
-			outputStream.println(CommandLineParser.getInstance().format(config, e));
+			outputStream.println(CommandLineFormat.getInstance().format(config, e));
 		}
 	}
 	
 	void printUsage(String error) {
-		String usage = CommandLineParser.getInstance().format(config, error);
+		String usage = CommandLineFormat.getInstance().format(config, error);
 		outputStream.println(usage);
 	}
 	
