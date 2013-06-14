@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jclif.parser;
+package org.jclif.text;
 
 /**
  * CommandLineFormatType enum defines the different command line help text formatting 

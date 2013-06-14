@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.jclif.annotation.ParameterType;
-import org.jclif.parser.CommandLineFormatType;
 import org.jclif.parser.InvalidInputException;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandMetadata;

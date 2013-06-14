@@ -1,6 +1,5 @@
 package org.jclif.text;
 
-import org.jclif.parser.CommandLineFormatType;
 import org.jclif.parser.InvalidInputException;
 import org.jclif.type.CommandLineConfiguration;
 import org.jclif.type.CommandMetadata;

@@ -24,8 +24,12 @@ import org.jclif.util.ReflectionUtil;
  * 
  * @author stephen
  */
-public class AnnotationProcessor {
+public final class AnnotationProcessor {
 
+	private AnnotationProcessor() {
+		// Helper class
+	}
+	
 	/**
 	 * Returns an ExecutorHandler of a JCLIF annotated class.
 	 * 

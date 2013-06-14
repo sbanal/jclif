@@ -74,9 +74,11 @@ public final class Executor {
 	 * usage text are written.
 	 * 
 	 * @param outputStream	output stream where the help text are written
+	 * @throws IOException	thrown if loading of default configuration stream fails 
 	 */
-	public Executor(PrintStream outputStream) {
+	public Executor(PrintStream outputStream) throws IOException {
 		this.outputStream = outputStream;
+		this.configurationStream = Configuration.getDefaultConfigInputStream();
 	}
 	
 	/**

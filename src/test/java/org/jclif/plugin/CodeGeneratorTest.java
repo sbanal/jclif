@@ -3,9 +3,7 @@ package org.jclif.plugin;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jclif.runtime.Configuration;
 import org.junit.Assert;

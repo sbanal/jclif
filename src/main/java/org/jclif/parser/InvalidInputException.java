@@ -37,28 +37,64 @@ public class InvalidInputException extends Exception {
 	
 	private CommandMetadata commandMetadata;
 
+	/**
+	 * Create new instance of InvalidInputException with specified error message.
+	 * 
+	 * @param msg
+	 */
 	public InvalidInputException(String msg) {
 		this(msg, (CommandMetadata) null);
 	}
 	
+	/**
+	 * Creates new instance of InvalidInputException triggered by an invalid command 
+	 * options and/or parameters.
+	 *  
+	 * @param msg
+	 * @param metadata
+	 */
 	public InvalidInputException(String msg, CommandMetadata metadata) {
 		super(msg);
 		this.commandMetadata = metadata;
 	}
 	
+	/**
+	 * Create new instance of InvalidInputException with specified error message and throwable.
+	 * 
+	 * @param msg
+	 * @param t
+	 */
 	public InvalidInputException(String msg, Throwable t) {
 		this(msg, t, (CommandMetadata) null);
 	}
 	
+	/**
+	 * Creates new instance of InvalidInputException triggered by an invalid command 
+	 * options and/or parameters.
+	 * 
+	 * @param msg
+	 * @param t
+	 * @param metadata
+	 */
 	public InvalidInputException(String msg, Throwable t, CommandMetadata metadata) {
 		super(msg, t);
 		this.commandMetadata = metadata;
 	}
 	
+	/**
+	 * Returns the CommandMetadata which triggered this exception.
+	 * 
+	 * @return
+	 */
 	public CommandMetadata getCommandMetadata() {
 		return this.commandMetadata;
 	}
 	
+	/**
+	 * Returns true if exception is triggered by an invalid command input.
+	 * 
+	 * @return
+	 */
 	public boolean isCommandError() {
 		return (null!=this.commandMetadata);
 	}

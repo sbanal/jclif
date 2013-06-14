@@ -55,6 +55,10 @@ class DefaultCommandLineParser extends CommandLineParser {
 
 	private final static Logger LOGGER = Logger.getLogger(DefaultCommandLineParser.class.getName());
 	
+	private static final Pattern optionsIdRegEx = Pattern.compile("([\\w]+)");
+	private static final Pattern paramValueRegEx = Pattern.compile("((\"[\\p{Alnum}\\p{Punct}\\p{Space}&&[^\"]]+\")|('[\\p{Alnum}\\p{Punct}\\p{Space}&&[^']]+')|([\\p{Alnum}\\p{Punct}]+))");
+	
+	
 	@Override
 	public CommandLineParseResult parse(CommandLineConfiguration configuration,
 			String... args) throws InvalidInputException {
@@ -139,8 +143,6 @@ class DefaultCommandLineParser extends CommandLineParser {
 		CommandLineProperties cmdLineProperties = config.getCommandLineProperties();
 		final Pattern optionsShortPrefix = Pattern.compile(cmdLineProperties.getOptionPrefix());
 		final Pattern optionsLongPrefix = Pattern.compile(cmdLineProperties.getOptionLongPrefix());
-		final Pattern optionsIdRegEx = Pattern.compile("([\\w]+)");
-		final Pattern paramValueRegEx = Pattern.compile("((\"[\\p{Alnum}\\p{Punct}\\p{Space}&&[^\"]]+\")|('[\\p{Alnum}\\p{Punct}\\p{Space}&&[^']]+')|([\\p{Alnum}\\p{Punct}]+))");
 		
 		// parse options
 		while (true) {
@@ -274,6 +276,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 			}
 			parametersFound = true;
 		}
+		
 		return parametersFound;
 	}
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.jclif.org/CommandHandler"
+	xmlns:tns="http://www.jclif.org/CommandHandler" elementFormDefault="qualified">
+
+    <complexType name="CommandHandler"></complexType>
+</schema>

@@ -23,13 +23,8 @@ package org.jclif.type;
 /**
  * ParameterValidator interface provides the methods used by the parser to 
  * support custom parameter value parsing and value validation.
- * <p>
- * Implement this interface and pass to OptionConfiguration's addOption()
- * method to specify custom parameter parsing implementation instead of using
- * the default code provided by the API.
  * 
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
- *
  */
 public interface ParameterParser {
 	
