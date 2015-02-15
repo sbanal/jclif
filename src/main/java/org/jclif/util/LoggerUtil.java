@@ -2,15 +2,21 @@ package org.jclif.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
-public class LoggerUtil {
+public final class LoggerUtil {
+	
+	private LoggerUtil() {
+		// util class
+	}
 
-	public static void initializeLogger() {
+	public static void initializeLogger(Logger logger) {
 		
 		try {
 			if(System.getProperty("java.util.logging.config.file")!=null) {
-				System.out.println("Using logging property file " + System.getProperty("java.util.logging.config.file"));
+				logger.info("Using logging property file " + System.getProperty("java.util.logging.config.file"));
 				return;
 			}
 			InputStream loggingStream = LoggerUtil.class.getClassLoader().getResourceAsStream("logging.properties");
@@ -19,9 +25,9 @@ public class LoggerUtil {
 			}
 			LogManager.getLogManager().readConfiguration(loggingStream);
 		} catch (SecurityException e) {
-			System.err.println("Error loading logging.prroperties from class loader. Error:" + e.getMessage());
+			logger.log(Level.SEVERE, "Error loading logging.prroperties from class loader.", e);
 		} catch (IOException e) {
-			System.err.println("Error loading logging.prroperties from class loader. Error:" + e.getMessage());
+			logger.log(Level.SEVERE, "Error loading logging.prroperties from class loader.", e);
 		}
 		
 	}

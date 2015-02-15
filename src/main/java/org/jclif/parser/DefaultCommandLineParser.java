@@ -20,8 +20,10 @@
 package org.jclif.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
@@ -55,8 +57,8 @@ class DefaultCommandLineParser extends CommandLineParser {
 
 	private final static Logger LOGGER = Logger.getLogger(DefaultCommandLineParser.class.getName());
 	
-	private static final Pattern optionsIdRegEx = Pattern.compile("([\\w]+)");
-	private static final Pattern paramValueRegEx = Pattern.compile("((\"[\\p{Alnum}\\p{Punct}\\p{Space}&&[^\"]]+\")|('[\\p{Alnum}\\p{Punct}\\p{Space}&&[^']]+')|([\\p{Alnum}\\p{Punct}]+))");
+	private static final Pattern OPTIONS_ID_REGEX = Pattern.compile("([\\w]+)");
+	private static final Pattern PARAM_VALUE_REGEX = Pattern.compile("((\"[\\p{Alnum}\\p{Punct}\\p{Space}&&[^\"]]+\")|('[\\p{Alnum}\\p{Punct}\\p{Space}&&[^']]+')|([\\p{Alnum}\\p{Punct}]+))");
 	
 	
 	@Override
@@ -65,7 +67,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 		
 		CommandLineParseResult resultSet = new CommandLineParseResult(configuration);
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for(String arg: args) {
 			if(StringUtil.containsSpace(arg)) {
 				sb.append(String.format("\"%s\"", arg));
@@ -97,7 +99,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 			return false;
 		}
 		
-		StringBuffer sbOptionFlags = new StringBuffer("(");
+		StringBuilder sbOptionFlags = new StringBuilder("(");
 		for(CommandMetadata cmdMetadata : configuration.getCommandConfiguration().values()) {
 			sbOptionFlags.append(cmdMetadata.getIdentifier());
 			sbOptionFlags.append("|");
@@ -157,7 +159,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 			}
 			
 			// parse option identifier extract option identifier and get its metadata
-			String optionId = scanner.findInLine(optionsIdRegEx);
+			String optionId = scanner.findInLine(OPTIONS_ID_REGEX);
 			if(optionId==null) {
 				break; // prefix has no option id
 			}
@@ -180,7 +182,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 			token = scanner.findInLine(config.getCommandLineProperties().getOptionParameterDelim());
 			if (metadata.isParameterAccepted() && token!=null) {
 				
-				token = scanner.findInLine(paramValueRegEx);
+				token = scanner.findInLine(PARAM_VALUE_REGEX);
 				
 				ParameterMetadata parameterMetadata = metadata.getParameterMetadata();
 				if (parameterMetadata.isRequired() && token==null) {
@@ -255,7 +257,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 				int i = 0;
 				while(scanner.hasNext()) {
 					String token = scanner.next();
-					LOGGER.info(String.format("Parameter[%d]={%s}", (i++), token));
+					LOGGER.info(String.format("Parameter[%d]={%s}", i++, token));
 					valueList.add(getParameterValue(cmdMetadata, paramMeta, token));
 				}
 				if(paramMeta.isRequired() && valueList.isEmpty()) {
@@ -290,6 +292,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 			resultSet.getParameterInput().addAll(result.getParameterInput());
 			return true;
 		} catch (InvalidInputException e) {
+			LOGGER.log(Level.WARNING, "Invalid input in argument " + Arrays.asList(args), e);
 			return false;
 		}
 	}
@@ -306,10 +309,8 @@ class DefaultCommandLineParser extends CommandLineParser {
 		
 		// validate options
 		for(OptionMetadata metadata : optionConfig.getOptions()) {
-			if(metadata.isRequired()) {
-				if(!result.getOptionInput().contains(metadata.getIdentifier())) {
-					throw new InvalidInputException("Option " + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + " is required.");
-				}
+			if(metadata.isRequired() && !result.getOptionInput().contains(metadata.getIdentifier())) {
+				throw new InvalidInputException("Option " + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + " is required.");
 			}
 			if(metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired()) {
 				OptionInput option = result.getOptionInput().get(metadata.getIdentifier());

@@ -198,7 +198,7 @@ public class Configuration extends Properties {
 				}
 			}
 			
-		} else if(url.getProtocol().equalsIgnoreCase("file")){
+		} else if("file".equalsIgnoreCase(url.getProtocol())){
 			try {
 				File fileDir = new File(url.toURI());
 				LOGGER.info("Loading Handler from local path: " + fileDir.getCanonicalFile().getParentFile());

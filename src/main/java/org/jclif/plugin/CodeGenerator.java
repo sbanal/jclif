@@ -56,11 +56,11 @@ public class CodeGenerator {
 		}
 		
 		// retrieve all the java files only
-		File srcMainDir = new File(getSourceMainDirectory());
-		if(!srcMainDir.exists()) {
-			throw new IllegalArgumentException("Source Directory " + srcMainDir + " does not exist");
+		File confSourceDir = new File(getSourceMainDirectory());
+		if(!confSourceDir.exists()) {
+			throw new IllegalArgumentException("Source Directory " + confSourceDir + " does not exist");
 		}
-		File classSourceDir = new File(srcMainDir, commandAnnotatedPackage.replace(".", fileSeparator));
+		File classSourceDir = new File(confSourceDir, commandAnnotatedPackage.replace(".", fileSeparator));
 		File[] files = classSourceDir.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File file) {

@@ -58,8 +58,8 @@ public class DefaultCommandLineFormat extends CommandLineFormat {
 			optionFormatMap.put(optionFormatStr, metadata);
 		}
 		
-		String parameterFormatList = formatParameterList(config, commandMetadata.getParameterConfigurations());
-		StringBuffer sb = new StringBuffer();
+		String parameterFormatList = formatParameterList(commandMetadata.getParameterConfigurations());
+		StringBuilder sb = new StringBuilder();
 		if(!commandMetadata.getDescription().isEmpty()) {
 			sb.append(String.format("Description: %s%n", commandMetadata.getDescription()));
 		}
@@ -72,8 +72,8 @@ public class DefaultCommandLineFormat extends CommandLineFormat {
 	@Override
 	public String format(CommandLineConfiguration config, CommandLineFormatType formatType) {
 		
-		String parameterFormatList = formatParameterList(config, config.getParameterConfiguration());
-		StringBuffer sb = new StringBuffer();
+		String parameterFormatList = formatParameterList(config.getParameterConfiguration());
+		StringBuilder sb = new StringBuilder();
 		if(!config.getDescription().isEmpty()) {
 			sb.append(String.format("Description: %s%n", config.getDescription()));
 		}
@@ -97,7 +97,7 @@ public class DefaultCommandLineFormat extends CommandLineFormat {
 	
 	String formatOptionList(CommandLineConfiguration config, OptionConfiguration optionConfig, CommandLineFormatType formatType) { 
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		List<OptionMetadata> optionMetaDataList = optionConfig.getOptions();
 		Map<String, OptionMetadata> optionFormatMap = new LinkedHashMap<String, OptionMetadata>();
 		Integer maxIdLength = 0;
@@ -116,25 +116,33 @@ public class DefaultCommandLineFormat extends CommandLineFormat {
 		
 		switch(formatType) {
 		case FULL:
-			for(Map.Entry<String,OptionMetadata> optionEntry : optionFormatMap.entrySet()) {
-				OptionMetadata metadata = optionEntry.getValue();
-				String desc = (metadata.getLongDescription().isEmpty())?metadata.getDescription():metadata.getLongDescription();
-				sb.append(String.format(optionStrFormat, optionEntry.getKey(), desc));
-			}
+			appendFullFormattedOptions(optionFormatMap, optionStrFormat, sb);
 			break;
 		case SHORT:
 		default:
-			for(Map.Entry<String,OptionMetadata> optionEntry : optionFormatMap.entrySet()) {
-				sb.append(String.format(optionStrFormat, optionEntry.getKey(), optionEntry.getValue().getDescription()));
-			}
+			appendShortFormattedOptions(optionFormatMap, optionStrFormat, sb);
 			break;
 		}
 		
 		return sb.toString();
 	}
 	
-	String formatParameterList(CommandLineConfiguration config, ParameterConfiguration paramConfig) {
-		StringBuffer sb = new StringBuffer();
+	void appendFullFormattedOptions(Map<String, OptionMetadata> optionFormatMap, String optionStrFormat, StringBuilder sb) {
+		for(Map.Entry<String,OptionMetadata> optionEntry : optionFormatMap.entrySet()) {
+			OptionMetadata metadata = optionEntry.getValue();
+			String desc = (metadata.getLongDescription().isEmpty())?metadata.getDescription():metadata.getLongDescription();
+			sb.append(String.format(optionStrFormat, optionEntry.getKey(), desc));
+		}
+	}
+	
+	void appendShortFormattedOptions(Map<String, OptionMetadata> optionFormatMap, String optionStrFormat, StringBuilder sb) {
+		for(Map.Entry<String,OptionMetadata> optionEntry : optionFormatMap.entrySet()) {
+			sb.append(String.format(optionStrFormat, optionEntry.getKey(), optionEntry.getValue().getDescription()));
+		}
+	}
+	
+	String formatParameterList(ParameterConfiguration paramConfig) {
+		StringBuilder sb = new StringBuilder();
 		for(ParameterMetadata metadata: paramConfig.values()) {
 			sb.append(formatParameter(metadata));
 		}
@@ -209,7 +217,7 @@ public class DefaultCommandLineFormat extends CommandLineFormat {
 		}
 		
 		final String cmdStrFormat = "   %-" + (maxCmdLength + 5) + "s%s%n";
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if(!commands.isEmpty()) {
 			sb.append(String.format("Commands:%n"));
 		}

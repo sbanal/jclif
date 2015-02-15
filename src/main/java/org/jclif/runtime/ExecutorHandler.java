@@ -82,8 +82,8 @@ public class ExecutorHandler {
 	 * Executes a handler. Execution will create a new instance of the handler class
 	 * then populates the handler fields right before executing the handler method.
 	 * 
-	 * @param result		parse result
-	 * @throws RuntimeException thrown if an error occurs while executing the handler
+	 * @param result						parse result
+	 * @throws ExecutorRuntimeException 	thrown if an error occurs while executing the handler
 	 */
 	public void execute(CommandLineParseResult result) {
 		
@@ -92,7 +92,7 @@ public class ExecutorHandler {
 		try {
 			handlerInstance = handlerClass.newInstance();
 		} catch (Exception e) {
-			throw new RuntimeException("Unable to create a new instance of handler class " 
+			throw new ExecutorRuntimeException("Unable to create a new instance of handler class " 
 					+ handlerClass.getCanonicalName(), e);
 		}
 		
@@ -159,7 +159,7 @@ public class ExecutorHandler {
 						+ value.getClass().getCanonicalName() + "");
 			} catch (Exception e) {
 				LOGGER.log(Level.SEVERE, "Setter method call failed for field " + fieldName, e);
-				throw new RuntimeException("Setter method failed for field " + fieldName, e);
+				throw new ExecutorRuntimeException("Setter method failed for field " + fieldName, e);
 			}
 			
 		}

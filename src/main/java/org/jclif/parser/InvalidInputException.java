@@ -28,14 +28,14 @@ import org.jclif.type.CommandMetadata;
  * @author Stephen Lou Banal &lt;stephen.banal@gmail.com&gt;
  *
  */
-public class InvalidInputException extends Exception {
+public final class InvalidInputException extends Exception {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 528304270306604990L;
 	
-	private CommandMetadata commandMetadata;
+	private final CommandMetadata commandMetadata;
 
 	/**
 	 * Create new instance of InvalidInputException with specified error message.
@@ -96,7 +96,7 @@ public class InvalidInputException extends Exception {
 	 * @return
 	 */
 	public boolean isCommandError() {
-		return (null!=this.commandMetadata);
+		return null!=this.commandMetadata;
 	}
 	
 }

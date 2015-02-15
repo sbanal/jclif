@@ -77,7 +77,7 @@ public class CommandLineParseResult {
 	}
 	
 	public boolean containsInput() {
-		return (this.getOptionInput().isEmpty() && this.getParameterInput().isEmpty());
+		return this.getOptionInput().isEmpty() && this.getParameterInput().isEmpty();
 	}
 	
 	public void clear() {

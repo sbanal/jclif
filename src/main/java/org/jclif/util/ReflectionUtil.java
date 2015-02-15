@@ -21,6 +21,8 @@ package org.jclif.util;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class provides all the utility methods used by the framework to discover class methods and fields
@@ -30,6 +32,8 @@ import java.lang.reflect.Modifier;
  *
  */
 public final class ReflectionUtil {
+	
+	private static final Logger LOGGER = Logger.getLogger(ReflectionUtil.class.getCanonicalName());
 
 	private ReflectionUtil() {
 		
@@ -52,7 +56,7 @@ public final class ReflectionUtil {
 	 * 
 	 * @param classType		class type
 	 * @param fieldName		field name
-	 * @param paramType		return type
+	 * @param paramType		parameter type
 	 * @return Method		setter method of field
 	 * @throws NoSuchMethodException thrown if method is not found
 	 */
@@ -63,23 +67,24 @@ public final class ReflectionUtil {
 		Method m = null;
 		NoSuchMethodException firstException = null;
 		
-		while(paramType!=null && m==null) {
+		Class<?> currentParamType = paramType;
+		while(currentParamType!=null && m==null) {
 			try {
-				m = classType.getDeclaredMethod( methodName, paramType);
+				m = classType.getDeclaredMethod( methodName, currentParamType);
 			} catch (NoSuchMethodException e) {
 				if(firstException==null) {
 					firstException = e;
 				}
-				for(Class<?> interfaceClass : paramType.getInterfaces()) {
+				for(Class<?> interfaceClass : currentParamType.getInterfaces()) {
 					try {
 						m = classType.getDeclaredMethod( methodName, interfaceClass);
 					} catch (NoSuchMethodException e1) {
-						
+						LOGGER.log(Level.FINEST, "No declared method " + methodName 
+								+ " with parameter " + interfaceClass + " is found in class " + classType, e);
 					}
 				}
-				paramType = paramType.getSuperclass();
+				currentParamType = currentParamType.getSuperclass();
 			}
-			
 		}
 		
 		if(m==null && firstException!=null) {

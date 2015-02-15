@@ -27,6 +27,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
 
 import org.jclif.annotation.Command;
 import org.jclif.parser.CommandLineParseResult;
@@ -222,7 +224,8 @@ public final class Executor {
 		
 		try {
 			
-			LoggerUtil.initializeLogger();
+			LOGGER.addHandler(new StreamHandler(System.out, new SimpleFormatter()));
+			LoggerUtil.initializeLogger(LOGGER);
 			
 			String osName = System.getProperty(Configuration.PROPERTY_JCLIF_OS_NAME, 
 					System.getProperty("os.name"));

@@ -29,7 +29,9 @@ import java.util.regex.Pattern;
  */
 public final class StringUtil {
 
-	private StringUtil(){}
+	private StringUtil(){
+		
+	}
 	
 	private static final Pattern SPACE_REGEX = Pattern.compile("(.*)[\\s]+(.*)");
 	public static boolean containsSpace(String str) {
@@ -38,9 +40,9 @@ public final class StringUtil {
 	
 	public static String formatDelimValue(String delim) {
 		String delimFormat = delim;
-		if(delim.equals("\t")) {
+		if("\t".equals(delim)) {
 			delimFormat = "<tab>";
-		} else if(delim.equals(" ")) {
+		} else if(" ".equals(delim)) {
 			delimFormat = "<space>";
 		}
 		return delimFormat;

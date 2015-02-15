@@ -19,6 +19,9 @@
 
 package org.jclif.type;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * This class serves as container of command line related properties used for parsing
  * like option prefix and option-parameter character delimiter.
@@ -166,7 +169,13 @@ public class CommandLineProperties implements Cloneable {
 	
 	@Override
 	public Object clone() {
-		return new CommandLineProperties(this.getOptionPrefix(), this.getOptionLongPrefix(), this.getOptionParameterDelim());
+		try {
+			super.clone();
+			return new CommandLineProperties(this.getOptionPrefix(), this.getOptionLongPrefix(), this.getOptionParameterDelim());
+		} catch (CloneNotSupportedException e) {
+			Logger.getLogger(CommandLineProperties.class.getCanonicalName()).log(Level.SEVERE, "Clone failed in class " + this.getClass(), e);
+			return null;
+		}
 	}
 	
 }
