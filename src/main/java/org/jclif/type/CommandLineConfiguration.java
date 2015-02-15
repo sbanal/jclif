@@ -54,6 +54,16 @@ public class CommandLineConfiguration {
 	}
 	
 	/**
+	 * Creates a new command line configuration using the specified operating system name.
+	 * Defaults to linux/unix OS if name does not start with "<i>win</i>".
+	 * 
+	 * @param osName name of operating system
+	 */
+	public CommandLineConfiguration(String osName) {
+		this("appname", "", CommandLineProperties.getSystemProperties(osName));
+	}
+	
+	/**
 	 * Creates a new command line configuration using systems default command line properties.
 	 * 
 	 * @param name			name of application, value is used in printing help text

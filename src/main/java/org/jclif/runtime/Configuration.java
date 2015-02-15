@@ -236,13 +236,13 @@ public class Configuration extends Properties {
 			if(file.isDirectory()) {
 				extractClassPackages(file, appMainPackage, packageClasses);
 			} else {
-				if(entryFilePath.endsWith(appMainPackage + "/" +  file.getName())
+				if(entryFilePath.endsWith(appMainPackage + File.separator +  file.getName())
 					&& !file.isDirectory() 
 					&& file.getName().endsWith(".class")) {
 					
 					try {
 						Class<?> classType = Class.forName(StringUtil.pathToClassName(
-								appMainPackage + "/" + file.getName()));
+								appMainPackage + "." + file.getName()));
 						packageClasses.add(classType);	
 					} catch (ClassNotFoundException e) {
 						// Skipping those classes which cannot be found in classpath!

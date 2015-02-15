@@ -103,7 +103,7 @@ public class CommandLineProperties implements Cloneable {
 	 * @return CommandLineProperties command line properties
 	 */
 	public static CommandLineProperties getSystemProperties(String osName) {
-		if(osName.startsWith("Windows")) {
+		if(osName!=null && osName.toLowerCase().startsWith("win")) {
 			return (CommandLineProperties) WINDOWS_COMMAND_LINE_PROPERTIES.clone();
 		} else {
 			return (CommandLineProperties) UNIX_COMMAND_LINE_PROPERTIES.clone();

@@ -47,9 +47,13 @@ public class CommandLineParseTest {
 		System.out.println("Main Input: " + Arrays.asList(args));
 	}
 	
+	public CommandLineConfiguration createTestCommandLineConfiguration() {
+		return new CommandLineConfiguration("linux");
+	}
+	
 	@Test
 	public void testParseSimpleOption() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getOptionConfiguration().addOption("i").addOption("o", "output fule");
 		String[] args = {"-i", "-o"};
 		CommandLineParseResult parseResult = CommandLineParser.getInstance().parse(config, args);
@@ -70,7 +74,7 @@ public class CommandLineParseTest {
 	
 	@Test
 	public void testParseLongOption() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
@@ -80,7 +84,7 @@ public class CommandLineParseTest {
 	
 	@Test(expected=InvalidInputException.class)
 	public void testParseWrongLongOptionWithInvalidPrefix() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"-input"};
 		CommandLineParser.getInstance().parse(config, args);
@@ -89,7 +93,7 @@ public class CommandLineParseTest {
 	
 	@Test
 	public void testParseStringOptionParameterWithSpaceDelim() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getCommandLineProperties().setOptionParameterDelim(" ");
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input", "This is a test text"};
@@ -101,7 +105,7 @@ public class CommandLineParseTest {
 	
 	@Test
 	public void testParseStringOptionParameterWithEqualDelim() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getCommandLineProperties().setOptionParameterDelim("=");
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=\"This is a test text\""};
@@ -113,7 +117,7 @@ public class CommandLineParseTest {
 	
 	@Test
 	public void testParseStringOptionParameterWithEqualDelimQuoted() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getCommandLineProperties().setOptionParameterDelim("=");
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=\"This is a test text\""};
@@ -125,7 +129,7 @@ public class CommandLineParseTest {
 	
 	@Test
 	public void testParseStringOptionParameterWithEqualDelimSingleQuoted() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getCommandLineProperties().setOptionParameterDelim("=");
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.STRING, false, false, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input='This is a test text'"};
@@ -138,7 +142,7 @@ public class CommandLineParseTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testParseMultiValuedOption() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input", "test.txt", "--input", "test2.txt"};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
@@ -157,7 +161,7 @@ public class CommandLineParseTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testParseMultiValuedOptionWithEqualDelim() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getCommandLineProperties().setOptionParameterDelim("=");
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
 		String[] args = {"--input=test.txt", "--input=test2.txt"};
@@ -177,7 +181,7 @@ public class CommandLineParseTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testParseMultiValuedWithSingleValuedOption() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
 		config.getOptionConfiguration().addOption("x", "Testing single valued");
 		String[] args = {"--input", "test.txt", "--input", "test2.txt", "-x"};
@@ -197,7 +201,7 @@ public class CommandLineParseTest {
 	
 	@Test(expected = InvalidInputException.class)
 	public void testParseMultiValuedWithMissingRequiredOption() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		ParameterMetadata paramMetadata = new ParameterMetadataImpl("input", 
 				true, false, "", "",
 				ParameterType.FILE, null);
@@ -221,7 +225,7 @@ public class CommandLineParseTest {
 	
 	@Test
 	public void testParseMultiValuedWithMissingOptionaldOption() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getOptionConfiguration().addOption("i", "input", ParameterType.FILE, false, true, "Sample desc", "A very long sample desc of the option");
 		String[] args = {};
 		CommandLineParseResult parseResult  = CommandLineParser.getInstance().parse(config, args);
@@ -231,7 +235,7 @@ public class CommandLineParseTest {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void testParseOptionWithCustomParameter() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		ParameterParser validator = new ParameterParser() {
 
 			@Override
@@ -270,7 +274,7 @@ public class CommandLineParseTest {
 	
 	@Test
 	public void testShortFormat() {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		config.getOptionConfiguration().addOption("i", "input file").addOption("o", "output file");
 		String formatValue = CommandLineFormat.getInstance().format(config);
 		System.out.printf("ShortFormatValue%n%s", formatValue);
@@ -278,7 +282,7 @@ public class CommandLineParseTest {
 	
 	@Test
 	public void testParseSimpleCommand() throws InvalidInputException {
-		CommandLineConfiguration config = new CommandLineConfiguration();
+		CommandLineConfiguration config = createTestCommandLineConfiguration();;
 		OptionConfiguration argConfig = new OptionConfiguration();
 		ParameterMetadata param1 = new ParameterMetadataImpl("dir1", true, "dir 1");
 		ParameterMetadata param2 = new ParameterMetadataImpl("dir2", false, "dir 2");
