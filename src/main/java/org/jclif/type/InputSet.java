@@ -41,11 +41,13 @@ public class InputSet<E extends Input, M extends InputMetadata> extends HashSet<
 	private Map<String, E> inputMap = new HashMap<String, E>();
 	
 	
+	@Override
 	public boolean add(E obj) {
 		inputMap.put(obj.getMetadata().getIdentifier(), obj);
 		return super.add(obj);
 	}
 	
+	@Override
 	public boolean addAll(Collection<? extends E> collection) {
 		for(E arg: collection) {
 			add(arg);
@@ -54,7 +56,7 @@ public class InputSet<E extends Input, M extends InputMetadata> extends HashSet<
 	}
 	
 	public boolean contains(M metadata) {
-		return (metadata!=null && inputMap.containsKey(metadata.getIdentifier()));
+		return metadata!=null && inputMap.containsKey(metadata.getIdentifier());
 	}
 	
 	public boolean contains(String identifier) {
@@ -69,6 +71,7 @@ public class InputSet<E extends Input, M extends InputMetadata> extends HashSet<
 		return inputMap.get(metadata.getIdentifier());
 	}
 	
+	@Override
 	public void clear() {
 		inputMap.clear();
 	}

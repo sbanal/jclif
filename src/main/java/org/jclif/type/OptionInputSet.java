@@ -41,11 +41,13 @@ public class OptionInputSet extends InputSet<OptionInput, OptionMetadata> {
 		this.configuration = config;
 	}
 	
+	@Override
 	public boolean contains(String identifier) {
 		OptionMetadata optionMetadata = configuration.getOption(identifier);
-		return (optionMetadata!=null && super.contains(optionMetadata.getIdentifier()));
+		return optionMetadata!=null && super.contains(optionMetadata.getIdentifier());
 	}
 	
+	@Override
 	public OptionInput get(String identifier) {
 		OptionMetadata optionMetadata = configuration.getOption(identifier);
 		if(optionMetadata!=null) {

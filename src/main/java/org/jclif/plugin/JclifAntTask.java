@@ -12,6 +12,7 @@ public class JclifAntTask extends Task {
 	private String annotatedPackage;
 	private String buildDirectory;
 	
+	@Override
 	public void execute() {
 		try {
 			CodeGenerator codeGen = new CodeGenerator(this.getApplicationName(), this.getSourceDirectory());

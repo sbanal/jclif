@@ -22,6 +22,7 @@ package org.jclif.runtime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -232,7 +233,7 @@ public final class Executor {
 			executor.execute(args);
 			
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			LOGGER.log(Level.SEVERE, "Unable to handle command paramaters " + Arrays.asList(args), e);
 		}
 		
 	}

@@ -80,10 +80,12 @@ public abstract class Configuration<T extends InputMetadata> extends LinkedHashM
 		return !metadataList.isEmpty();
 	}
 	
+	@Override
 	public T put(String identifier, T metadata) {
 		throw new UnsupportedOperationException("Operation not supported, use T add(T value) instead.");
 	}
 	
+	@Override
 	public void putAll(Map<? extends String,? extends T> m) {
 		throw new UnsupportedOperationException("Operation not supported, use boolean addAll(Collection<T> metadataList) instead.");
 	}

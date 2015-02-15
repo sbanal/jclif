@@ -35,6 +35,7 @@ public class CommandInputImpl implements CommandInput {
 		this.metadata = metadata;
 	}
 	
+	@Override
 	public String getIdentifier() {
 		return this.command;
 	}

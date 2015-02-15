@@ -69,7 +69,7 @@ public class OptionMetadataImpl extends InputMetadataImpl implements OptionMetad
 
 	@Override
 	public boolean isParameterAccepted() {
-		return (parameterMetadata!=null && parameterMetadata.getParameterType() != ParameterType.NONE);
+		return parameterMetadata!=null && parameterMetadata.getParameterType() != ParameterType.NONE;
 	}	
 
 	@Override
@@ -77,6 +77,7 @@ public class OptionMetadataImpl extends InputMetadataImpl implements OptionMetad
 		return parameterMetadata;
 	}
 	
+	@Override
 	public String toString() {
 		return String.format("OptionMetadataImpl[id=%s,lid=%s,desc=%s,ldesc=%s,required=%b,multi-valued=%b,parameter-accepted=%b,parameter=%s]", 
 				getIdentifier(), getIdentifier(IdentifierType.LONG), this.getDescription(), 

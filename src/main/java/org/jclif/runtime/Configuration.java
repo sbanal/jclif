@@ -37,6 +37,7 @@ public class Configuration extends Properties {
 	private static final long serialVersionUID = 5801691693374599163L;
 
 	private static final Logger LOGGER = Logger.getLogger(Configuration.class.getCanonicalName());
+	private static final int MAX_HANDLERS = Short.MAX_VALUE;
 	
 	public static final String DEFAULT_EXECUTOR_CONFIG_FILE = "jclif.properties";
 	public static final String PROPERTY_JCLIF_INSTALL_PATH = "org.jclif.app.installation.path";
@@ -83,6 +84,7 @@ public class Configuration extends Properties {
 	 * @param  inputStream  stream of properties file to read
 	 * @throws IOException	thrown if an I/O error occurs while reading the configuration stream
 	 */
+	@Override
 	public void load(InputStream inputStream) throws IOException {
 		super.load(inputStream);
 		getHandlerList();
@@ -125,7 +127,7 @@ public class Configuration extends Properties {
 	 */
 	public List<Class<?>> getHandlerList() {
 		List<Class<?>> handlerList = new ArrayList<Class<?>>();
-		for(int i = 1; ; i++) {
+		for(int i = 1; i < MAX_HANDLERS; i++) {
 			String className = getProperty(CONFIG_PROPERTY_APP_HANDLER_LIST + "." + i, "").trim();
 			if(className==null || className.isEmpty()) {
 				break;

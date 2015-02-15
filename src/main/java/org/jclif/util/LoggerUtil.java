@@ -19,10 +19,8 @@ public class LoggerUtil {
 			}
 			LogManager.getLogManager().readConfiguration(loggingStream);
 		} catch (SecurityException e) {
-			e.printStackTrace();
 			System.err.println("Error loading logging.prroperties from class loader. Error:" + e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
 			System.err.println("Error loading logging.prroperties from class loader. Error:" + e.getMessage());
 		}
 		

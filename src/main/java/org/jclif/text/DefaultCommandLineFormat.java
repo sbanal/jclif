@@ -25,6 +25,7 @@ public class DefaultCommandLineFormat extends CommandLineFormat {
 		
 	}
 	
+	@Override
 	public String format(CommandLineConfiguration config, InvalidInputException e) {
 		String usage;
 		if(e.isCommandError()) {
@@ -35,14 +36,17 @@ public class DefaultCommandLineFormat extends CommandLineFormat {
 		return String.format("Error: %s%n%s",  e.getMessage(), usage);
 	}
 	
+	@Override
 	public String format(CommandLineConfiguration config, String errorMessage) {
 		return String.format("Error: %s%n%s",  errorMessage, format(config));
 	}
 	
+	@Override
 	public String format(CommandLineConfiguration config) {
 		return format(config, CommandLineFormatType.SHORT);
 	}
 	
+	@Override
 	public String format(CommandLineConfiguration config, CommandMetadata commandMetadata, CommandLineFormatType formatType) {
 		
 		List<OptionMetadata> optionMetaDataList = commandMetadata.getOptionConfigurations().getOptions();
@@ -65,6 +69,7 @@ public class DefaultCommandLineFormat extends CommandLineFormat {
 		return sb.toString();
 	}
 	
+	@Override
 	public String format(CommandLineConfiguration config, CommandLineFormatType formatType) {
 		
 		String parameterFormatList = formatParameterList(config, config.getParameterConfiguration());

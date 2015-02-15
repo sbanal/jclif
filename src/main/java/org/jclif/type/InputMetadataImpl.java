@@ -69,17 +69,20 @@ public abstract class InputMetadataImpl implements InputMetadata {
 		return required;
 	}
 	
+	@Override
 	public int hashCode() {
 		return 31*identifier.hashCode();
 	}
 	
+	@Override
 	public boolean equals(Object obj) {
 		if(!(obj instanceof OptionMetadataImpl)) {
 			return false;
 		}
-		return (((OptionMetadataImpl) obj).getIdentifier().equals(getIdentifier()));
+		return ((OptionMetadataImpl) obj).getIdentifier().equals(getIdentifier());
 	}
 	
+	@Override
 	public String toString() {
 		return String.format("AbstractInpt[id=%s,desc=%s,ldesc=%s,required=%b,multi-valued=%b]", 
 				getIdentifier(), this.getDescription(), this.getLongDescription(), 

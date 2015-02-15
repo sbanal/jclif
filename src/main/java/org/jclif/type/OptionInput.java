@@ -35,6 +35,7 @@ public interface OptionInput extends Input {
 	 * 
 	 * @return OptionMetadata metadata of option
 	 */
+	@Override
 	public OptionMetadata getMetadata();
 	
 	/**

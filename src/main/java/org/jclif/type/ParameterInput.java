@@ -35,6 +35,7 @@ public interface ParameterInput extends Input {
 	 * Returns the metadata of this parameter.
 	 * @return ParameterMetadata	metadata
 	 */
+	@Override
 	public ParameterMetadata getMetadata();
 	
 	/**

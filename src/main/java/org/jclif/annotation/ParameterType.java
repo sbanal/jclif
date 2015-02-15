@@ -89,8 +89,6 @@ public enum ParameterType {
 			return ParameterType.STRING;
 		} else if(classType == File.class) {
 			return ParameterType.FILE;
-		} else if(classType == File.class) {
-			return ParameterType.FILE;
 		} else if(classType == Integer.class) {
 			return ParameterType.INTEGER;
 		} else {
