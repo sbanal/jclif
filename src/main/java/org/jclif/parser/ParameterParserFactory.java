@@ -35,81 +35,76 @@ import org.jclif.type.ParameterParser;
  */
 public final class ParameterParserFactory {
 	
+	public static final ParameterParser INTEGER_PARAMETER_PARSER = new ParameterParser(){
+		@Override
+		public Object parseValue(ParameterMetadata metadata, String value) {
+			if(value==null) {
+				return null;
+			}
+			return Integer.parseInt(value);
+		}
+	};
+	
+	public static final ParameterParser DIRECTORY_PARAMETER_PARSER = new ParameterParser(){
+		@Override
+		public Object parseValue(ParameterMetadata metadata, String value) {
+			if(value==null) {
+				return null;
+			}
+			File file = new File(value);
+			if(!file.isDirectory()) {
+				throw new IllegalArgumentException("Directory parameter value " + value + " is not a directory.");
+			}
+			return file;
+		}
+	};
+	
+	public static final ParameterParser FILE_PARAMETER_PARSER = new ParameterParser(){
+		@Override
+		public Object parseValue(ParameterMetadata metadata, String value) {
+			if(value==null) {
+				return null;
+			}
+			return new File(value);
+		}
+	};
+	
+	public static final ParameterParser BOOLEAN_PARAMETER_PARSER = new ParameterParser(){
+		@Override
+		public Object parseValue(ParameterMetadata metadata, String value) {
+			return Boolean.parseBoolean(value);
+		}
+	};
+	
+	public static final ParameterParser NONE_PARAMETER_PARSER = new ParameterParser(){
+		@Override
+		public Object parseValue(ParameterMetadata metadata, String value) {
+			return null;
+		}
+	};
+	
+	public static final ParameterParser STRING_PARAMETER_PARSER = new ParameterParser(){
+		@Override
+		public Object parseValue(ParameterMetadata metadata, String value) {
+			return value;
+		}
+	};
+	
+	private static Map<ParameterType, ParameterParser> parameterParserMap = new HashMap<ParameterType, ParameterParser>();
+	
 	private static final ParameterParserFactory INSTANCE = new ParameterParserFactory();
 	
-	private Map<ParameterType, ParameterParser> parserMap = new HashMap<ParameterType, ParameterParser>();
-	
 	private ParameterParserFactory() {
-		parserMap.put(ParameterType.INTEGER,
-				new ParameterParser(){
-					@Override
-					public Object parseValue(ParameterMetadata metadata, String value) {
-						if(value==null) {
-							return null;
-						}
-						return Integer.parseInt(value);
-					}
-				}
-		);
-		parserMap.put(ParameterType.DIRECTORY,
-				new ParameterParser(){
-					@Override
-					public Object parseValue(ParameterMetadata metadata, String value) {
-						if(value==null) {
-							return null;
-						}
-						File file = new File(value);
-						if(!file.isDirectory()) {
-							throw new IllegalArgumentException("Directory parameter value " + value + " is not a directory.");
-						}
-						return file;
-					}
-				}
-		);
-		parserMap.put(ParameterType.FILE,
-				new ParameterParser(){
-					@Override
-					public Object parseValue(ParameterMetadata metadata, String value) {
-						if(value==null) {
-							return null;
-						}
-						return new File(value);
-					}
-				}
-		);
-		parserMap.put(ParameterType.BOOLEAN,
-				new ParameterParser(){
-					@Override
-					public Object parseValue(ParameterMetadata metadata, String value) {
-						return Boolean.parseBoolean(value);
-					}
-				}
-		);
-		parserMap.put(ParameterType.NONE,
-				new ParameterParser(){
-					@Override
-					public Object parseValue(ParameterMetadata metadata, String value) {
-						return null;
-					}
-				}
-		);
-		parserMap.put(ParameterType.STRING,
-				new ParameterParser(){
-					@Override
-					public Object parseValue(ParameterMetadata metadata, String value) {
-						return value;
-					}
-				}
-		);
-		
-	}
-	
-	public static ParameterParserFactory getInstance() {
-		return INSTANCE;
+		parameterParserMap.put(ParameterType.INTEGER, ParameterParserFactory.INTEGER_PARAMETER_PARSER);
+		parameterParserMap.put(ParameterType.DIRECTORY, ParameterParserFactory.DIRECTORY_PARAMETER_PARSER);
+		parameterParserMap.put(ParameterType.FILE, ParameterParserFactory.FILE_PARAMETER_PARSER);
+		parameterParserMap.put(ParameterType.BOOLEAN, ParameterParserFactory.BOOLEAN_PARAMETER_PARSER);
+		parameterParserMap.put(ParameterType.NONE, ParameterParserFactory.NONE_PARAMETER_PARSER);
+		parameterParserMap.put(ParameterType.STRING, ParameterParserFactory.STRING_PARAMETER_PARSER);
 	}
 	
 	public ParameterParser createParser(ParameterMetadata metadata) {
-		ParameterParser parser = this.parserMap.get(metadata.getParameterType());
+		ParameterParser parser = parameterParserMap.get(metadata.getParameterType());
 		if(parser==null) {
 			parser = metadata.getParameterValidator();
 		}
@@ -117,6 +112,10 @@ public final class ParameterParserFactory {
 			throw new IllegalArgumentException("No valid parameter parser found for metadata " + metadata);
 		}
 		return parser;
+	}
+	
+	public static ParameterParserFactory getInstance() {
+		return INSTANCE;
 	}
 	
 }

@@ -235,8 +235,8 @@ class DefaultCommandLineParser extends CommandLineParser {
 					parameter = new ParameterInputImpl(metadata.getParameterMetadata(), parameterValue);
 				}
 			}
-			optionValue = new OptionInputImpl(metadata, parameter);
-			resultSet.add(optionValue);
+			OptionInput newOptionValue = new OptionInputImpl(metadata, parameter);
+			resultSet.add(newOptionValue);
 		} else {
 			ParameterInput parameter = optionValue.getParameter();
 			if (parameter != null && metadata.isMultiValued()) {

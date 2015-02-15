@@ -160,34 +160,44 @@ public class Configuration extends Properties {
 
 		LOGGER.info("Loading Main handler '" + appMainPackage + "' from config " + url);
 
-        try {
-
-            List<Class<?>> packageHandlerList = new ArrayList<Class<?>>();
-            URLConnection urlConn = url.openConnection();
-
-            if (urlConn instanceof JarURLConnection){
-                extractJarHandlerList((JarURLConnection) urlConn, appMainPackage, packageHandlerList);
-            } else if("file".equalsIgnoreCase(url.getProtocol())){
-                File srcDir = new File(url.toURI()).getCanonicalFile().getParentFile();
-                LOGGER.info("Loading Handler from local path: " + srcDir);
-                extractClassPackages(srcDir, appMainPackage, packageHandlerList);
-            }
-
-            if(packageHandlerList.isEmpty()) {
-                throw new IllegalArgumentException("Handler package not configured or no "
-                        + Configuration.CONFIG_PROPERTY_APP_HANDLER_LIST
-                        + ".<X> entry found. Please check configuration file.");
-            }
-
-            return packageHandlerList;
-
-        } catch (URISyntaxException e) {
-            throw new IOException("Unable to load handlers from class packages due to URI error. " +
-                    "Source url " + url, e);
-        }
+		return createPackageHandlers(url, appMainPackage);
 
 	}
 	
+	/**
+	 * Creates handler list based on provided in the class path or jar.
+	 * 
+	 * @param url
+	 * @param appMainPackage
+	 * @return List<Class<?>>  list of handler class
+	 * @throws IOException
+	 */
+	List<Class<?>> createPackageHandlers(URL url, String appMainPackage) throws IOException {
+		
+		List<Class<?>> packageHandlerList = new ArrayList<Class<?>>();
+        URLConnection urlConn = url.openConnection();
+
+        if (urlConn instanceof JarURLConnection){
+            extractJarHandlerList((JarURLConnection) urlConn, appMainPackage, packageHandlerList);
+        } else if("file".equalsIgnoreCase(url.getProtocol())){
+			try {
+				File srcDir = new File(url.toURI()).getCanonicalFile().getParentFile();
+				LOGGER.info("Loading Handler from local path: " + srcDir);
+	            extractClassPackages(srcDir, appMainPackage, packageHandlerList);
+			} catch (URISyntaxException e) {
+				throw new IOException("Unable to load handlers from class packages due to URI error. " +
+	                    "Source url " + url, e);
+			}
+        }
+
+        if(packageHandlerList.isEmpty()) {
+            throw new IllegalArgumentException("Handler package not configured or no "
+                    + Configuration.CONFIG_PROPERTY_APP_HANDLER_LIST
+                    + ".<X> entry found. Please check configuration file.");
+        }
+
+        return packageHandlerList;
+	}
 
     void extractJarHandlerList(JarURLConnection conn, String appMainPackage, List<Class<?>> packageHandlerList)
             throws IOException {
