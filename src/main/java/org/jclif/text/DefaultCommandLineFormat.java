@@ -1,21 +1,16 @@
 package org.jclif.text;
 
+import org.jclif.annotation.ParameterType;
+import org.jclif.parser.InvalidInputException;
+import org.jclif.type.*;
+import org.jclif.type.OptionMetadata.IdentifierType;
+import org.jclif.util.StringUtil;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.jclif.annotation.ParameterType;
-import org.jclif.parser.InvalidInputException;
-import org.jclif.type.CommandLineConfiguration;
-import org.jclif.type.CommandMetadata;
-import org.jclif.type.OptionConfiguration;
-import org.jclif.type.OptionMetadata;
-import org.jclif.type.OptionMetadata.IdentifierType;
-import org.jclif.type.ParameterConfiguration;
-import org.jclif.type.ParameterMetadata;
-import org.jclif.util.StringUtil;
 
 public class DefaultCommandLineFormat extends CommandLineFormat {
 	
@@ -159,54 +154,65 @@ public class DefaultCommandLineFormat extends CommandLineFormat {
 	}
 	
 	String formatOption(OptionMetadata metadata, CommandLineConfiguration config) {
-		String formattedOption = null;
 		if(metadata.isParameterAccepted()) {
-			boolean isParamRequired = (metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired());
-			String paramDelim = StringUtil.formatDelimValue(config.getCommandLineProperties().getOptionParameterDelim());
-			String paramUsageStr = "";
-			if(metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().getParameterType()!=ParameterType.NONE) {
-				String paramName =  "";
-				if(metadata.getParameterMetadata().getParameterType()==ParameterType.CUSTOM) {
-					paramName = metadata.getParameterMetadata().getIdentifier();
-				} else {
-					paramName = metadata.getParameterMetadata().getParameterType().name();
-				}
-				paramUsageStr = String.format((isParamRequired)?"%s<%s>":"[%s<%s>]", paramDelim, paramName);
-				if(metadata.isMultiValued()) {
-					paramUsageStr += "...";
-				}
-			}
-			String longIdentifier = metadata.getIdentifier(IdentifierType.LONG);
-			if(longIdentifier!=null && !longIdentifier.isEmpty()) {
-				formattedOption = String.format("%s%s, %s%s%s", 
-						config.getCommandLineProperties().getOptionPrefix(), 
-						metadata.getIdentifier(), 
-						config.getCommandLineProperties().getOptionLongPrefix(), 
-						metadata.getIdentifier(IdentifierType.LONG),
-						paramUsageStr);
-			} else {
-				formattedOption = String.format("%s%s%s", 
-						config.getCommandLineProperties().getOptionPrefix(), 
-						metadata.getIdentifier(), 
-						paramUsageStr);
-			}
+            return formatOptionWithParameter(metadata, config);
 		} else {
-			String longIdentifier = metadata.getIdentifier(IdentifierType.LONG);
-			if(longIdentifier!=null && !longIdentifier.isEmpty()) {
-				formattedOption = String.format("%s%s, %s%s", 
-						config.getCommandLineProperties().getOptionPrefix(), 
-						metadata.getIdentifier(), 
-						config.getCommandLineProperties().getOptionLongPrefix(), 
-						metadata.getIdentifier(IdentifierType.LONG));
-			} else {
-				formattedOption = String.format("%s%s", 
-						config.getCommandLineProperties().getOptionPrefix(), 
-						metadata.getIdentifier());
-			}
+            return formatOptionWithoutParameter(metadata, config);
 		}
-		return formattedOption;
 	}
-	
+
+    private String formatParameterUsageString(OptionMetadata metadata, CommandLineConfiguration config) {
+        boolean isParamRequired = (metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired());
+        String paramDelim = StringUtil.formatDelimValue(config.getCommandLineProperties().getOptionParameterDelim());
+        String paramUsageStr = "";
+        if(metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().getParameterType()!=ParameterType.NONE) {
+            String paramName =  "";
+            if(metadata.getParameterMetadata().getParameterType()==ParameterType.CUSTOM) {
+                paramName = metadata.getParameterMetadata().getIdentifier();
+            } else {
+                paramName = metadata.getParameterMetadata().getParameterType().name();
+            }
+            paramUsageStr = String.format((isParamRequired)?"%s<%s>":"[%s<%s>]", paramDelim, paramName);
+            if(metadata.isMultiValued()) {
+                paramUsageStr += "...";
+            }
+        }
+        return paramUsageStr;
+    }
+
+    private String formatOptionWithParameter(OptionMetadata metadata, CommandLineConfiguration config) {
+        String paramUsageStr = formatParameterUsageString(metadata, config);
+        String longIdentifier = metadata.getIdentifier(IdentifierType.LONG);
+        if(longIdentifier!=null && !longIdentifier.isEmpty()) {
+            return String.format("%s%s, %s%s%s",
+                    config.getCommandLineProperties().getOptionPrefix(),
+                    metadata.getIdentifier(),
+                    config.getCommandLineProperties().getOptionLongPrefix(),
+                    metadata.getIdentifier(IdentifierType.LONG),
+                    paramUsageStr);
+        } else {
+            return String.format("%s%s%s",
+                    config.getCommandLineProperties().getOptionPrefix(),
+                    metadata.getIdentifier(),
+                    paramUsageStr);
+        }
+    }
+
+    private String formatOptionWithoutParameter(OptionMetadata metadata, CommandLineConfiguration config) {
+        String longIdentifier = metadata.getIdentifier(IdentifierType.LONG);
+        if(longIdentifier!=null && !longIdentifier.isEmpty()) {
+            return String.format("%s%s, %s%s",
+                    config.getCommandLineProperties().getOptionPrefix(),
+                    metadata.getIdentifier(),
+                    config.getCommandLineProperties().getOptionLongPrefix(),
+                    metadata.getIdentifier(IdentifierType.LONG));
+        } else {
+            return String.format("%s%s",
+                    config.getCommandLineProperties().getOptionPrefix(),
+                    metadata.getIdentifier());
+        }
+    }
+
 	String formatCommands(CommandLineConfiguration commandConfig) {
 		
 		List<String> commands = new ArrayList<String>();

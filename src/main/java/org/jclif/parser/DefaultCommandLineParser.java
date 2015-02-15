@@ -19,6 +19,10 @@
 
 package org.jclif.parser;
 
+import org.jclif.type.*;
+import org.jclif.type.OptionMetadata.IdentifierType;
+import org.jclif.util.StringUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,24 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
-
-import org.jclif.type.CommandInputImpl;
-import org.jclif.type.CommandLineConfiguration;
-import org.jclif.type.CommandLineProperties;
-import org.jclif.type.CommandMetadata;
-import org.jclif.type.OptionConfiguration;
-import org.jclif.type.OptionInput;
-import org.jclif.type.OptionInputImpl;
-import org.jclif.type.OptionInputSet;
-import org.jclif.type.OptionMetadata;
-import org.jclif.type.OptionMetadata.IdentifierType;
-import org.jclif.type.ParameterConfiguration;
-import org.jclif.type.ParameterInput;
-import org.jclif.type.ParameterInputImpl;
-import org.jclif.type.ParameterInputSet;
-import org.jclif.type.ParameterMetadata;
-import org.jclif.type.ParameterParser;
-import org.jclif.util.StringUtil;
 
 
 /**
@@ -234,7 +220,9 @@ class DefaultCommandLineParser extends CommandLineParser {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void fillOptionInputSet(OptionMetadata metadata, String optionId, String optionPrefix, Object parameterValue, OptionInputSet resultSet) {
+	private void fillOptionInputSet(OptionMetadata metadata, String optionId, String optionPrefix,
+                                    Object parameterValue, OptionInputSet resultSet) {
+
 		ParameterInput parameter = null;
 		OptionInput optionValue = resultSet.get(optionId);
 		if (optionValue == null) {
@@ -280,36 +268,54 @@ class DefaultCommandLineParser extends CommandLineParser {
 		
 		boolean parametersFound = false;
 		for(ParameterMetadata paramMeta : parameterConfig.values()) {
-			Object paraValue = null;
 			if(paramMeta.isMultiValued()) {
-				List<Object> valueList = new ArrayList<Object>();
-				int i = 0;
-				while(scanner.hasNext()) {
-					String token = scanner.next();
-					LOGGER.info(String.format("Parameter[%d]={%s}", i++, token));
-					valueList.add(getParameterValue(cmdMetadata, paramMeta, token));
-				}
-				if(paramMeta.isRequired() && valueList.isEmpty()) {
-					throw new InvalidInputException("Parameter " + paramMeta.getIdentifier() + " is required but not specified", cmdMetadata);
-				}
+				List<Object> valueList = extractMultiValuedParameter(scanner, cmdMetadata, paramMeta);
 				resultSet.add(new ParameterInputImpl(paramMeta, valueList));
 			} else {
-				if(scanner.hasNext()) {
-					String token = scanner.next();
-					LOGGER.info(String.format("Parameter={%s}", token));
-					paraValue = getParameterValue(cmdMetadata, paramMeta, token);
-					resultSet.add(new ParameterInputImpl(paramMeta, paraValue));
-				} else {
-					if(paramMeta.isRequired()) {
-						throw new InvalidInputException("Parameter " + paramMeta.getIdentifier() + " is required but not specified", cmdMetadata);
-					}
-				}
+                Object paramValue = extractSingleValuedParameter(scanner, cmdMetadata, paramMeta);
+				resultSet.add(new ParameterInputImpl(paramMeta, paramValue));
 			}
 			parametersFound = true;
 		}
 		
 		return parametersFound;
 	}
+
+    private List<Object> extractMultiValuedParameter(Scanner scanner, CommandMetadata cmdMetadata,
+                                                     ParameterMetadata paramMeta) throws InvalidInputException {
+
+        List<Object> valueList = new ArrayList<Object>();
+
+        int i = 0;
+        while(scanner.hasNext()) {
+            String token = scanner.next();
+            LOGGER.info(String.format("Parameter[%d]={%s}", i++, token));
+            valueList.add(getParameterValue(cmdMetadata, paramMeta, token));
+        }
+
+        if(paramMeta.isRequired() && valueList.isEmpty()) {
+            throw new InvalidInputException("Parameter " + paramMeta.getIdentifier() + " is required but not specified", cmdMetadata);
+        }
+
+        return valueList;
+    }
+
+    private Object extractSingleValuedParameter(Scanner scanner, CommandMetadata cmdMetadata,
+                                               ParameterMetadata paramMeta) throws InvalidInputException {
+
+        Object paraValue = null;
+        if(scanner.hasNext()) {
+            String token = scanner.next();
+            LOGGER.info(String.format("Parameter={%s}", token));
+            paraValue = getParameterValue(cmdMetadata, paramMeta, token);
+        } else {
+            if(paramMeta.isRequired()) {
+                throw new InvalidInputException("Parameter " + paramMeta.getIdentifier() + " is required but not specified", cmdMetadata);
+            }
+        }
+
+        return paraValue;
+    }
 
 	@Override
 	public boolean matches(CommandLineConfiguration configuration, CommandLineParseResult resultSet, String... args) {
@@ -329,36 +335,49 @@ class DefaultCommandLineParser extends CommandLineParser {
 	void validate(CommandLineConfiguration configuration, CommandLineParseResult result) throws InvalidInputException {
 		
 		OptionConfiguration optionConfig = configuration.getOptionConfiguration();
-		ParameterConfiguration parameterConig = configuration.getParameterConfiguration();
+		ParameterConfiguration parameterConfig = configuration.getParameterConfiguration();
 		if(result.isCommandMatch()) {
 			CommandMetadata cmdMetadata = (CommandMetadata) result.getMatchingCommand().getMetadata();
 			optionConfig = cmdMetadata.getOptionConfigurations();
-			parameterConig = cmdMetadata.getParameterConfigurations();
+            parameterConfig = cmdMetadata.getParameterConfigurations();
 		}
 		
-		// validate options
-		for(OptionMetadata metadata : optionConfig.getOptions()) {
-			if(metadata.isRequired() && !result.getOptionInput().contains(metadata.getIdentifier())) {
-				throw new InvalidInputException("Option " + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + " is required.");
-			}
-			if(metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired()) {
-				OptionInput option = result.getOptionInput().get(metadata.getIdentifier());
-				if(option.getParameter() == null || option.getParameter().getValue() == null) {
-					throw new InvalidInputException("Missing parameter for option " + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + ".");
-				}
-			}
-		}
-		
-		// validate parameters
-		for(ParameterMetadata metadata : parameterConig.values()) {
-			if(metadata.isRequired()) {
-				ParameterInput parameter = result.getParameterInput().get(metadata.getIdentifier());
-				if(parameter == null || parameter.getValue() == null) {
-					throw new InvalidInputException("Missing parameter " + configuration.getCommandLineProperties().getOptionPrefix() +  metadata.getIdentifier() + ".");
-				}
-			}
-		}
+        validateOptions(configuration, optionConfig, result);
+        validateParameters(configuration, parameterConfig, result);
 			
 	}
+
+    private void validateOptions(CommandLineConfiguration configuration, OptionConfiguration optionConfig,
+                            CommandLineParseResult result) throws InvalidInputException {
+
+        for(OptionMetadata metadata : optionConfig.getOptions()) {
+            if(metadata.isRequired() && !result.getOptionInput().contains(metadata.getIdentifier())) {
+                throw new InvalidInputException("Option " + configuration.getCommandLineProperties().getOptionPrefix()
+                        + metadata.getIdentifier() + " is required.");
+            }
+            if(metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired()) {
+                OptionInput option = result.getOptionInput().get(metadata.getIdentifier());
+                if(option.getParameter() == null || option.getParameter().getValue() == null) {
+                    throw new InvalidInputException("Missing parameter for option "
+                            + configuration.getCommandLineProperties().getOptionPrefix() + metadata.getIdentifier() + ".");
+                }
+            }
+        }
+
+    }
+
+    private void validateParameters(CommandLineConfiguration configuration, ParameterConfiguration parameterConfig,
+                                    CommandLineParseResult result) throws InvalidInputException {
+        for(ParameterMetadata metadata : parameterConfig.values()) {
+            if(metadata.isRequired()) {
+                ParameterInput parameter = result.getParameterInput().get(metadata.getIdentifier());
+                if(parameter == null || parameter.getValue() == null) {
+                    throw new InvalidInputException("Missing parameter "
+                            + configuration.getCommandLineProperties().getOptionPrefix()
+                            +  metadata.getIdentifier() + ".");
+                }
+            }
+        }
+    }
 
 }
