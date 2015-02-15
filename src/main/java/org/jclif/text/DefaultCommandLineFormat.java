@@ -74,7 +74,7 @@ public class DefaultCommandLineFormat extends CommandLineFormat {
 		}
 		
 		sb.append("Usage:");
-		boolean defaultCommandExist = (!config.getOptionConfiguration().isEmpty() || !config.getParameterConfiguration().isEmpty());
+		boolean defaultCommandExist = !config.getOptionConfiguration().isEmpty() || !config.getParameterConfiguration().isEmpty();
 		if(defaultCommandExist){
 			sb.append(String.format("  %s [options] %s%n", config.getName(), parameterFormatList));
 		}
@@ -162,7 +162,7 @@ public class DefaultCommandLineFormat extends CommandLineFormat {
 	}
 
     private String formatParameterUsageString(OptionMetadata metadata, CommandLineConfiguration config) {
-        boolean isParamRequired = (metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired());
+        boolean isParamRequired = metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().isRequired();
         String paramDelim = StringUtil.formatDelimValue(config.getCommandLineProperties().getOptionParameterDelim());
         String paramUsageStr = "";
         if(metadata.getParameterMetadata()!=null && metadata.getParameterMetadata().getParameterType()!=ParameterType.NONE) {

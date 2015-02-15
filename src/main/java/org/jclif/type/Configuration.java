@@ -40,8 +40,7 @@ import java.util.regex.Pattern;
 public abstract class Configuration<T extends InputMetadata> extends LinkedHashMap<String, T> {
 
 	private static final Logger LOGGER = Logger.getLogger(Configuration.class.getCanonicalName());
-	
-	private final Pattern IDENTIFIER_REGEX = Pattern.compile("^([\\w]+)$");
+	private static final Pattern IDENTIFIER_REGEX = Pattern.compile("^([\\w]+)$");
 	
 	/**
 	 * 

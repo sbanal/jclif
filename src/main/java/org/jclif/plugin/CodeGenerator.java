@@ -47,8 +47,6 @@ public class CodeGenerator {
 	
 	public void generateMain(String commandAnnotatedPackage, String targetDir) throws IOException {
 		
-		String fileSeparator = System.getProperty("file.separator");
-		
 		// always check if the target directory exists
 		File targetDirectory = new File(targetDir);
 		if(!targetDirectory.exists()) {
@@ -60,40 +58,50 @@ public class CodeGenerator {
 		if(!confSourceDir.exists()) {
 			throw new IllegalArgumentException("Source Directory " + confSourceDir + " does not exist");
 		}
-		File classSourceDir = new File(confSourceDir, commandAnnotatedPackage.replace(".", fileSeparator));
+		
+		// scan all classes of a directory and detect which ones are JCLIF annotated
+		File files[] = getClassSourceFiles(confSourceDir, commandAnnotatedPackage);
+		Configuration handlerConfig = createHandlerConfiguration(files, commandAnnotatedPackage);
+		
+		// write to file
+		File generatedFile = new File(targetDirectory, Configuration.DEFAULT_EXECUTOR_CONFIG_FILE);
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(generatedFile)));
+		handlerConfig.store(out, "JCLIF Generated file - " + Calendar.getInstance().getTime());
+		
+	}
+	
+	private Configuration createHandlerConfiguration(File[] files, String commandAnnotatedPackage) {
+		Configuration handlerConfig = new Configuration(getAppName());
+		for(File srcFile : files) {
+			String className = commandAnnotatedPackage + "." + StringUtil.sourceNameToClassName(srcFile.getName());
+			try {
+				Class<?> classType = Class.forName(className);
+				ExecutorHandler handler = new ExecutorHandler(classType);
+				handlerConfig.addHandler(handler.getHandlerClass());
+			} catch (ClassNotFoundException e) {
+				LOGGER.log(Level.WARNING, String.format("Unable to load class %s due to error '%s'", className, e.getMessage()), e);
+			} catch(Exception e) {
+				LOGGER.log(Level.WARNING, String.format("Unable to load class %s due to error '%s'", className, e.getMessage()), e);
+			}
+		}
+		return handlerConfig;
+	}
+	
+	private File[] getClassSourceFiles(File confSourceDir, String commandAnnotatedPackage) throws IOException {
+		
+		File classSourceDir = new File(confSourceDir, commandAnnotatedPackage.replace(".", File.separator));
 		File[] files = classSourceDir.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File file) {
 				return file.getName().endsWith(".java");
 			}
 		});
+		
 		if(files == null || 0 == files.length) {
 			throw new IllegalArgumentException("No Java files found in directory " + classSourceDir.getCanonicalPath());
 		}
 		
-		// scan all classes of a directory and detect which ones are JCLIF annotated
-		Configuration jclifProperties = new Configuration(getAppName());
-		for(File srcFile : files) {
-			
-			String classNameFromFile = StringUtil.sourceNameToClassName(srcFile.getName());
-			String className = commandAnnotatedPackage + "." + classNameFromFile;
-			try {
-				Class<?> classType = Class.forName(className);
-				ExecutorHandler handler = new ExecutorHandler(classType);
-				jclifProperties.addHandler(handler.getHandlerClass());
-			} catch (ClassNotFoundException e) {
-				LOGGER.log(Level.WARNING, String.format("Unable to load class %s due to error '%s'", className, e.getMessage()), e);
-			} catch(Exception e) {
-				LOGGER.log(Level.WARNING, String.format("Unable to load class %s due to error '%s'", className, e.getMessage()), e);
-			}
-			
-		}
-		
-		// write to file
-		File generatedFile = new File(targetDirectory, Configuration.DEFAULT_EXECUTOR_CONFIG_FILE);
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(generatedFile)));
-		jclifProperties.store(out, "JCLIF Generated file - " + Calendar.getInstance().getTime());
-		
+		return files;
 	}
 	
 }

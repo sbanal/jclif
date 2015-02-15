@@ -138,7 +138,8 @@ class DefaultCommandLineParser extends CommandLineParser {
 				
 				OptionMetadata metadata = extractOptionMetadata(config.getCommandLineProperties(), optionConfig, optionPrefix, optionId);
 				Object parameterValue = extractParameterValue(scanner, config, cmdMetadata, metadata, optionId, optionPrefix);
-				fillOptionInputSet(metadata, optionId, optionPrefix, parameterValue, resultSet);
+				OptionInput optionValue = resultSet.get(optionId);
+				fillOptionInputSet(metadata, optionValue, parameterValue, resultSet);
 				
 			} catch(IllegalArgumentException e) {
 				LOGGER.log(Level.WARNING, "Unable to find options matching " + cmdMetadata, e);
@@ -220,12 +221,11 @@ class DefaultCommandLineParser extends CommandLineParser {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void fillOptionInputSet(OptionMetadata metadata, String optionId, String optionPrefix,
+	private void fillOptionInputSet(OptionMetadata metadata, OptionInput optionValue,
                                     Object parameterValue, OptionInputSet resultSet) {
 
-		ParameterInput parameter = null;
-		OptionInput optionValue = resultSet.get(optionId);
 		if (optionValue == null) {
+			ParameterInput parameter = null;
 			if (metadata.isParameterAccepted()) {
 				if (metadata.isMultiValued()) {
 					List<Object> valueList = new ArrayList<Object>();
@@ -238,16 +238,16 @@ class DefaultCommandLineParser extends CommandLineParser {
 			optionValue = new OptionInputImpl(metadata, parameter);
 			resultSet.add(optionValue);
 		} else {
-			parameter = optionValue.getParameter();
+			ParameterInput parameter = optionValue.getParameter();
 			if (parameter != null && metadata.isMultiValued()) {
 				List<Object> valueList = (List<Object>) parameter.getValue();
 				valueList.add(parameterValue);
 			} else {
-				LOGGER.info("Skipping parameter for arg = "
-						+ optionId
+				LOGGER.info("Skipping parameter for option value = " + optionValue
 						+ " since value alreay exist. Might be arg was specified twice.");
 			}
 		}
+		
 	}
 	
 	private Object getParameterValue(CommandMetadata cmdMetadata, ParameterMetadata metadata, String paramValue) throws InvalidInputException {

@@ -87,90 +87,90 @@ public class ExecutorHandler {
 	 */
 	public void execute(CommandLineParseResult result) {
 		
-		Object handlerInstance;
-		
 		try {
-			handlerInstance = handlerClass.newInstance();
+			
+			Object handlerInstance = handlerClass.newInstance();
+			CommandMetadata cmdMetadata = (result.isCommandMatch()) ? (CommandMetadata) result.getMatchingCommand().getMetadata() : null;
+			OptionConfiguration optionConfig = (cmdMetadata==null) ? result.getConfiguration().getOptionConfiguration() : cmdMetadata.getOptionConfigurations();
+			
+			for(Field field: handlerClass.getDeclaredFields()) {
+				LOGGER.fine(String.format("processing field = " + field.getName()));
+				Object value = getHandlerFieldInputValue(field, optionConfig, result);			
+				invokeSetterMethod(field, handlerInstance, value);
+			}
+			
+			getHandlerMethod().invoke(handlerInstance);
+			
 		} catch (Exception e) {
 			throw new ExecutorRuntimeException("Unable to create a new instance of handler class " 
 					+ handlerClass.getCanonicalName(), e);
 		}
 		
-		CommandMetadata cmdMetadata = null;
-		OptionConfiguration optionConfig = null;
+	}
+	
+	/**
+	 * Returns the command line input mapped to an annotated field in a handler.
+	 * 
+	 * @param field
+	 * @param optionConfig
+	 * @param result
+	 * @return Object command line input value of an annotated handler field
+	 */
+	Object getHandlerFieldInputValue(Field field, OptionConfiguration optionConfig, CommandLineParseResult result) {
 		
-		if(result.isCommandMatch()) {
-			cmdMetadata = (CommandMetadata) result.getMatchingCommand().getMetadata();
+		if(field.isAnnotationPresent(Option.class)) {
+			Option option = field.getAnnotation(Option.class);
+			OptionMetadata optMetadata = optionConfig.get(option.identifier());
+			if(optMetadata.isParameterAccepted()) {
+				OptionInput optionValue = result.getOptionInput().get(option.identifier());
+				return (optionValue == null) ? null : optionValue.getParameter().getValue();
+			} else {
+				return result.getOptionInput().contains(option.identifier());
+			}
+		} else if(field.isAnnotationPresent(Parameter.class)) {
+			Parameter parameter = field.getAnnotation(Parameter.class);
+			if(result.getParameterInput().contains(parameter.identifier())) {
+				return result.getParameterInput().get(parameter.identifier()).getValue();
+			}
 		}
 		
-		if(cmdMetadata==null) {
-			optionConfig = result.getConfiguration().getOptionConfiguration();
-		} else {
-			optionConfig = cmdMetadata.getOptionConfigurations();
-		}
+		return null;
+	}
+	
+	/**
+	 * Invokes setter method of handler.
+	 * 
+	 * @param field
+	 * @param handlerInstance
+	 * @param value
+	 */
+	void invokeSetterMethod(Field field, Object handlerInstance, Object value) {
 		
-		for(Field field: handlerClass.getDeclaredFields()) {
-		
-			Object value = null;
-			String fieldName = field.getName();
-			
-			LOGGER.fine(String.format("processing field = " + field.getName()));
-			
-			if(field.isAnnotationPresent(Option.class)) {
-				
-				Option option = field.getAnnotation(Option.class);
-				OptionMetadata optMetadata = optionConfig.get(option.identifier());
-				if(optMetadata.isParameterAccepted()) {
-					OptionInput optionValue = result.getOptionInput().get(option.identifier());
-					value = (optionValue == null) ? null : optionValue.getParameter().getValue();
-				} else {
-					value = result.getOptionInput().contains(option.identifier());
-				}
-				
-				LOGGER.fine(String.format("Setting field = " + field.getName() + ", value = " +  value));
-				
-			} else if(field.isAnnotationPresent(Parameter.class)) {
-				
-				Parameter parameter = field.getAnnotation(Parameter.class);
-				if(result.getParameterInput().contains(parameter.identifier())) {
-					value = result.getParameterInput().get(parameter.identifier()).getValue();
-				}
-				
-				LOGGER.fine(String.format("Setting parameter =" + field.getName() + ", value = " +  value));
-			}
-			
-			if(value==null) {
-				continue;
-			}
-			
-			try {
-				LOGGER.fine(String.format("Calling set method for field " + fieldName + ", value = " +  value));
-				
-				Class<?> paramTypeClass = value.getClass();
-				Method m = ReflectionUtil.getSetterMethod(handlerClass, fieldName, paramTypeClass);
-				m.invoke(handlerInstance, value);
-				
-				LOGGER.fine(String.format("method invoked " + m.getName() + ", value = " +  value));
-			} catch (NoSuchMethodException e) {
-				LOGGER.log(Level.SEVERE, "Setter method not found for field " + fieldName, e);
-				throw new UnsupportedOperationException("Unable to execute"
-						+ " setter method " + handlerClass.getCanonicalName() 
-						+ " for field " + fieldName + " with param " 
-						+ value.getClass().getCanonicalName() + "");
-			} catch (Exception e) {
-				LOGGER.log(Level.SEVERE, "Setter method call failed for field " + fieldName, e);
-				throw new ExecutorRuntimeException("Setter method failed for field " + fieldName, e);
-			}
-			
+		if(value==null) {
+			LOGGER.fine(String.format("Calling set method for field " + field.getName() + 
+					" using field value = " +  value + " skipped."));
+			return;
 		}
 		
 		try {
-			getHandlerMethod().invoke(handlerInstance);
+			LOGGER.fine(String.format("Calling set method for field " + field.getName() + ", value = " +  value));
+			
+			Class<?> paramTypeClass = value.getClass();
+			Method m = ReflectionUtil.getSetterMethod(handlerClass, field.getName(), paramTypeClass);
+			m.invoke(handlerInstance, value);
+			
+			LOGGER.fine(String.format("method invoked " + m.getName() + ", value = " +  value));
+		} catch (NoSuchMethodException e) {
+			LOGGER.log(Level.SEVERE, "Setter method not found for field " + field.getName(), e);
+			throw new UnsupportedOperationException("Unable to execute"
+					+ " setter method " + handlerClass.getCanonicalName() 
+					+ " for field " + field.getName() + " with param " 
+					+ value.getClass().getCanonicalName() + "");
 		} catch (Exception e) {
-			throw new RuntimeException("Handler method of handler class " 
-					+ this.getHandlerClass().getCanonicalName() + " failed", e);
+			LOGGER.log(Level.SEVERE, "Setter method call failed for field " + field.getName(), e);
+			throw new ExecutorRuntimeException("Setter method failed for field " + field.getName(), e);
 		}
 		
 	}
-
+	
 }

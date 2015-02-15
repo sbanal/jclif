@@ -195,6 +195,7 @@ public final class Executor {
 		} catch (InvalidInputException e) {
 			printUsage(e);
 		} catch (Exception e) {
+			LOGGER.log(Level.FINE, "Unknown exception caught while processing command line arguments", e);
 			printUsage("Unknwon exception. " + e.getMessage() 
 					+ ". Cause = " + ((e.getCause()!=null)?e.getCause().getMessage():""));
 		}

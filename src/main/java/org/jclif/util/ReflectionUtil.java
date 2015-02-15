@@ -80,7 +80,7 @@ public final class ReflectionUtil {
 						m = classType.getDeclaredMethod( methodName, interfaceClass);
 					} catch (NoSuchMethodException e1) {
 						LOGGER.log(Level.FINEST, "No declared method " + methodName 
-								+ " with parameter " + interfaceClass + " is found in class " + classType, e);
+								+ " with parameter " + interfaceClass + " is found in class " + classType, e1);
 					}
 				}
 				currentParamType = currentParamType.getSuperclass();

@@ -187,6 +187,7 @@ public class Configuration extends Properties {
         }
 
 	}
+	
 
     void extractJarHandlerList(JarURLConnection conn, String appMainPackage, List<Class<?>> packageHandlerList)
             throws IOException {
