@@ -55,7 +55,7 @@ import org.jclif.util.StringUtil;
  */
 class DefaultCommandLineParser extends CommandLineParser {
 
-	private final static Logger LOGGER = Logger.getLogger(DefaultCommandLineParser.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(DefaultCommandLineParser.class.getName());
 	
 	private static final Pattern OPTIONS_ID_REGEX = Pattern.compile("([\\w]+)");
 	private static final Pattern PARAM_VALUE_REGEX = Pattern.compile("((\"[\\p{Alnum}\\p{Punct}\\p{Space}&&[^\"]]+\")|('[\\p{Alnum}\\p{Punct}\\p{Space}&&[^']]+')|([\\p{Alnum}\\p{Punct}]+))");
@@ -83,7 +83,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 		boolean cmdFound = parseCommand(scanner, configuration, resultSet);
 		if(!cmdFound){
 			parseOptions(scanner, configuration, null, configuration.getOptionConfiguration(), resultSet.getOptionInput());
-			parseParameters(scanner, configuration, null, configuration.getParameterConfiguration(), resultSet.getParameterInput());
+			parseParameters(scanner, null, configuration.getParameterConfiguration(), resultSet.getParameterInput());
 		}
 		scanner.close();
 		
@@ -126,14 +126,13 @@ class DefaultCommandLineParser extends CommandLineParser {
 			LOGGER.info(String.format("Options=%s%n", paramResult.group(1)));
 			Scanner scannerOptions = new Scanner(paramResult.group(1));
 			parseOptions(scannerOptions, configuration, cmdMetadata, cmdMetadata.getOptionConfigurations(), resultSet.getOptionInput());
-			parseParameters(scannerOptions, configuration, cmdMetadata, cmdMetadata.getParameterConfigurations(), resultSet.getParameterInput());
+			parseParameters(scannerOptions, cmdMetadata, cmdMetadata.getParameterConfigurations(), resultSet.getParameterInput());
 			scannerOptions.close();
 		}
 		
 		return true;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private boolean parseOptions(Scanner scanner, CommandLineConfiguration config, CommandMetadata cmdMetadata, 
 			OptionConfiguration optionConfig, OptionInputSet resultSet) throws InvalidInputException {
 		
@@ -141,96 +140,126 @@ class DefaultCommandLineParser extends CommandLineParser {
 			return true;
 		}
 		
-		String token = null;
-		CommandLineProperties cmdLineProperties = config.getCommandLineProperties();
-		final Pattern optionsShortPrefix = Pattern.compile(cmdLineProperties.getOptionPrefix());
-		final Pattern optionsLongPrefix = Pattern.compile(cmdLineProperties.getOptionLongPrefix());
-		
-		// parse options
 		while (true) {
 			
-			// parse the option prefix
-			String optionPrefix = scanner.findInLine(optionsLongPrefix);
-			if(optionPrefix==null) {
-				optionPrefix = scanner.findInLine(optionsShortPrefix);
-				if(optionPrefix==null) {
-					break; // word is not a prefix
-				}
+			try {
+
+				String optionsStrings[] = extractOptionStrings(scanner, config.getCommandLineProperties());
+				String optionPrefix = optionsStrings[0];
+				String optionId = optionsStrings[1];
+				
+				LOGGER.info(String.format("Options Prefix={%s}, Id={%s}", optionPrefix, optionId));
+				
+				OptionMetadata metadata = extractOptionMetadata(config.getCommandLineProperties(), optionConfig, optionPrefix, optionId);
+				Object parameterValue = extractParameterValue(scanner, config, cmdMetadata, metadata, optionId, optionPrefix);
+				fillOptionInputSet(metadata, optionId, optionPrefix, parameterValue, resultSet);
+				
+			} catch(IllegalArgumentException e) {
+				LOGGER.log(Level.WARNING, "Unable to find options matching " + cmdMetadata, e);
+				break;
 			}
 			
-			// parse option identifier extract option identifier and get its metadata
-			String optionId = scanner.findInLine(OPTIONS_ID_REGEX);
-			if(optionId==null) {
-				break; // prefix has no option id
-			}
-			
-			LOGGER.info(String.format("Options Prefix={%s}, Id={%s}", optionPrefix, optionId));
-			
-			OptionMetadata metadata = null;
-			if(cmdLineProperties.getOptionPrefix().equals(cmdLineProperties.getOptionLongPrefix())) {
-				metadata = optionConfig.getOption(optionId);
-			} else {
-				boolean longPrefix = optionPrefix.equals(cmdLineProperties.getOptionLongPrefix());
-				metadata = optionConfig.getOption(optionId, (longPrefix)?IdentifierType.LONG:IdentifierType.SHORT);
-			}
-			if (metadata == null) {
-				throw new InvalidInputException("Option " + optionPrefix + optionId + " is invalid.", cmdMetadata);
-			}
-
-			// parse the parameter
-			Object parameterValue = null;
-			token = scanner.findInLine(config.getCommandLineProperties().getOptionParameterDelim());
-			if (metadata.isParameterAccepted() && token!=null) {
-				
-				token = scanner.findInLine(PARAM_VALUE_REGEX);
-				
-				ParameterMetadata parameterMetadata = metadata.getParameterMetadata();
-				if (parameterMetadata.isRequired() && token==null) {
-					throw new InvalidInputException("Parameter required for option " + optionPrefix + optionId + ".", cmdMetadata);
-				}
-				
-				if (token != null) {
-					MatchResult paramResult = scanner.match();
-					for(int i=0;i<paramResult.groupCount();i++) {
-						LOGGER.info(String.format("[%d] Delim={%s}, Param={%s}", i, config.getCommandLineProperties().getOptionParameterDelim(), paramResult.group(i)));
-					}
-					String groupValue = StringUtil.extractQuotedValue(paramResult.group(1));
-					LOGGER.info(String.format("Delim={%s}, Param={%s}", config.getCommandLineProperties().getOptionParameterDelim(), groupValue));
-					parameterValue = getParameterValue(cmdMetadata, parameterMetadata, groupValue);
-				}
-				
-			}
-
-			// create the parameter value
-			ParameterInput parameter = null;
-			OptionInput optionValue = resultSet.get(optionId);
-			if (optionValue == null) {
-				if (metadata.isParameterAccepted()) {
-					if (metadata.isMultiValued()) {
-						List<Object> valueList = new ArrayList<Object>();
-						valueList.add(parameterValue);
-						parameter = new ParameterInputImpl(metadata.getParameterMetadata(), valueList);
-					} else {
-						parameter = new ParameterInputImpl(metadata.getParameterMetadata(), parameterValue);
-					}
-				}
-				optionValue = new OptionInputImpl(metadata, parameter);
-				resultSet.add(optionValue);
-			} else {
-				parameter = optionValue.getParameter();
-				if (parameter != null && metadata.isMultiValued()) {
-					List<Object> valueList = (List<Object>) parameter.getValue();
-					valueList.add(parameterValue);
-				} else {
-					LOGGER.info("Skipping parameter for arg = "
-							+ optionId
-							+ " since value alreay exist. Might be arg was specified twice.");
-				}
-			}
-
 		}
 	
 		return !resultSet.isEmpty();
+	}
+	
+	private OptionMetadata extractOptionMetadata(CommandLineProperties cmdLineProperties, OptionConfiguration optionConfig, 
+			String optionPrefix, String optionId) throws InvalidInputException {
+		
+		OptionMetadata metadata = null;
+		if(cmdLineProperties.getOptionPrefix().equals(cmdLineProperties.getOptionLongPrefix())) {
+			metadata = optionConfig.getOption(optionId);
+		} else {
+			boolean longPrefix = optionPrefix.equals(cmdLineProperties.getOptionLongPrefix());
+			metadata = optionConfig.getOption(optionId, (longPrefix)?IdentifierType.LONG:IdentifierType.SHORT);
+		}
+		
+		if (metadata == null) {
+			throw new InvalidInputException("Option " + optionPrefix + optionId + " is invalid.");
+		}
+		
+		return metadata;
+	}
+	
+	private String[] extractOptionStrings(Scanner scanner, CommandLineProperties cmdLineProperties) {
+		
+		final Pattern optionsShortPrefix = Pattern.compile(cmdLineProperties.getOptionPrefix());
+		final Pattern optionsLongPrefix = Pattern.compile(cmdLineProperties.getOptionLongPrefix());
+		
+		String optionPrefix = scanner.findInLine(optionsLongPrefix);
+		if(optionPrefix==null) {
+			optionPrefix = scanner.findInLine(optionsShortPrefix);
+			if(optionPrefix==null) {
+				throw new IllegalArgumentException("No option prefix found");
+			}
+		}
+		
+		// parse option identifier extract option identifier and get its metadata
+		String optionId = scanner.findInLine(OPTIONS_ID_REGEX);
+		if(optionId==null) {
+			throw new IllegalArgumentException("No option id found");
+		}
+		
+		return new String[] {optionPrefix, optionId};
+	}
+	
+	private Object extractParameterValue(Scanner scanner, CommandLineConfiguration config, 
+			CommandMetadata cmdMetadata, OptionMetadata metadata, 
+			String optionId, String optionPrefix) throws InvalidInputException {
+		
+		Object parameterValue = null;
+		String token = scanner.findInLine(config.getCommandLineProperties().getOptionParameterDelim());
+		if (metadata.isParameterAccepted() && token!=null) {
+			
+			token = scanner.findInLine(PARAM_VALUE_REGEX);
+			
+			ParameterMetadata parameterMetadata = metadata.getParameterMetadata();
+			if (parameterMetadata.isRequired() && token==null) {
+				throw new InvalidInputException("Parameter required for option " + optionPrefix + optionId + ".", cmdMetadata);
+			}
+			
+			if (token != null) {
+				MatchResult paramResult = scanner.match();
+				for(int i=0;i<paramResult.groupCount();i++) {
+					LOGGER.info(String.format("[%d] Delim={%s}, Param={%s}", i, config.getCommandLineProperties().getOptionParameterDelim(), paramResult.group(i)));
+				}
+				String groupValue = StringUtil.extractQuotedValue(paramResult.group(1));
+				LOGGER.info(String.format("Delim={%s}, Param={%s}", config.getCommandLineProperties().getOptionParameterDelim(), groupValue));
+				parameterValue = getParameterValue(cmdMetadata, parameterMetadata, groupValue);
+			}
+		}
+		
+		return parameterValue;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void fillOptionInputSet(OptionMetadata metadata, String optionId, String optionPrefix, Object parameterValue, OptionInputSet resultSet) {
+		ParameterInput parameter = null;
+		OptionInput optionValue = resultSet.get(optionId);
+		if (optionValue == null) {
+			if (metadata.isParameterAccepted()) {
+				if (metadata.isMultiValued()) {
+					List<Object> valueList = new ArrayList<Object>();
+					valueList.add(parameterValue);
+					parameter = new ParameterInputImpl(metadata.getParameterMetadata(), valueList);
+				} else {
+					parameter = new ParameterInputImpl(metadata.getParameterMetadata(), parameterValue);
+				}
+			}
+			optionValue = new OptionInputImpl(metadata, parameter);
+			resultSet.add(optionValue);
+		} else {
+			parameter = optionValue.getParameter();
+			if (parameter != null && metadata.isMultiValued()) {
+				List<Object> valueList = (List<Object>) parameter.getValue();
+				valueList.add(parameterValue);
+			} else {
+				LOGGER.info("Skipping parameter for arg = "
+						+ optionId
+						+ " since value alreay exist. Might be arg was specified twice.");
+			}
+		}
 	}
 	
 	private Object getParameterValue(CommandMetadata cmdMetadata, ParameterMetadata metadata, String paramValue) throws InvalidInputException {
@@ -242,7 +271,7 @@ class DefaultCommandLineParser extends CommandLineParser {
 		}
 	}
 	
-	private boolean parseParameters(Scanner scanner, CommandLineConfiguration config, CommandMetadata cmdMetadata, 
+	private boolean parseParameters(Scanner scanner, CommandMetadata cmdMetadata, 
 			ParameterConfiguration parameterConfig, ParameterInputSet resultSet) throws InvalidInputException {
 		
 		if(parameterConfig.isEmpty()) {

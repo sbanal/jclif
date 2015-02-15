@@ -175,29 +175,9 @@ public class Configuration extends Properties {
 		URLConnection urlConn = url.openConnection();
 		
 		if (urlConn instanceof JarURLConnection){
-			
 			JarURLConnection conn = (JarURLConnection) urlConn;
-			
 			LOGGER.info("Loading Handler from jar: " + conn.getJarFile().getName());
-			
-			for(Enumeration<JarEntry> e = conn.getJarFile().entries(); e.hasMoreElements(); ) {
-				JarEntry entry = e.nextElement();
-				if(entry==null) {
-					continue;
-				}
-				LOGGER.info("Checking Handler from jar path: " + entry.getName());
-				if(entry.getName().startsWith(appMainPackage) && !entry.isDirectory() && entry.getName().endsWith(".class")) {
-					
-					try {
-						Class<?> classType = Class.forName(StringUtil.pathToClassName(entry.getName()));
-						packageHandlerList.add(classType);
-					} catch (ClassNotFoundException ex) {
-						LOGGER.log(Level.WARNING, "Loading Handler from jar path " + url, ex);
-					}
-					
-				}
-			}
-			
+			extractJarHandlerList(conn, appMainPackage, packageHandlerList);
 		} else if("file".equalsIgnoreCase(url.getProtocol())){
 			try {
 				File fileDir = new File(url.toURI());
@@ -216,6 +196,26 @@ public class Configuration extends Properties {
 		}
 		
 		return new ArrayList<Class<?>>(packageHandlerList);
+	}
+	
+	void extractJarHandlerList(JarURLConnection conn, String appMainPackage, Set<Class<?>> packageHandlerList) throws IOException {
+		for(Enumeration<JarEntry> e = conn.getJarFile().entries(); e.hasMoreElements(); ) {
+			JarEntry entry = e.nextElement();
+			if(entry==null) {
+				continue;
+			}
+			LOGGER.info("Checking Handler from jar path: " + entry.getName());
+			if(entry.getName().startsWith(appMainPackage) && !entry.isDirectory() && entry.getName().endsWith(".class")) {
+				
+				try {
+					Class<?> classType = Class.forName(StringUtil.pathToClassName(entry.getName()));
+					packageHandlerList.add(classType);
+				} catch (ClassNotFoundException ex) {
+					LOGGER.log(Level.WARNING, "Loading Handler from jar path " + conn.getURL(), ex);
+				}
+				
+			}
+		}
 	}
 	
 	void extractClassPackages(File srcDir, String appMainPackage, 

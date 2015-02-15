@@ -19,7 +19,7 @@ import org.jclif.util.StringUtil;
 
 public class DefaultCommandLineFormat extends CommandLineFormat {
 	
-	private final static Logger LOGGER = Logger.getLogger(DefaultCommandLineFormat.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(DefaultCommandLineFormat.class.getName());
 	
 	DefaultCommandLineFormat() {
 		

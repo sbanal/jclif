@@ -35,40 +35,40 @@ public class CommandLineProperties implements Cloneable {
 	 * Default delimiter between a command line option and its parameter
 	 * in used in *nix based systems.
 	 */
-	public final static String DEFAULT_UNIX_OPTION_PARAMETER_DELIM = " ";
+	public static final String DEFAULT_UNIX_OPTION_PARAMETER_DELIM = " ";
 
 	/**
 	 * Default delimiter between a command line option and its parameter
 	 * in used in windows based systems.
 	 */
-	public final static String DEFAULT_WIN_OPTION_PARAMETER_DELIM = " ";
+	public static final String DEFAULT_WIN_OPTION_PARAMETER_DELIM = " ";
 	
 	/**
 	 * Default prefix string of option identifier used in windows based systems.
 	 */
-	public final static String DEFAULT_UNIX_OPTION_PREFIX = "-";
+	public static final String DEFAULT_UNIX_OPTION_PREFIX = "-";
 	
 	/**
 	 * Default prefix string of option long identifier used in *nix based systems.
 	 */
-	public final static String DEFAULT_UNIX_OPTION_LONG_PREFIX = "--";
+	public static final String DEFAULT_UNIX_OPTION_LONG_PREFIX = "--";
 	
 	/**
 	 * Default prefix string of option identifier used in windows based systems.
 	 */
-	public final static String DEFAULT_WIN_OPTION_PREFIX = "/";
+	public static final String DEFAULT_WIN_OPTION_PREFIX = "/";
 	
 	/**
 	 * Default prefix string of option long identifier used in windows based systems.
 	 */
-	public final static String DEFAULT_WIN_OPTION_LONG_PREFIX = "/";
+	public static final String DEFAULT_WIN_OPTION_LONG_PREFIX = "/";
 	
 	
-	private static final CommandLineProperties WINDOWS_COMMAND_LINE_PROPERTIES  = new CommandLineProperties(
+	private final static CommandLineProperties WINDOWS_COMMAND_LINE_PROPERTIES  = new CommandLineProperties(
 			DEFAULT_WIN_OPTION_PREFIX,
 			DEFAULT_WIN_OPTION_LONG_PREFIX, 
 			DEFAULT_UNIX_OPTION_PARAMETER_DELIM);
-	private static final CommandLineProperties UNIX_COMMAND_LINE_PROPERTIES  = new CommandLineProperties(
+	private final static CommandLineProperties UNIX_COMMAND_LINE_PROPERTIES  = new CommandLineProperties(
 			DEFAULT_UNIX_OPTION_PREFIX,
 			DEFAULT_UNIX_OPTION_LONG_PREFIX, 
 			DEFAULT_UNIX_OPTION_PARAMETER_DELIM);	
