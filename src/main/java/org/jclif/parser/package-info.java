@@ -1,5 +1,5 @@
 /**
- * Provides the classes necessary to parse command line inputs. 
+ * Provides the classes necessary to parse command line inputs.
  * 
  * @since 1.0
  */
